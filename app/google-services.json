@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "815718099613",
+    "firebase_url": "https://nolan-app.firebaseio.com",
+    "project_id": "nolan-app",
+    "storage_bucket": "nolan-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815718099613:android:c4cedbadfa2001b9",
+        "android_client_info": {
+          "package_name": "soup.nolan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "815718099613-0nir48pf5etgaa53sd6khbjv70043raq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeuLbkwqDbBithzbEfjEgtfkfY7GsFNhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "815718099613-0nir48pf5etgaa53sd6khbjv70043raq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "815718099613-gr5i9va8caloueuv53qeqe6e67ddltf9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kor45cw.Nolan",
+                "app_store_id": "1473683840"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815718099613:android:a977802d58b6077d",
+        "android_client_info": {
+          "package_name": "soup.nolan.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "815718099613-0nir48pf5etgaa53sd6khbjv70043raq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeuLbkwqDbBithzbEfjEgtfkfY7GsFNhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "815718099613-0nir48pf5etgaa53sd6khbjv70043raq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "815718099613-gr5i9va8caloueuv53qeqe6e67ddltf9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kor45cw.Nolan",
+                "app_store_id": "1473683840"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

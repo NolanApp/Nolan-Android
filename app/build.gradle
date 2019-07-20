@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 29
@@ -15,10 +16,26 @@ android {
         versionName "0.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+    signingConfigs {
         release {
+            storeFile rootProject.file("signing/app-release.jks")
+            storePassword propOrDef('storePassword', "")
+            keyAlias propOrDef('keyAlias', "")
+            keyPassword propOrDef('keyPassword', "")
+        }
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [crashlytics_enabled: false]
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [crashlytics_enabled: true]
         }
     }
     compileOptions {
@@ -39,7 +56,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    def lifecycle_version = "2.2.0-alpha02"
+    def lifecycle_version = "2.2.0-alpha01"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
@@ -58,7 +75,13 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
 
+    implementation 'com.google.firebase:firebase-core:17.0.1'
+    implementation 'com.google.firebase:firebase-ml-vision:22.0.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

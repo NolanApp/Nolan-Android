@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="${crashlytics_enabled}" />
+
         <activity android:name=".ui.NolanActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

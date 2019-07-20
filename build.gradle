@@ -6,11 +6,14 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
+        classpath 'com.google.gms:google-services:4.3.0'
+        classpath 'io.fabric.tools:gradle:1.29.0'
     }
 }
 
@@ -23,4 +26,14 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+Object propOrDef(String propertyName, Object defaultValue) {
+    def properties = new Properties()
+    def keyFile = rootProject.file("signing/key.properties")
+    if (keyFile.exists()) {
+        keyFile.withInputStream { stream -> properties.load(stream) }
+    }
+    def propertyValue = properties[propertyName]
+    return propertyValue != null ? propertyValue : defaultValue
 }
