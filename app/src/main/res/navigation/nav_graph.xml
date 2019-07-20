@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nolan"
+    app:startDestination="@+id/camera">
+
+    <fragment
+        android:id="@+id/camera"
+        android:name="soup.nolan.ui.camera.CameraFragment"
+        tools:layout="@layout/camera_fragment" />
+
+</navigation>

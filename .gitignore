@@ -38,8 +38,9 @@ captures/
 .idea/gradle.xml
 .idea/misc.xml
 .idea/modules.xml
-.idea/tasks.xml
+.idea/navEditor.xml
 .idea/runConfigurations.xml
+.idea/tasks.xml
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/assetWizardSettings.xml
