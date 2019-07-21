@@ -5,12 +5,19 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Matrix
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.view.*
 import android.widget.Toast
 import androidx.camera.core.CameraX
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageAnalysisConfig
+import androidx.camera.core.ImageProxy
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnNextLayout
 import androidx.navigation.fragment.findNavController
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
+import jp.co.cyberagent.android.gpuimage.util.Rotation
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.ui.BaseFragment
 
@@ -32,9 +39,8 @@ class CameraFragment : BaseFragment() {
     }
 
     private fun initViewState(binding: CameraFragmentBinding) {
-        val preview = binding.cameraPreview
         if (allPermissionsGranted(binding.root.context)) {
-            preview.post {
+            binding.cameraPreview.post {
                 startCameraWith(binding)
             }
         } else {
@@ -42,9 +48,6 @@ class CameraFragment : BaseFragment() {
                 REQUIRED_PERMISSIONS,
                 REQUEST_CODE_PERMISSIONS
             )
-        }
-        preview.doOnNextLayout {
-            preview.updateTransform()
         }
     }
 
@@ -68,7 +71,45 @@ class CameraFragment : BaseFragment() {
             textureView.surfaceTexture = it.surfaceTexture
             textureView.updateTransform()
         }
-        CameraX.bindToLifecycle(viewLifecycleOwner, preview)
+        binding.gpuImageView.filter = GPUImageSepiaToneFilter()
+        val analyzerConfig = ImageAnalysisConfig.Builder()
+            .apply {
+                val analyzerThread = HandlerThread("FilterAnalysis").apply { start() }
+                setCallbackHandler(Handler(analyzerThread.looper))
+                setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
+                setTargetRotation(textureView.display.rotation)
+            }
+            .build()
+        val analyzerUseCase = ImageAnalysis(analyzerConfig)
+            .apply {
+                analyzer = object : ImageAnalysis.Analyzer {
+
+                    private val ImageProxy.data: ByteArray
+                        get() {
+                            val y = planes[0]
+                            val u = planes[1]
+                            val v = planes[2]
+                            val Yb = y.buffer.remaining()
+                            val Ub = u.buffer.remaining()
+                            val Vb = v.buffer.remaining()
+                            return ByteArray(Yb + Ub + Vb).apply {
+                                y.buffer.get(this, 0, Yb)
+                                u.buffer.get(this, Yb, Ub)
+                                v.buffer.get(this, Yb + Ub, Vb)
+                            }
+                        }
+
+                    override fun analyze(image: ImageProxy, rotationDegrees: Int) {
+                        binding.gpuImageView.setRotation(Rotation.ROTATION_90)
+                        binding.gpuImageView.updatePreviewFrame(
+                            image.data,
+                            image.width,
+                            image.height
+                        )
+                    }
+                }
+            }
+        CameraX.bindToLifecycle(viewLifecycleOwner, preview, analyzerUseCase)
     }
 
     private fun TextureView.updateTransform() {
