@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.DisplayMetrics
 import android.util.Rational
+import android.util.Size
 import android.view.*
 import android.widget.Toast
 import androidx.camera.core.*
@@ -18,8 +19,10 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
-import jp.co.cyberagent.android.gpuimage.util.Rotation
+import soup.nolan.core.detector.FaceDetector
+import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.databinding.CameraFragmentBinding
+import soup.nolan.model.Face
 import soup.nolan.ui.BaseFragment
 import kotlin.random.Random
 
@@ -82,6 +85,23 @@ class CameraFragment : BaseFragment() {
             textureView.surfaceTexture = it.surfaceTexture
             textureView.updateTransform()
         }
+
+        val detector: FaceDetector = FirebaseFaceDetector().apply {
+            setCallback(object : FaceDetector.Callback {
+
+                override fun onIdle() {
+                    binding.boundingBoxView.setBoundingBoxList(emptyList())
+                }
+
+                override fun onDetected(frame: Size, faceList: List<Face>) {
+                    binding.boundingBoxView.setBoundingBoxFrame(frame)
+                    binding.boundingBoxView.setBoundingBoxList(faceList.map { it.boundingBox })
+                }
+
+                override fun onDetectFailed() {
+                }
+            })
+        }
         val analyzerConfig = ImageAnalysisConfig.Builder()
             .apply {
                 val analyzerThread = HandlerThread("FilterAnalysis").apply { start() }
@@ -92,6 +112,8 @@ class CameraFragment : BaseFragment() {
             .build()
         val analyzerUseCase = ImageAnalysis(analyzerConfig)
             .apply {
+                analyzer = FaceImageAnalyzer(detector)
+/*
                 analyzer = object : ImageAnalysis.Analyzer {
 
                     private val ImageProxy.data: ByteArray
@@ -118,6 +140,7 @@ class CameraFragment : BaseFragment() {
                         )
                     }
                 }
+*/
             }
         CameraX.bindToLifecycle(viewLifecycleOwner, previewUseCase, analyzerUseCase)
     }
