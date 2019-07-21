@@ -7,19 +7,21 @@ import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.DisplayMetrics
+import android.util.Rational
 import android.view.*
 import android.widget.Toast
-import androidx.camera.core.CameraX
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageAnalysisConfig
-import androidx.camera.core.ImageProxy
+import androidx.camera.core.*
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
 import jp.co.cyberagent.android.gpuimage.util.Rotation
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.ui.BaseFragment
+import kotlin.random.Random
 
 class CameraFragment : BaseFragment() {
 
@@ -49,21 +51,30 @@ class CameraFragment : BaseFragment() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+
+        binding.gpuImageView.filter = GPUImageSepiaToneFilter()
+        binding.randomButton.setOnClickListener {
+            binding.gpuImageView.filter = when (Random.nextInt() % 3) {
+                0 -> GPUImageSepiaToneFilter()
+                1 -> GPUImageSketchFilter()
+                2 -> GPUImageGrayscaleFilter()
+                else -> GPUImageGaussianBlurFilter()
+            }
+        }
     }
 
     private fun startCameraWith(binding: CameraFragmentBinding) {
         val textureView: TextureView = binding.cameraPreview
-        val metrics = android.util.DisplayMetrics().also { textureView.display.getRealMetrics(it) }
-        val screenAspectRatio = android.util.Rational(metrics.widthPixels, metrics.heightPixels)
-
-        val previewConfig = androidx.camera.core.PreviewConfig.Builder()
+        val metrics = DisplayMetrics().also { textureView.display.getRealMetrics(it) }
+        val screenAspectRatio = Rational(metrics.widthPixels, metrics.heightPixels)
+        val previewConfig = PreviewConfig.Builder()
             .apply {
                 setTargetAspectRatio(screenAspectRatio)
                 setTargetRotation(textureView.display.rotation)
             }
             .build()
-        val preview = androidx.camera.core.Preview(previewConfig)
-        preview.onPreviewOutputUpdateListener = androidx.camera.core.Preview.OnPreviewOutputUpdateListener {
+        val previewUseCase = Preview(previewConfig)
+        previewUseCase.onPreviewOutputUpdateListener = Preview.OnPreviewOutputUpdateListener {
             val parent = textureView.parent as ViewGroup
             parent.removeView(textureView)
             parent.addView(textureView, 0)
@@ -71,7 +82,6 @@ class CameraFragment : BaseFragment() {
             textureView.surfaceTexture = it.surfaceTexture
             textureView.updateTransform()
         }
-        binding.gpuImageView.filter = GPUImageSepiaToneFilter()
         val analyzerConfig = ImageAnalysisConfig.Builder()
             .apply {
                 val analyzerThread = HandlerThread("FilterAnalysis").apply { start() }
@@ -109,7 +119,7 @@ class CameraFragment : BaseFragment() {
                     }
                 }
             }
-        CameraX.bindToLifecycle(viewLifecycleOwner, preview, analyzerUseCase)
+        CameraX.bindToLifecycle(viewLifecycleOwner, previewUseCase, analyzerUseCase)
     }
 
     private fun TextureView.updateTransform() {
