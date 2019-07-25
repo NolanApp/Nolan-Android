@@ -1,6 +1,6 @@
 package soup.nolan.core.detector
 
-import soup.nolan.core.detector.input.RawImage
+import soup.nolan.core.detector.model.RawImage
 
 interface Detector {
 

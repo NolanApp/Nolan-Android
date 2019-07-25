@@ -1,6 +1,6 @@
 package soup.nolan.core.detector
 
-import android.util.Size
+import soup.nolan.core.detector.model.Frame
 import soup.nolan.model.Face
 
 interface FaceDetector : Detector {
@@ -9,9 +9,9 @@ interface FaceDetector : Detector {
 
     interface Callback {
 
-        fun onIdle()
+        fun onDetecting(frame: Frame)
 
-        fun onDetected(frame: Size, faceList: List<Face>)
+        fun onDetected(faceList: List<Face>)
 
         fun onDetectFailed()
     }

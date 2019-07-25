@@ -21,6 +21,7 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
 import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
+import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.model.Face
 import soup.nolan.ui.BaseFragment
@@ -89,13 +90,16 @@ class CameraFragment : BaseFragment() {
         val detector: FaceDetector = FirebaseFaceDetector().apply {
             setCallback(object : FaceDetector.Callback {
 
-                override fun onIdle() {
-                    binding.boundingBoxView.setBoundingBoxList(emptyList())
+                override fun onDetecting(frame: Frame) {
+                    binding.boundingBoxView.setBoundingBoxFrame(
+                        Size(frame.width, frame.height)
+                    )
                 }
 
-                override fun onDetected(frame: Size, faceList: List<Face>) {
-                    binding.boundingBoxView.setBoundingBoxFrame(frame)
-                    binding.boundingBoxView.setBoundingBoxList(faceList.map { it.boundingBox })
+                override fun onDetected(faceList: List<Face>) {
+                    binding.boundingBoxView.setBoundingBoxList(
+                        faceList.map { it.boundingBox }
+                    )
                 }
 
                 override fun onDetectFailed() {
