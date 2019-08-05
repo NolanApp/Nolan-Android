@@ -1,1 +1,4 @@
 include ':app'
+include ':filter-stylize'
+
+project(":filter-stylize").projectDir=new File(rootDir, "filters/stylize")
