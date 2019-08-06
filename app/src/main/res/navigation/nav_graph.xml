@@ -3,7 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nolan"
-    app:startDestination="@+id/camera">
+    app:startDestination="@+id/splash">
+
+    <fragment
+        android:id="@+id/splash"
+        android:name="soup.nolan.ui.splash.SplashFragment"
+        tools:layout="@layout/splash_fragment">
+
+        <action
+            android:id="@+id/action_to_camera"
+            app:destination="@id/camera"
+            app:popUpTo="@id/splash"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/camera"
