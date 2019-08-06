@@ -25,9 +25,8 @@
 
     <style name="Theme.Nolan.Splash">
         <item name="android:statusBarColor">?android:colorBackground</item>
-        <item name="android:windowBackground">@drawable/ic_splash</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowBackground">@color/colorAccent</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>
