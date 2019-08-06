@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Platform.V23.Theme.Nolan" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/status_bar_scrim</item>
+        <item name="android:windowLightStatusBar">@bool/use_light_status_bar</item>
+
+        <item name="android:navigationBarColor">@color/nav_bar_scrim</item>
+    </style>
+
+    <style name="Platform.Theme.Nolan" parent="Platform.V23.Theme.Nolan" />
+
+    <style name="Base.Theme.Nolan" parent="Platform.Theme.Nolan" />
+
+    <style name="Theme.Nolan" parent="Base.Theme.Nolan">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+    </style>
+
+    <style name="Theme.Nolan.Main">
+        <item name="android:windowBackground">#121212</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="Theme.Nolan.Splash">
+        <item name="android:statusBarColor">?android:colorBackground</item>
+        <item name="android:windowBackground">@drawable/ic_splash</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+    </style>
+
+</resources>
