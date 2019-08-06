@@ -24,7 +24,7 @@ import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.model.Face
-import soup.nolan.ui.BaseFragment
+import soup.nolan.ui.base.BaseFragment
 import kotlin.random.Random
 
 class CameraFragment : BaseFragment() {

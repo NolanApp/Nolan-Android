@@ -1,4 +1,4 @@
-package soup.nolan.ui
+package soup.nolan.ui.base
 
 import dagger.android.support.DaggerAppCompatActivity
 

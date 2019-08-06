@@ -1,4 +1,4 @@
-package soup.nolan.ui
+package soup.nolan.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
