@@ -8,6 +8,17 @@
     <fragment
         android:id="@+id/camera"
         android:name="soup.nolan.ui.camera.CameraFragment"
-        tools:layout="@layout/camera_fragment" />
+        tools:layout="@layout/camera_fragment">
+
+        <action
+            android:id="@+id/action_to_after"
+            app:destination="@id/after" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/after"
+        android:name="soup.nolan.ui.after.AfterFragment"
+        tools:layout="@layout/after_fragment" />
 
 </navigation>

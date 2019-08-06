@@ -65,6 +65,9 @@ class CameraFragment : BaseFragment() {
                 else -> GPUImageGaussianBlurFilter()
             }
         }
+        binding.afterButton.setOnClickListener {
+            findNavController().navigate(CameraFragmentDirections.actionToAfter())
+        }
     }
 
     private fun startCameraWith(binding: CameraFragmentBinding) {

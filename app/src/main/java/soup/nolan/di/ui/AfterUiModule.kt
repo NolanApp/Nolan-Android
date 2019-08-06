@@ -7,18 +7,18 @@ import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 import soup.nolan.di.scope.FragmentScope
 import soup.nolan.di.scope.ViewModelKey
-import soup.nolan.ui.camera.CameraFragment
-import soup.nolan.ui.camera.CameraViewModel
+import soup.nolan.ui.after.AfterFragment
+import soup.nolan.ui.after.AfterViewModel
 
 @Module
-abstract class CameraUiModule {
+abstract class AfterUiModule {
 
     @FragmentScope
     @ContributesAndroidInjector
-    abstract fun bindCameraFragment(): CameraFragment
+    abstract fun bindAfterFragment(): AfterFragment
 
     @Binds
     @IntoMap
-    @ViewModelKey(CameraViewModel::class)
-    abstract fun bindCameraViewModel(viewModel: CameraViewModel): ViewModel
+    @ViewModelKey(AfterViewModel::class)
+    abstract fun bindAfterViewModel(viewModel: AfterViewModel): ViewModel
 }
