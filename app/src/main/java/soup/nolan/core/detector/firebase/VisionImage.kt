@@ -4,7 +4,7 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import soup.nolan.core.detector.model.RawImage
 
-object FirebaseVisionImage {
+object VisionImage {
 
     fun from(rawImage: RawImage): FirebaseVisionImage {
         return FirebaseVisionImage.fromMediaImage(
