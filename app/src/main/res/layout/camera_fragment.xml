@@ -28,14 +28,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <soup.nolan.ui.widget.BoundingBoxView
-            android:id="@+id/boundingBoxView"
+        <soup.nolan.ui.widget.FaceBlurView
+            android:id="@+id/faceBlurView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@id/cameraPreview"
+            app:layout_constraintEnd_toEndOf="@id/cameraPreview"
+            app:layout_constraintStart_toStartOf="@id/cameraPreview"
+            app:layout_constraintTop_toTopOf="@id/cameraPreview" />
 
         <include
             android:id="@+id/header"

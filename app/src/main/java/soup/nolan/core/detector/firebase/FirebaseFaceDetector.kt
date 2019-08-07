@@ -47,8 +47,7 @@ class FirebaseFaceDetector : FaceDetector {
         callback?.onDetecting(Frame(rawImage.width, rawImage.height))
         coreDetector.detectInImage(FirebaseVisionImage.from(rawImage))
             .addOnSuccessListener { faceList ->
-                callback?.onDetected(
-                    faceList.mapNotNull { Face(it.boundingBox) })
+                callback?.onDetected(faceList.mapNotNull { Face(it.boundingBox) })
             }
             .addOnFailureListener {
                 callback?.onDetectFailed()

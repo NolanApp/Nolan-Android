@@ -9,7 +9,6 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.DisplayMetrics
 import android.util.Rational
-import android.util.Size
 import android.view.*
 import android.widget.Toast
 import androidx.camera.core.*
@@ -25,6 +24,9 @@ import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
+import soup.nolan.ui.widget.FaceGraphic
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 class CameraFragment : BaseFragment() {
@@ -32,6 +34,8 @@ class CameraFragment : BaseFragment() {
     private val viewModel: CameraViewModel by viewModel()
 
     private lateinit var binding: CameraFragmentBinding
+
+    private var startRequested = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,18 +98,32 @@ class CameraFragment : BaseFragment() {
             setCallback(object : FaceDetector.Callback {
 
                 override fun onDetecting(frame: Frame) {
-                    binding.boundingBoxView.setBoundingBoxFrame(
-                        Size(frame.width, frame.height)
-                    )
+                    if (startRequested.not()) {
+                        startRequested = true
+
+                        val min = min(frame.width, frame.height)
+                        val max = max(frame.width, frame.height)
+                        binding.faceBlurView.setCameraInfo(min, max, isMirror = false)
+                        binding.faceBlurView.clear()
+                    }
                 }
 
                 override fun onDetected(faceList: List<Face>) {
-                    binding.boundingBoxView.setBoundingBoxList(
-                        faceList.map { it.boundingBox }
-                    )
+                    binding.faceBlurView.run {
+                        clear()
+                        faceList.forEach {
+                            val faceGraphic = FaceGraphic(this, it)
+                            add(faceGraphic)
+                        }
+                        postInvalidate()
+                    }
                 }
 
                 override fun onDetectFailed() {
+                    binding.faceBlurView.run {
+                        clear()
+                        postInvalidate()
+                    }
                 }
             })
         }
