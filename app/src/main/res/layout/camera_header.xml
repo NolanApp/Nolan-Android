@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.camera.CameraFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/moreButton"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_more"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ratioButton"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_ratio"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/facingButton"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_facing"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
