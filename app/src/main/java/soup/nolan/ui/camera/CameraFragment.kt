@@ -66,7 +66,7 @@ class CameraFragment : BaseFragment() {
             }
         }
         binding.footer.captureButton.setOnClickListener {
-            findNavController().navigate(CameraFragmentDirections.actionToAfter())
+            findNavController().navigate(CameraFragmentDirections.actionToEdit())
         }
     }
 

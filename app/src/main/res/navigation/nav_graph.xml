@@ -27,14 +27,14 @@
         tools:layout="@layout/camera_fragment">
 
         <action
-            android:id="@+id/action_to_after"
-            app:destination="@id/after" />
+            android:id="@+id/action_to_edit"
+            app:destination="@id/edit" />
 
     </fragment>
 
     <fragment
-        android:id="@+id/after"
-        android:name="soup.nolan.ui.after.AfterFragment"
-        tools:layout="@layout/after_fragment" />
+        android:id="@+id/edit"
+        android:name="soup.nolan.ui.edit.EditFragment"
+        tools:layout="@layout/edit_fragment" />
 
 </navigation>

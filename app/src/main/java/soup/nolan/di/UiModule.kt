@@ -3,8 +3,8 @@ package soup.nolan.di
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import soup.nolan.di.scope.ActivityScope
-import soup.nolan.di.ui.AfterUiModule
 import soup.nolan.di.ui.CameraUiModule
+import soup.nolan.di.ui.EditUiModule
 import soup.nolan.di.ui.SplashUiModule
 import soup.nolan.ui.NolanActivity
 
@@ -16,7 +16,7 @@ abstract class UiModule {
         modules = [
             SplashUiModule::class,
             CameraUiModule::class,
-            AfterUiModule::class
+            EditUiModule::class
         ]
     )
     abstract fun bindNolanActivity(): NolanActivity
