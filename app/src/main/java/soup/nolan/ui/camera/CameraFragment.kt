@@ -3,7 +3,10 @@ package soup.nolan.ui.camera
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -24,6 +27,8 @@ import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
+import soup.nolan.ui.utils.blur
+import soup.nolan.ui.utils.erase
 import soup.nolan.ui.widget.FaceGraphic
 import kotlin.math.max
 import kotlin.math.min
@@ -108,15 +113,8 @@ class CameraFragment : BaseFragment() {
                     }
                 }
 
-                override fun onDetected(faceList: List<Face>) {
-                    binding.faceBlurView.run {
-                        clear()
-                        faceList.forEach {
-                            val faceGraphic = FaceGraphic(this, it)
-                            add(faceGraphic)
-                        }
-                        postInvalidate()
-                    }
+                override fun onDetected(originalImage: Bitmap, faceList: List<Face>) {
+                    binding.faceBlurView.renderFaceList(originalImage, faceList)
                 }
 
                 override fun onDetectFailed() {

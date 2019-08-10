@@ -1,16 +1,20 @@
 package soup.nolan.ui.widget
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.AttributeSet
-import android.view.View
+import android.widget.ImageView
+import soup.nolan.model.Face
+import soup.nolan.ui.utils.blur
+import soup.nolan.ui.utils.erase
 import java.util.*
 
 class FaceBlurView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+) : ImageView(context, attrs, defStyleAttr) {
 
     private val lock = Any()
     private val graphics = ArrayList<Graphic>()
@@ -19,6 +23,10 @@ class FaceBlurView @JvmOverloads constructor(
     private var previewHeight: Int = 0
     private var heightScaleFactor: Float = 1f
     private var isMirror: Boolean = false
+
+    init {
+        scaleType = ImageView.ScaleType.CENTER_CROP
+    }
 
     abstract class Graphic(private val overlay: FaceBlurView) {
 
@@ -74,6 +82,23 @@ class FaceBlurView @JvmOverloads constructor(
     fun remove(graphic: Graphic) {
         synchronized(lock) {
             graphics.remove(graphic)
+        }
+        postInvalidate()
+    }
+
+    fun renderFaceList(originalImage: Bitmap, faceList: List<Face>) {
+        if (faceList.isEmpty()) {
+            setImageBitmap(null)
+        } else {
+            setImageBitmap(
+                originalImage
+                    .erase(faceList.map { it.boundingBox })
+                    .blur()
+            )
+        }
+        clear()
+        faceList.forEach {
+            graphics.add(FaceGraphic(this, it))
         }
         postInvalidate()
     }

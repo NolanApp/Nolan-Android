@@ -3,6 +3,7 @@
     <color name="colorPrimary">#FEE934</color>
     <color name="colorPrimaryDark">#FEE934</color>
     <color name="colorAccent">#FEE934</color>
+    <color name="windowBackground">#121212</color>
 
     <color name="system_ui_scrim_light">#B3FFFFFF</color> <!-- 70% white -->
     <color name="system_ui_scrim_dark">#40000000</color> <!-- 25% black -->

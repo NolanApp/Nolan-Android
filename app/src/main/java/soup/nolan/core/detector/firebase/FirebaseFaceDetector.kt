@@ -1,6 +1,6 @@
 package soup.nolan.core.detector.firebase
 
-import android.graphics.Bitmap
+import android.graphics.Rect
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
@@ -9,9 +9,10 @@ import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.model.Frame
 import soup.nolan.core.detector.model.RawImage
 import soup.nolan.model.Face
+import soup.nolan.ui.utils.blur
 import soup.nolan.ui.utils.downscale
+import soup.nolan.ui.utils.erase
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.math.roundToInt
 
 class FirebaseFaceDetector : FaceDetector {
 
@@ -48,11 +49,14 @@ class FirebaseFaceDetector : FaceDetector {
         rawImage: RawImage,
         crossinline completeAction: () -> Unit
     ) {
-        val downscaleBitmap = VisionImage.from(rawImage).bitmap.downscale(0.3f)
-        callback?.onDetecting(Frame(downscaleBitmap.width, downscaleBitmap.height))
-        coreDetector.detectInImage(FirebaseVisionImage.fromBitmap(downscaleBitmap))
+        val downscaledBitmap = VisionImage.from(rawImage).bitmap.downscale(.5f)
+        callback?.onDetecting(Frame(downscaledBitmap.width, downscaledBitmap.height))
+        coreDetector.detectInImage(FirebaseVisionImage.fromBitmap(downscaledBitmap))
             .addOnSuccessListener { faceList ->
-                callback?.onDetected(faceList.mapNotNull { Face(it.boundingBox) })
+                callback?.onDetected(
+                    downscaledBitmap,
+                    faceList.mapNotNull { Face(it.boundingBox) }
+                )
             }
             .addOnFailureListener {
                 callback?.onDetectFailed()

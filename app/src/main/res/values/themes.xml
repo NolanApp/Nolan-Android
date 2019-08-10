@@ -19,7 +19,7 @@
     </style>
 
     <style name="Theme.Nolan.Main">
-        <item name="android:windowBackground">#121212</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
         <item name="android:windowFullscreen">true</item>
     </style>
 

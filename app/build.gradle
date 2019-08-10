@@ -82,6 +82,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision-face-model:18.0.0'
 
     implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
+    implementation 'io.alterac.blurkit:blurkit:1.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
