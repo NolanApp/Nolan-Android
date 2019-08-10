@@ -141,7 +141,7 @@ class CameraFragment : BaseFragment() {
     }
 
     private fun startCameraWith(binding: CameraFragmentBinding) {
-        binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
+        binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
     }
 
