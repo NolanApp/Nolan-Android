@@ -4,31 +4,29 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
-import android.util.DisplayMetrics
-import android.util.Rational
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.camera.core.CameraX
 import androidx.camera.core.CameraX.LensFacing
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageAnalysisConfig
-import androidx.camera.core.PreviewConfig
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageProxy
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
+import jp.co.cyberagent.android.gpuimage.util.Rotation
 import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
+import soup.nolan.ui.utils.lazyFast
+import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -39,9 +37,50 @@ class CameraFragment : BaseFragment() {
 
     private lateinit var binding: CameraFragmentBinding
 
-    private var startRequested = false
+    private val faceImageAnalyzer by lazyFast {
+        val detector: FaceDetector = FirebaseFaceDetector().apply {
+            setCallback(object : FaceDetector.Callback {
 
-    private var lensFacing = LensFacing.FRONT
+                override fun onDetecting(frame: Frame) {
+                    Timber.d("onDetecting:")
+                    if (startRequested.not()) {
+                        startRequested = true
+
+                        val min = min(frame.width, frame.height)
+                        val max = max(frame.width, frame.height)
+                        binding.faceBlurView.setCameraInfo(min, max)
+                        binding.faceBlurView.clear()
+                    }
+                }
+
+                override fun onDetected(originalImage: Bitmap, faceList: List<Face>) {
+                    Timber.d("onDetected: count=${faceList.size}")
+                    binding.faceBlurView.renderFaceList(originalImage, faceList)
+                }
+
+                override fun onDetectFailed() {
+                    binding.faceBlurView.run {
+                        clear()
+                        postInvalidate()
+                    }
+                }
+            })
+        }
+        FaceImageAnalyzer(detector).apply {
+            isMirror = binding.cameraPreview.cameraLensFacing?.isFront() ?: false
+        }
+    }
+
+    private val gpuImageAnalyzer by lazyFast {
+        GpuImageAnalyzer { data, width, height ->
+            binding.gpuImageView.run {
+                setRotation(Rotation.ROTATION_90)
+                updatePreviewFrame(data, width, height)
+            }
+        }
+    }
+
+    private var startRequested = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,119 +115,34 @@ class CameraFragment : BaseFragment() {
             }
         }
         binding.header.run {
+            moreButton.setOnClickListener {}
+            ratioButton.setOnClickListener {}
             facingButton.setOnClickListener {
-                lensFacing = if (LensFacing.FRONT == lensFacing) {
-                    facingButton.isSelected = true
-                    LensFacing.BACK
-                } else {
-                    facingButton.isSelected = false
-                    LensFacing.FRONT
+                binding.cameraPreview.toggleCamera()
+                binding.cameraPreview.cameraLensFacing?.let { lensFacing ->
+                    facingButton.isSelected = !lensFacing.isFront()
+                    faceImageAnalyzer.isMirror = lensFacing.isFront()
                 }
-                CameraX.unbindAll()
-                startCameraWith(binding)
             }
         }
-        binding.footer.captureButton.setOnClickListener {
-            findNavController().navigate(CameraFragmentDirections.actionToEdit())
+        binding.footer.run {
+            galleryButton.setOnClickListener {
+                findNavController().navigate(CameraFragmentDirections.actionToEdit())
+            }
+            captureButton.setOnClickListener {
+                binding.cameraPreview.takePicture(object : ImageCapture.OnImageCapturedListener() {
+                    override fun onCaptureSuccess(image: ImageProxy, rotationDegrees: Int) {
+                        image.close()
+                    }
+                })
+            }
+            filterButton.setOnClickListener {}
         }
     }
 
     private fun startCameraWith(binding: CameraFragmentBinding) {
-        val textureView: TextureView = binding.cameraPreview
-        val metrics = DisplayMetrics().also { textureView.display.getRealMetrics(it) }
-        val screenAspectRatio = Rational(metrics.widthPixels, metrics.heightPixels)
-        val previewConfig = PreviewConfig.Builder()
-            .apply {
-                setLensFacing(lensFacing)
-                setTargetAspectRatio(screenAspectRatio)
-                setTargetRotation(textureView.display.rotation)
-            }
-            .build()
-        val previewUseCase = AutoFitPreviewBuilder.build(previewConfig, textureView)
-
-        val detector: FaceDetector = FirebaseFaceDetector().apply {
-            setCallback(object : FaceDetector.Callback {
-
-                override fun onDetecting(frame: Frame) {
-                    if (startRequested.not()) {
-                        startRequested = true
-
-                        val min = min(frame.width, frame.height)
-                        val max = max(frame.width, frame.height)
-                        binding.faceBlurView.setCameraInfo(min, max)
-                        binding.faceBlurView.clear()
-                    }
-                }
-
-                override fun onDetected(originalImage: Bitmap, faceList: List<Face>) {
-                    binding.faceBlurView.renderFaceList(originalImage, faceList)
-                }
-
-                override fun onDetectFailed() {
-                    binding.faceBlurView.run {
-                        clear()
-                        postInvalidate()
-                    }
-                }
-            })
-        }
-        val analyzerConfig = ImageAnalysisConfig.Builder()
-            .apply {
-                setLensFacing(lensFacing)
-                val analyzerThread = HandlerThread("FilterAnalysis").apply { start() }
-                setCallbackHandler(Handler(analyzerThread.looper))
-                setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
-                setTargetRotation(textureView.display.rotation)
-            }
-            .build()
-        val analyzerUseCase = ImageAnalysis(analyzerConfig)
-            .apply {
-                analyzer = FaceImageAnalyzer(detector, isMirror = lensFacing.isFront())
-/*
-                analyzer = object : ImageAnalysis.Analyzer {
-
-                    private val ImageProxy.data: ByteArray
-                        get() {
-                            val y = planes[0]
-                            val u = planes[1]
-                            val v = planes[2]
-                            val Yb = y.buffer.remaining()
-                            val Ub = u.buffer.remaining()
-                            val Vb = v.buffer.remaining()
-                            return ByteArray(Yb + Ub + Vb).apply {
-                                y.buffer.get(this, 0, Yb)
-                                u.buffer.get(this, Yb, Ub)
-                                v.buffer.get(this, Yb + Ub, Vb)
-                            }
-                        }
-
-                    override fun analyze(image: ImageProxy, rotationDegrees: Int) {
-                        binding.gpuImageView.setRotation(Rotation.ROTATION_90)
-                        binding.gpuImageView.updatePreviewFrame(
-                            image.data,
-                            image.width,
-                            image.height
-                        )
-                    }
-                }
-*/
-            }
-        CameraX.bindToLifecycle(viewLifecycleOwner, previewUseCase, analyzerUseCase)
-    }
-
-    private fun TextureView.updateTransform() {
-        val matrix = Matrix()
-        val centerX = width / 2f
-        val centerY = height / 2f
-        val rotationDegrees = when (display.rotation) {
-            Surface.ROTATION_0 -> 0
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> return
-        }
-        matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
-        setTransform(matrix)
+        binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
+        binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
     }
 
     private fun LensFacing.isFront(): Boolean {
@@ -203,9 +157,7 @@ class CameraFragment : BaseFragment() {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             val context: Context = binding.root.context
             if (allPermissionsGranted(context)) {
-                binding.root.post {
-                    startCameraWith(binding)
-                }
+                startCameraWith(binding)
             } else {
                 Toast.makeText(context, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
