@@ -6,7 +6,8 @@ import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.model.RawImage
 
 class FaceImageAnalyzer(
-    private val detector: FaceDetector
+    private val detector: FaceDetector,
+    private val isMirror: Boolean
 ) : ImageAnalysis.Analyzer {
 
     override fun analyze(proxy: ImageProxy, rotationDegrees: Int) {
@@ -17,7 +18,8 @@ class FaceImageAnalyzer(
                     image,
                     proxy.width,
                     proxy.height,
-                    rotationDegrees
+                    rotationDegrees,
+                    isMirror
                 )
             )
         }

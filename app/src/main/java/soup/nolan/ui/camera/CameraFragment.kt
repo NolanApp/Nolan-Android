@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -15,6 +13,7 @@ import android.util.Rational
 import android.view.*
 import android.widget.Toast
 import androidx.camera.core.*
+import androidx.camera.core.CameraX.LensFacing
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
@@ -27,9 +26,6 @@ import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
-import soup.nolan.ui.utils.blur
-import soup.nolan.ui.utils.erase
-import soup.nolan.ui.widget.FaceGraphic
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -41,6 +37,8 @@ class CameraFragment : BaseFragment() {
     private lateinit var binding: CameraFragmentBinding
 
     private var startRequested = false
+
+    private val lensFacing = LensFacing.BACK
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,6 +83,7 @@ class CameraFragment : BaseFragment() {
         val screenAspectRatio = Rational(metrics.widthPixels, metrics.heightPixels)
         val previewConfig = PreviewConfig.Builder()
             .apply {
+                setLensFacing(lensFacing)
                 setTargetAspectRatio(screenAspectRatio)
                 setTargetRotation(textureView.display.rotation)
             }
@@ -108,7 +107,7 @@ class CameraFragment : BaseFragment() {
 
                         val min = min(frame.width, frame.height)
                         val max = max(frame.width, frame.height)
-                        binding.faceBlurView.setCameraInfo(min, max, isMirror = false)
+                        binding.faceBlurView.setCameraInfo(min, max)
                         binding.faceBlurView.clear()
                     }
                 }
@@ -127,6 +126,7 @@ class CameraFragment : BaseFragment() {
         }
         val analyzerConfig = ImageAnalysisConfig.Builder()
             .apply {
+                setLensFacing(lensFacing)
                 val analyzerThread = HandlerThread("FilterAnalysis").apply { start() }
                 setCallbackHandler(Handler(analyzerThread.looper))
                 setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
@@ -135,7 +135,7 @@ class CameraFragment : BaseFragment() {
             .build()
         val analyzerUseCase = ImageAnalysis(analyzerConfig)
             .apply {
-                analyzer = FaceImageAnalyzer(detector)
+                analyzer = FaceImageAnalyzer(detector, isMirror = lensFacing.isFront())
 /*
                 analyzer = object : ImageAnalysis.Analyzer {
 
@@ -181,6 +181,10 @@ class CameraFragment : BaseFragment() {
         }
         matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
         setTransform(matrix)
+    }
+
+    private fun LensFacing.isFront(): Boolean {
+        return this == LensFacing.FRONT
     }
 
     override fun onRequestPermissionsResult(

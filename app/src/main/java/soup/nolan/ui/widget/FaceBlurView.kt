@@ -22,10 +22,9 @@ class FaceBlurView @JvmOverloads constructor(
     private var widthScaleFactor: Float = 1f
     private var previewHeight: Int = 0
     private var heightScaleFactor: Float = 1f
-    private var isMirror: Boolean = false
 
     init {
-        scaleType = ImageView.ScaleType.CENTER_CROP
+        scaleType = ScaleType.CENTER_CROP
     }
 
     abstract class Graphic(private val overlay: FaceBlurView) {
@@ -48,11 +47,7 @@ class FaceBlurView @JvmOverloads constructor(
          * Adjusts the x coordinate from the preview's coordinate system to the view coordinate system.
          */
         fun translateX(x: Float): Float {
-            return if (overlay.isMirror) {
-                overlay.width - scaleX(x)
-            } else {
-                scaleX(x)
-            }
+            return scaleX(x)
         }
 
         /**
@@ -107,11 +102,10 @@ class FaceBlurView @JvmOverloads constructor(
      * Sets the camera attributes for size and facing direction, which informs how to transform image
      * coordinates later.
      */
-    fun setCameraInfo(previewWidth: Int, previewHeight: Int, isMirror: Boolean) {
+    fun setCameraInfo(previewWidth: Int, previewHeight: Int) {
         synchronized(lock) {
             this.previewWidth = previewWidth
             this.previewHeight = previewHeight
-            this.isMirror = isMirror
         }
         postInvalidate()
     }

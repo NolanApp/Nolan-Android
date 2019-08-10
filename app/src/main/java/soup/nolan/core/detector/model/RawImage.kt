@@ -6,5 +6,6 @@ class RawImage(
     val image: Image,
     val width: Int,
     val height: Int,
-    val rotationDegrees: Int
+    val rotationDegrees: Int,
+    val isMirror: Boolean
 )

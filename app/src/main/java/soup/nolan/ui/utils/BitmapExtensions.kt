@@ -2,6 +2,7 @@ package soup.nolan.ui.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Rect
 import io.alterac.blurkit.BlurKit
 import io.alterac.blurkit.BlurLayout
@@ -15,6 +16,18 @@ fun Bitmap.downscale(ratio: Float): Bitmap {
         (height * scaleRatio).toInt(),
         false
     )
+}
+
+fun Bitmap.flip(horizontal: Boolean = true): Bitmap {
+    val matrix = Matrix().apply {
+        if (horizontal) {
+            postScale(-1f, 1f, width / 2f, height / 2f)
+        } else {
+            // vertical
+            postScale(1f, -1f, width / 2f, height / 2f)
+        }
+    }
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }
 
 fun Bitmap.erase(rect: Rect): Bitmap {

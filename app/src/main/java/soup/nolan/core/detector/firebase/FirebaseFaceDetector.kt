@@ -1,6 +1,5 @@
 package soup.nolan.core.detector.firebase
 
-import android.graphics.Rect
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
@@ -9,9 +8,8 @@ import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.model.Frame
 import soup.nolan.core.detector.model.RawImage
 import soup.nolan.model.Face
-import soup.nolan.ui.utils.blur
 import soup.nolan.ui.utils.downscale
-import soup.nolan.ui.utils.erase
+import soup.nolan.ui.utils.flip
 import java.util.concurrent.atomic.AtomicBoolean
 
 class FirebaseFaceDetector : FaceDetector {
@@ -49,7 +47,16 @@ class FirebaseFaceDetector : FaceDetector {
         rawImage: RawImage,
         crossinline completeAction: () -> Unit
     ) {
-        val downscaledBitmap = VisionImage.from(rawImage).bitmap.downscale(.5f)
+        val downscaledBitmap =
+            VisionImage.from(rawImage).bitmap
+                .downscale(.3f)
+                .run {
+                    if (rawImage.isMirror) {
+                        flip()
+                    } else {
+                        this
+                    }
+                }
         callback?.onDetecting(Frame(downscaledBitmap.width, downscaledBitmap.height))
         coreDetector.detectInImage(FirebaseVisionImage.fromBitmap(downscaledBitmap))
             .addOnSuccessListener { faceList ->
