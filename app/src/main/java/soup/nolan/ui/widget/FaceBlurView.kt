@@ -66,6 +66,14 @@ class FaceBlurView @JvmOverloads constructor(
         }
     }
 
+    /** Removes all graphics from the overlay.  */
+    fun clear() {
+        synchronized(lock) {
+            graphics.clear()
+        }
+        postInvalidate()
+    }
+
     fun renderFaceList(originalImage: Bitmap, faceList: List<Face>) {
         if (faceList.isEmpty()) {
             setImageBitmap(null)
