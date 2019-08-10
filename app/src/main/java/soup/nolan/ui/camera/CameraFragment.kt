@@ -41,7 +41,7 @@ class CameraFragment : BaseFragment() {
 
     private var startRequested = false
 
-    private val lensFacing = LensFacing.BACK
+    private var lensFacing = LensFacing.FRONT
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +73,19 @@ class CameraFragment : BaseFragment() {
                 1 -> GPUImageSketchFilter()
                 2 -> GPUImageGrayscaleFilter()
                 else -> GPUImageGaussianBlurFilter()
+            }
+        }
+        binding.header.run {
+            facingButton.setOnClickListener {
+                lensFacing = if (LensFacing.FRONT == lensFacing) {
+                    facingButton.isSelected = true
+                    LensFacing.BACK
+                } else {
+                    facingButton.isSelected = false
+                    LensFacing.FRONT
+                }
+                CameraX.unbindAll()
+                startCameraWith(binding)
             }
         }
         binding.footer.captureButton.setOnClickListener {
