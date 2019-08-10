@@ -25,6 +25,10 @@ import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+//TODO: [SOUP] START
+import android.os.Handler;
+import android.os.HandlerThread;
+//TODO: [SOUP] END
 import android.os.Looper;
 import android.util.Log;
 import android.util.Rational;
@@ -39,6 +43,11 @@ import androidx.camera.core.CameraOrientationUtil;
 import androidx.camera.core.CameraX;
 import androidx.camera.core.CameraX.LensFacing;
 import androidx.camera.core.FlashMode;
+//TODO: [SOUP] START
+import androidx.camera.core.ImageAnalysis;
+import androidx.camera.core.ImageAnalysis.Analyzer;
+import androidx.camera.core.ImageAnalysisConfig;
+//TODO: [SOUP] END
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCapture.OnImageCapturedListener;
 import androidx.camera.core.ImageCapture.OnImageSavedListener;
@@ -76,6 +85,9 @@ final class CameraXModule {
     private final PreviewConfig.Builder mPreviewConfigBuilder;
     private final VideoCaptureConfig.Builder mVideoCaptureConfigBuilder;
     private final ImageCaptureConfig.Builder mImageCaptureConfigBuilder;
+    //TODO: [SOUP] START
+    private final ImageAnalysisConfig.Builder mImageAnalysisConfigBuilder;
+    //TODO: [SOUP] END
     private final CameraView mCameraView;
     final AtomicBoolean mVideoIsRecording = new AtomicBoolean(false);
     private CameraView.CaptureMode mCaptureMode = CaptureMode.IMAGE;
@@ -86,6 +98,14 @@ final class CameraXModule {
     private ImageCapture mImageCapture;
     @Nullable
     private VideoCapture mVideoCapture;
+    //TODO: [SOUP] START
+    @Nullable
+    private ImageAnalysis mImageAnalysis;
+    @Nullable
+    private HandlerThread mImageAnalysisAnalyzerThread;
+    @Nullable
+    private ImageAnalysis.Analyzer mImageAnalysisAnalyzer;
+    //TODO: [SOUP] END
     @Nullable
     Preview mPreview;
     @Nullable
@@ -97,6 +117,10 @@ final class CameraXModule {
                     if (owner == mCurrentLifecycle) {
                         clearCurrentLifecycle();
                         mPreview.removePreviewOutputListener();
+                        //TODO: [SOUP] START
+                        mImageAnalysisAnalyzerThread.quitSafely();
+                        mImageAnalysisAnalyzerThread = null;
+                        //TODO: [SOUP] END
                     }
                 }
             };
@@ -120,6 +144,10 @@ final class CameraXModule {
 
         mVideoCaptureConfigBuilder =
                 new VideoCaptureConfig.Builder().setTargetName("VideoCapture");
+        //TODO: [SOUP] START
+        mImageAnalysisConfigBuilder =
+                new ImageAnalysisConfig.Builder().setTargetName("ImageAnalysis");
+        //TODO: [SOUP] END
     }
 
     /**
@@ -229,16 +257,34 @@ final class CameraXModule {
                     isDisplayPortrait ? ASPECT_RATIO_3_4 : ASPECT_RATIO_4_3);
             mPreviewConfigBuilder.setTargetAspectRatio(
                     isDisplayPortrait ? ASPECT_RATIO_3_4 : ASPECT_RATIO_4_3);
+            //TODO: [SOUP] START
+            mImageAnalysisConfigBuilder.setTargetAspectRatio(
+                    isDisplayPortrait ? ASPECT_RATIO_3_4 : ASPECT_RATIO_4_3);
+            //TODO: [SOUP] END
         } else {
             mImageCaptureConfigBuilder.setTargetAspectRatio(
                     isDisplayPortrait ? ASPECT_RATIO_9_16 : ASPECT_RATIO_16_9);
             mPreviewConfigBuilder.setTargetAspectRatio(
                     isDisplayPortrait ? ASPECT_RATIO_9_16 : ASPECT_RATIO_16_9);
+            //TODO: [SOUP] START
+            mImageAnalysisConfigBuilder.setTargetAspectRatio(
+                    isDisplayPortrait ? ASPECT_RATIO_9_16 : ASPECT_RATIO_16_9);
+            //TODO: [SOUP] END
         }
 
         mImageCaptureConfigBuilder.setTargetRotation(getDisplaySurfaceRotation());
         mImageCaptureConfigBuilder.setLensFacing(mCameraLensFacing);
         mImageCapture = new ImageCapture(mImageCaptureConfigBuilder.build());
+
+        //TODO: [SOUP] START
+        mImageAnalysisAnalyzerThread = new HandlerThread("CameraX-ImageAnalysis");
+        mImageAnalysisAnalyzerThread.start();
+        mImageAnalysisConfigBuilder.setCallbackHandler(new Handler(mImageAnalysisAnalyzerThread.getLooper()));
+        mImageAnalysisConfigBuilder.setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE);
+        mImageAnalysisConfigBuilder.setTargetRotation(getDisplaySurfaceRotation());
+        mImageAnalysisConfigBuilder.setLensFacing(mCameraLensFacing);
+        mImageAnalysis = new ImageAnalysis(mImageAnalysisConfigBuilder.build());
+        //TODO: [SOUP] END
 
         mVideoCaptureConfigBuilder.setTargetRotation(getDisplaySurfaceRotation());
         mVideoCaptureConfigBuilder.setLensFacing(mCameraLensFacing);
@@ -276,11 +322,17 @@ final class CameraXModule {
                 });
 
         if (getCaptureMode() == CaptureMode.IMAGE) {
-            CameraX.bindToLifecycle(mCurrentLifecycle, mImageCapture, mPreview);
+            //TODO: [SOUP] START
+            //CameraX.bindToLifecycle(mCurrentLifecycle, mImageCapture, mPreview);
+            CameraX.bindToLifecycle(mCurrentLifecycle, mImageCapture, mPreview, mImageAnalysis);
+            //TODO: [SOUP] END
         } else if (getCaptureMode() == CaptureMode.VIDEO) {
             CameraX.bindToLifecycle(mCurrentLifecycle, mVideoCapture, mPreview);
         } else {
-            CameraX.bindToLifecycle(mCurrentLifecycle, mImageCapture, mVideoCapture, mPreview);
+            //TODO: [SOUP] START
+            //CameraX.bindToLifecycle(mCurrentLifecycle, mImageCapture, mVideoCapture, mPreview);
+            CameraX.bindToLifecycle(mCurrentLifecycle, mImageCapture, mVideoCapture, mPreview, mImageAnalysis);
+            //TODO: [SOUP] END
         }
         setZoomLevel(mZoomLevel);
         mCurrentLifecycle.getLifecycle().addObserver(mCurrentLifecycleObserver);
@@ -297,6 +349,36 @@ final class CameraXModule {
         throw new UnsupportedOperationException(
                 "Explicit open/close of camera not yet supported. Use bindtoLifecycle() instead.");
     }
+
+    //TODO: [SOUP] START
+    public void setAnalyzer(Analyzer analyzer) {
+        mImageAnalysisAnalyzer = analyzer;
+
+        if (mImageAnalysis == null) {
+            return;
+        }
+
+        if (getCaptureMode() == CaptureMode.VIDEO) {
+            throw new IllegalStateException("Can not set analyzer under VIDEO capture mode.");
+        }
+
+        if (analyzer == null) {
+            throw new IllegalArgumentException("Analyzer should not be empty");
+        }
+
+        mImageAnalysis.setAnalyzer(analyzer);
+    }
+
+    public void removeAnalyzer() {
+        mImageAnalysisAnalyzer = null;
+
+        if (mImageAnalysis == null) {
+            return;
+        }
+
+        mImageAnalysis.removeAnalyzer();
+    }
+    //TODO: [SOUP] END
 
     public void takePicture(OnImageCapturedListener listener) {
         if (mImageCapture == null) {
@@ -586,7 +668,10 @@ final class CameraXModule {
     void clearCurrentLifecycle() {
         if (mCurrentLifecycle != null) {
             // Remove previous use cases
-            CameraX.unbind(mImageCapture, mVideoCapture, mPreview);
+            //TODO: [SOUP] START
+            //CameraX.unbind(mImageCapture, mVideoCapture, mPreview);
+            CameraX.unbind(mImageCapture, mVideoCapture, mPreview, mImageAnalysis);
+            //TODO: [SOUP] END
         }
 
         mCurrentLifecycle = null;
@@ -634,6 +719,13 @@ final class CameraXModule {
             mImageCapture.setTargetAspectRatio(new Rational(getWidth(), getHeight()));
             mImageCapture.setTargetRotation(getDisplaySurfaceRotation());
         }
+
+        //TODO: [SOUP] START
+        if (mImageAnalysis != null) {
+            mImageAnalysis.setAnalyzer(mImageAnalysisAnalyzer);
+            mImageAnalysis.setTargetRotation(getDisplaySurfaceRotation());
+        }
+        //TODO: [SOUP] END
 
         if (mVideoCapture != null) {
             mVideoCapture.setTargetRotation(getDisplaySurfaceRotation());

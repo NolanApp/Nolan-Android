@@ -53,6 +53,9 @@ import androidx.annotation.RestrictTo.Scope;
 import androidx.annotation.UiThread;
 import androidx.camera.core.CameraX.LensFacing;
 import androidx.camera.core.FlashMode;
+//TODO: [SOUP] START
+import androidx.camera.core.ImageAnalysis.Analyzer;
+//TODO: [SOUP] END
 import androidx.camera.core.ImageCapture.OnImageCapturedListener;
 import androidx.camera.core.ImageCapture.OnImageSavedListener;
 import androidx.camera.core.ImageProxy;
@@ -619,6 +622,16 @@ public final class CameraView extends ViewGroup {
     private void setMaxVideoSize(long size) {
         mCameraModule.setMaxVideoSize(size);
     }
+
+    //TODO: [SOUP] START
+    public void setAnalyzer(Analyzer analyzer) {
+        mCameraModule.setAnalyzer(analyzer);
+    }
+
+    public void removeAnalyzer() {
+        mCameraModule.removeAnalyzer();
+    }
+    //TODO: [SOUP] END
 
     /**
      * Takes a picture, and calls {@link OnImageCapturedListener#onCaptureSuccess(ImageProxy, int)}
