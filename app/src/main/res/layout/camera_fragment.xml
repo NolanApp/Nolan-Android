@@ -35,7 +35,8 @@
             app:layout_constraintBottom_toBottomOf="@id/cameraPreview"
             app:layout_constraintEnd_toEndOf="@id/cameraPreview"
             app:layout_constraintStart_toStartOf="@id/cameraPreview"
-            app:layout_constraintTop_toTopOf="@id/cameraPreview" />
+            app:layout_constraintTop_toTopOf="@id/cameraPreview"
+            app:showDebugBound="false" />
 
         <include
             android:id="@+id/header"

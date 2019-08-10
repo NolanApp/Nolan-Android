@@ -5,10 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.widget.ImageView
+import soup.nolan.R
 import soup.nolan.model.Face
 import soup.nolan.ui.utils.blur
 import soup.nolan.ui.utils.erase
-import java.util.*
 
 class FaceBlurView @JvmOverloads constructor(
     context: Context,
@@ -16,14 +16,22 @@ class FaceBlurView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ImageView(context, attrs, defStyleAttr) {
 
+    private val showDebugBound: Boolean
+
     private val lock = Any()
-    private val graphics = ArrayList<Graphic>()
+    private val graphics = arrayListOf<Graphic>()
     private var previewWidth: Int = 0
     private var widthScaleFactor: Float = 1f
     private var previewHeight: Int = 0
     private var heightScaleFactor: Float = 1f
 
     init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.FaceBlurView, defStyleAttr, 0)
+        try {
+            showDebugBound = a.getBoolean(R.styleable.FaceBlurView_showDebugBound, false)
+        } finally {
+            a.recycle()
+        }
         scaleType = ScaleType.CENTER_CROP
     }
 
@@ -58,29 +66,6 @@ class FaceBlurView @JvmOverloads constructor(
         }
     }
 
-    /** Removes all graphics from the overlay.  */
-    fun clear() {
-        synchronized(lock) {
-            graphics.clear()
-        }
-        postInvalidate()
-    }
-
-    /** Adds a graphic to the overlay.  */
-    fun add(graphic: Graphic) {
-        synchronized(lock) {
-            graphics.add(graphic)
-        }
-    }
-
-    /** Removes a graphic from the overlay.  */
-    fun remove(graphic: Graphic) {
-        synchronized(lock) {
-            graphics.remove(graphic)
-        }
-        postInvalidate()
-    }
-
     fun renderFaceList(originalImage: Bitmap, faceList: List<Face>) {
         if (faceList.isEmpty()) {
             setImageBitmap(null)
@@ -91,7 +76,7 @@ class FaceBlurView @JvmOverloads constructor(
                     .blur()
             )
         }
-        clear()
+        graphics.clear()
         faceList.forEach {
             graphics.add(FaceGraphic(this, it))
         }
@@ -113,15 +98,16 @@ class FaceBlurView @JvmOverloads constructor(
     /** Draws the overlay with its associated graphic objects.  */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        if (showDebugBound) {
+            synchronized(lock) {
+                if (previewWidth != 0 && previewHeight != 0) {
+                    widthScaleFactor = width.toFloat() / previewWidth.toFloat()
+                    heightScaleFactor = height.toFloat() / previewHeight.toFloat()
+                }
 
-        synchronized(lock) {
-            if (previewWidth != 0 && previewHeight != 0) {
-                widthScaleFactor = width.toFloat() / previewWidth.toFloat()
-                heightScaleFactor = height.toFloat() / previewHeight.toFloat()
-            }
-
-            for (graphic in graphics) {
-                graphic.draw(canvas)
+                for (graphic in graphics) {
+                    graphic.draw(canvas)
+                }
             }
         }
     }
