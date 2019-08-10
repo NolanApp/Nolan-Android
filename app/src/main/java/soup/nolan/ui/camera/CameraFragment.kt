@@ -12,8 +12,11 @@ import android.util.DisplayMetrics
 import android.util.Rational
 import android.view.*
 import android.widget.Toast
-import androidx.camera.core.*
+import androidx.camera.core.CameraX
 import androidx.camera.core.CameraX.LensFacing
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageAnalysisConfig
+import androidx.camera.core.PreviewConfig
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
@@ -88,15 +91,7 @@ class CameraFragment : BaseFragment() {
                 setTargetRotation(textureView.display.rotation)
             }
             .build()
-        val previewUseCase = Preview(previewConfig)
-        previewUseCase.onPreviewOutputUpdateListener = Preview.OnPreviewOutputUpdateListener {
-            val parent = textureView.parent as ViewGroup
-            parent.removeView(textureView)
-            parent.addView(textureView, 0)
-
-            textureView.surfaceTexture = it.surfaceTexture
-            textureView.updateTransform()
-        }
+        val previewUseCase = AutoFitPreviewBuilder.build(previewConfig, textureView)
 
         val detector: FaceDetector = FirebaseFaceDetector().apply {
             setCallback(object : FaceDetector.Callback {
