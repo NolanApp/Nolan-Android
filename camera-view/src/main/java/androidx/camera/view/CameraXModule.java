@@ -42,6 +42,7 @@ import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraOrientationUtil;
 import androidx.camera.core.CameraX;
 import androidx.camera.core.CameraX.LensFacing;
+import androidx.camera.core.CameraXThreads;
 import androidx.camera.core.FlashMode;
 //TODO: [SOUP] START
 import androidx.camera.core.ImageAnalysis;
@@ -277,8 +278,10 @@ final class CameraXModule {
         mImageCapture = new ImageCapture(mImageCaptureConfigBuilder.build());
 
         //TODO: [SOUP] START
-        mImageAnalysisAnalyzerThread = new HandlerThread("CameraX-ImageAnalysis");
-        mImageAnalysisAnalyzerThread.start();
+        if (mImageAnalysisAnalyzerThread == null) {
+            mImageAnalysisAnalyzerThread = new HandlerThread(CameraXThreads.TAG + "ImageAnalysis");
+            mImageAnalysisAnalyzerThread.start();
+        }
         mImageAnalysisConfigBuilder.setCallbackHandler(new Handler(mImageAnalysisAnalyzerThread.getLooper()));
         mImageAnalysisConfigBuilder.setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE);
         mImageAnalysisConfigBuilder.setTargetRotation(getDisplaySurfaceRotation());

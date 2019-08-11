@@ -623,16 +623,6 @@ public final class CameraView extends ViewGroup {
         mCameraModule.setMaxVideoSize(size);
     }
 
-    //TODO: [SOUP] START
-    public void setAnalyzer(Analyzer analyzer) {
-        mCameraModule.setAnalyzer(analyzer);
-    }
-
-    public void removeAnalyzer() {
-        mCameraModule.removeAnalyzer();
-    }
-    //TODO: [SOUP] END
-
     /**
      * Takes a picture, and calls {@link OnImageCapturedListener#onCaptureSuccess(ImageProxy, int)}
      * once when done.
@@ -671,6 +661,22 @@ public final class CameraView extends ViewGroup {
     public boolean isRecording() {
         return mCameraModule.isRecording();
     }
+
+    //TODO: [SOUP] START
+    /**
+     * Set a analyzer and calls {@link Analyzer#analyze} during processing.
+     *
+     * @param analyzer Analyzer which will receive an image to produce a result.
+     */
+    public void setAnalyzer(Analyzer analyzer) {
+        mCameraModule.setAnalyzer(analyzer);
+    }
+
+    /** Removes a previously set analyzer. */
+    public void removeAnalyzer() {
+        mCameraModule.removeAnalyzer();
+    }
+    //TODO: [SOUP] END
 
     /**
      * Queries whether the current device has a camera with the specified direction.
