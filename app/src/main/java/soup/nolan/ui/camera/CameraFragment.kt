@@ -18,7 +18,6 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
-import jp.co.cyberagent.android.gpuimage.util.Rotation
 import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
@@ -72,11 +71,12 @@ class CameraFragment : BaseFragment() {
     }
 
     private val gpuImageAnalyzer by lazyFast {
-        GpuImageAnalyzer { data, width, height ->
+        GpuImageAnalyzer {
             binding.gpuImageView.run {
-                setRotation(Rotation.ROTATION_90)
-                updatePreviewFrame(data, width, height)
+                setImage(it)
             }
+        }.apply {
+            isMirror = binding.cameraPreview.cameraLensFacing?.isFront() ?: false
         }
     }
 
@@ -120,8 +120,10 @@ class CameraFragment : BaseFragment() {
             facingButton.setOnClickListener {
                 binding.cameraPreview.toggleCamera()
                 binding.cameraPreview.cameraLensFacing?.let { lensFacing ->
-                    facingButton.isSelected = !lensFacing.isFront()
-                    faceImageAnalyzer.isMirror = lensFacing.isFront()
+                    val isFrontLens = lensFacing.isFront()
+                    facingButton.isSelected = !isFrontLens
+                    faceImageAnalyzer.isMirror = isFrontLens
+                    gpuImageAnalyzer.isMirror = isFrontLens
                 }
             }
         }
@@ -141,6 +143,7 @@ class CameraFragment : BaseFragment() {
     }
 
     private fun startCameraWith(binding: CameraFragmentBinding) {
+        //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
         binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
     }

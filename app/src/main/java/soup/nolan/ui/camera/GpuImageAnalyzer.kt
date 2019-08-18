@@ -1,28 +1,38 @@
 package soup.nolan.ui.camera
 
+import android.graphics.Bitmap
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import soup.nolan.core.detector.firebase.VisionImage
+import soup.nolan.core.detector.model.RawImage
+import soup.nolan.ui.utils.flip
 
 class GpuImageAnalyzer(
-    private val consumer: (ByteArray, width: Int, height: Int) -> Unit
+    private val consumer: (Bitmap) -> Unit
 ) : ImageAnalysis.Analyzer {
 
-    private val ImageProxy.data: ByteArray
-        get() {
-            val y = planes[0]
-            val u = planes[1]
-            val v = planes[2]
-            val Yb = y.buffer.remaining()
-            val Ub = u.buffer.remaining()
-            val Vb = v.buffer.remaining()
-            return ByteArray(Yb + Ub + Vb).apply {
-                y.buffer.get(this, 0, Yb)
-                u.buffer.get(this, Yb, Ub)
-                v.buffer.get(this, Yb + Ub, Vb)
-            }
-        }
+    var isMirror: Boolean = false
 
-    override fun analyze(image: ImageProxy, rotationDegrees: Int) {
-        consumer(image.data, image.width, image.height)
+    override fun analyze(proxy: ImageProxy, rotationDegrees: Int) {
+        val image = proxy.image ?: return
+        val rawImage = RawImage(
+            image,
+            proxy.width,
+            proxy.height,
+            rotationDegrees,
+            isMirror
+        )
+        consumer(rawImage.toBitmap())
+    }
+
+    private fun RawImage.toBitmap(): Bitmap {
+        return VisionImage.from(this).bitmap
+            .run {
+                if (isMirror) {
+                    flip()
+                } else {
+                    this
+                }
+            }
     }
 }
