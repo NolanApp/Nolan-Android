@@ -72,9 +72,7 @@ class CameraFragment : BaseFragment() {
 
     private val gpuImageAnalyzer by lazyFast {
         GpuImageAnalyzer {
-            binding.gpuImageView.run {
-                setImage(it)
-            }
+            binding.gpuImageView.setImage(it)
         }.apply {
             isMirror = binding.cameraPreview.cameraLensFacing?.isFront() ?: false
         }
@@ -144,7 +142,7 @@ class CameraFragment : BaseFragment() {
 
     private fun startCameraWith(binding: CameraFragmentBinding) {
         //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
-        binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)
+        //binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
     }
 
