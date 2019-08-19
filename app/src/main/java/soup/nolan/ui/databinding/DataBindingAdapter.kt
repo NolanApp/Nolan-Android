@@ -2,6 +2,7 @@ package soup.nolan.ui.databinding
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
@@ -10,12 +11,16 @@ abstract class DataBindingAdapter<T> : RecyclerView.Adapter<DataBindingViewHolde
 
     private var items = mutableListOf<T>()
 
+    @LayoutRes
+    protected abstract fun getLayoutResId(viewType: Int): Int
+
     final override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): DataBindingViewHolder<T> {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            layoutInflater, getLayoutResId(viewType), parent, false)
         return createViewHolder(binding)
     }
 

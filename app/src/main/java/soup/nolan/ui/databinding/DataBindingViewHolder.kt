@@ -3,6 +3,7 @@ package soup.nolan.ui.databinding
 import androidx.annotation.CallSuper
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import soup.nolan.BR
 
 open class DataBindingViewHolder<T>(
     private val binding: ViewDataBinding
@@ -10,7 +11,7 @@ open class DataBindingViewHolder<T>(
 
     @CallSuper
     open fun bind(item: T?) {
-        //binding.setVariable(BR.item, item)
+        binding.setVariable(BR.item, item)
         binding.executePendingBindings()
     }
 }

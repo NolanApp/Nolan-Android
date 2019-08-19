@@ -13,6 +13,7 @@ import androidx.camera.core.CameraX.LensFacing
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageProxy
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
@@ -22,9 +23,11 @@ import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
+import soup.nolan.filter.stylize.Styles
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.utils.lazyFast
+import soup.nolan.ui.utils.setOnDebounceClickListener
 import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
@@ -85,6 +88,7 @@ class CameraFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Styles.thumbnails
         binding = CameraFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         initViewState(binding)
@@ -125,6 +129,13 @@ class CameraFragment : BaseFragment() {
                 }
             }
         }
+        binding.filter.run {
+            val listAdapter = CameraFilterListAdapter {
+                //TODO: 클릭 처리
+            }
+            listAdapter.submitList(Styles.thumbnails.mapIndexed(::CameraFilterUiModel))
+            listView.adapter = listAdapter
+        }
         binding.footer.run {
             galleryButton.setOnClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToEdit())
@@ -136,7 +147,11 @@ class CameraFragment : BaseFragment() {
                     }
                 })
             }
-            filterButton.setOnClickListener {}
+            filterButton.setOnDebounceClickListener {
+                binding.filter.root.run {
+                    isVisible = !isVisible
+                }
+            }
         }
     }
 

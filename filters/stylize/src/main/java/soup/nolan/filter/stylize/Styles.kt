@@ -30,6 +30,4 @@ object Styles {
         R.drawable.style24,
         R.drawable.style25
     )
-
-    val count = thumbnails.size
 }

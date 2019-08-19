@@ -2,22 +2,16 @@ package soup.nolan.filter.stylize
 
 import android.content.res.AssetManager
 import android.graphics.Bitmap
-
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface
 
 internal class Stylize(assetManager: AssetManager) {
 
     private val inference = TensorFlowInferenceInterface(assetManager, MODEL_FILE)
-    private val styleValues = ArrayList<Float>()
 
-    fun setStyleValues(styleValues: FloatArray) {
-        this.styleValues.clear()
-        this.styleValues.addAll(styleValues.toList())
-    }
-
-    fun stylize(bitmap: Bitmap, desiredSize: Int): Bitmap {
-        val intValues = IntArray(desiredSize * desiredSize)
-        val floatValues = FloatArray(desiredSize * desiredSize * 3)
+    fun stylize(bitmap: Bitmap, style: StyleInput): Bitmap {
+        val pixelCount = bitmap.width * bitmap.height
+        val intValues = IntArray(pixelCount)
+        val floatValues = FloatArray(pixelCount * 3)
         bitmap.getPixels(intValues, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
 
         for (i in intValues.indices) {
@@ -29,7 +23,7 @@ internal class Stylize(assetManager: AssetManager) {
 
         // Copy the input data into TensorFlow.
         inference.feed(INPUT_NODE, floatValues, 1L, bitmap.width.toLong(), bitmap.height.toLong(), 3L)
-        inference.feed(STYLE_NODE, styleValues.toFloatArray(), styleValues.size.toLong())
+        inference.feed(STYLE_NODE, style.toFloatArray(), style.count.toLong())
 
         // Execute the output node's dependency sub-graph.
         inference.run(arrayOf(OUTPUT_NODE), false)
