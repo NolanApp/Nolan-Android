@@ -1,6 +1,7 @@
 package soup.nolan.ui.camera
 
 import android.Manifest
+import android.animation.AnimatorInflater
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -19,6 +20,7 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
+import soup.nolan.R
 import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
@@ -119,10 +121,25 @@ class CameraFragment : BaseFragment() {
         binding.header.run {
             moreButton.setOnClickListener {}
             ratioButton.setOnClickListener {}
+
+            val flipOut = AnimatorInflater.loadAnimator(root.context, R.animator.flip_out)
+            val flipIn = AnimatorInflater.loadAnimator(root.context, R.animator.flip_in)
+
             facingButton.setOnClickListener {
                 binding.cameraPreview.toggleCamera()
                 binding.cameraPreview.cameraLensFacing?.let { lensFacing ->
                     val isFrontLens = lensFacing.isFront()
+                    if (!isFrontLens) {
+                        flipOut.setTarget(facingFrontButton)
+                        flipIn.setTarget(facingBackButton)
+                        flipOut.start()
+                        flipIn.start()
+                    } else {
+                        flipOut.setTarget(facingBackButton)
+                        flipIn.setTarget(facingFrontButton)
+                        flipOut.start()
+                        flipIn.start()
+                    }
                     facingButton.isSelected = !isFrontLens
                     faceImageAnalyzer.isMirror = isFrontLens
                     gpuImageAnalyzer.isMirror = isFrontLens
