@@ -25,15 +25,12 @@ import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-//TODO: [SOUP] START
-import android.os.Handler;
-import android.os.HandlerThread;
-//TODO: [SOUP] END
 import android.os.Looper;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
@@ -42,13 +39,7 @@ import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraOrientationUtil;
 import androidx.camera.core.CameraX;
 import androidx.camera.core.CameraX.LensFacing;
-import androidx.camera.core.CameraXThreads;
 import androidx.camera.core.FlashMode;
-//TODO: [SOUP] START
-import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageAnalysis.Analyzer;
-import androidx.camera.core.ImageAnalysisConfig;
-//TODO: [SOUP] END
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCapture.OnImageCapturedListener;
 import androidx.camera.core.ImageCapture.OnImageSavedListener;
@@ -58,6 +49,7 @@ import androidx.camera.core.PreviewConfig;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.core.VideoCapture.OnVideoSavedListener;
 import androidx.camera.core.VideoCaptureConfig;
+import androidx.camera.view.CameraView;
 import androidx.camera.view.CameraView.CaptureMode;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -68,7 +60,17 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+//TODO: [SOUP] START
+import android.os.Handler;
+import android.os.HandlerThread;
+import androidx.camera.core.CameraXThreads;
+import androidx.camera.core.ImageAnalysis;
+import androidx.camera.core.ImageAnalysis.Analyzer;
+import androidx.camera.core.ImageAnalysisConfig;
+//TODO: [SOUP] END
 
 /** CameraX use case operation built on @{link androidx.camera.core}. */
 final class CameraXModule {
@@ -86,12 +88,9 @@ final class CameraXModule {
     private final PreviewConfig.Builder mPreviewConfigBuilder;
     private final VideoCaptureConfig.Builder mVideoCaptureConfigBuilder;
     private final ImageCaptureConfig.Builder mImageCaptureConfigBuilder;
-    //TODO: [SOUP] START
-    private final ImageAnalysisConfig.Builder mImageAnalysisConfigBuilder;
-    //TODO: [SOUP] END
     private final CameraView mCameraView;
     final AtomicBoolean mVideoIsRecording = new AtomicBoolean(false);
-    private CameraView.CaptureMode mCaptureMode = CaptureMode.IMAGE;
+    private CaptureMode mCaptureMode = CaptureMode.IMAGE;
     private long mMaxVideoDuration = CameraView.INDEFINITE_VIDEO_DURATION;
     private long mMaxVideoSize = CameraView.INDEFINITE_VIDEO_SIZE;
     private FlashMode mFlash = FlashMode.OFF;
@@ -99,14 +98,6 @@ final class CameraXModule {
     private ImageCapture mImageCapture;
     @Nullable
     private VideoCapture mVideoCapture;
-    //TODO: [SOUP] START
-    @Nullable
-    private ImageAnalysis mImageAnalysis;
-    @Nullable
-    private HandlerThread mImageAnalysisAnalyzerThread;
-    @Nullable
-    private ImageAnalysis.Analyzer mImageAnalysisAnalyzer;
-    //TODO: [SOUP] END
     @Nullable
     Preview mPreview;
     @Nullable
@@ -131,7 +122,17 @@ final class CameraXModule {
     @Nullable
     private Rect mCropRegion;
     @Nullable
-    private CameraX.LensFacing mCameraLensFacing = LensFacing.BACK;
+    private LensFacing mCameraLensFacing = LensFacing.BACK;
+
+    //TODO: [SOUP] START
+    private final ImageAnalysisConfig.Builder mImageAnalysisConfigBuilder;
+    @Nullable
+    private ImageAnalysis mImageAnalysis;
+    @Nullable
+    private HandlerThread mImageAnalysisAnalyzerThread;
+    @Nullable
+    private ImageAnalysis.Analyzer mImageAnalysisAnalyzer;
+    //TODO: [SOUP] END
 
     CameraXModule(CameraView view) {
         this.mCameraView = view;
@@ -145,6 +146,7 @@ final class CameraXModule {
 
         mVideoCaptureConfigBuilder =
                 new VideoCaptureConfig.Builder().setTargetName("VideoCapture");
+
         //TODO: [SOUP] START
         mImageAnalysisConfigBuilder =
                 new ImageAnalysisConfig.Builder().setTargetName("ImageAnalysis");
@@ -277,6 +279,29 @@ final class CameraXModule {
         mImageCaptureConfigBuilder.setLensFacing(mCameraLensFacing);
         mImageCapture = new ImageCapture(mImageCaptureConfigBuilder.build());
 
+        mVideoCaptureConfigBuilder.setTargetRotation(getDisplaySurfaceRotation());
+        mVideoCaptureConfigBuilder.setLensFacing(mCameraLensFacing);
+        mVideoCapture = new VideoCapture(mVideoCaptureConfigBuilder.build());
+        mPreviewConfigBuilder.setLensFacing(mCameraLensFacing);
+
+        int relativeCameraOrientation = getRelativeCameraOrientation(false);
+
+        if (relativeCameraOrientation == 90 || relativeCameraOrientation == 270) {
+            mPreviewConfigBuilder.setTargetResolution(
+                    new Size(getMeasuredHeight(), getMeasuredWidth()));
+            //TODO: [SOUP] START
+            mImageAnalysisConfigBuilder.setTargetResolution(
+                    new Size(getMeasuredHeight(), getMeasuredWidth()));
+            //TODO: [SOUP] END
+        } else {
+            mPreviewConfigBuilder.setTargetResolution(
+                    new Size(getMeasuredWidth(), getMeasuredHeight()));
+            //TODO: [SOUP] START
+            mImageAnalysisConfigBuilder.setTargetResolution(
+                    new Size(getMeasuredWidth(), getMeasuredHeight()));
+            //TODO: [SOUP] END
+        }
+
         //TODO: [SOUP] START
         if (mImageAnalysisAnalyzerThread == null) {
             mImageAnalysisAnalyzerThread = new HandlerThread(CameraXThreads.TAG + "ImageAnalysis");
@@ -289,26 +314,11 @@ final class CameraXModule {
         mImageAnalysis = new ImageAnalysis(mImageAnalysisConfigBuilder.build());
         //TODO: [SOUP] END
 
-        mVideoCaptureConfigBuilder.setTargetRotation(getDisplaySurfaceRotation());
-        mVideoCaptureConfigBuilder.setLensFacing(mCameraLensFacing);
-        mVideoCapture = new VideoCapture(mVideoCaptureConfigBuilder.build());
-        mPreviewConfigBuilder.setLensFacing(mCameraLensFacing);
-
-        int relativeCameraOrientation = getRelativeCameraOrientation(false);
-
-        if (relativeCameraOrientation == 90 || relativeCameraOrientation == 270) {
-            mPreviewConfigBuilder.setTargetResolution(
-                    new Size(getMeasuredHeight(), getMeasuredWidth()));
-        } else {
-            mPreviewConfigBuilder.setTargetResolution(
-                    new Size(getMeasuredWidth(), getMeasuredHeight()));
-        }
-
         mPreview = new Preview(mPreviewConfigBuilder.build());
         mPreview.setOnPreviewOutputUpdateListener(
                 new Preview.OnPreviewOutputUpdateListener() {
                     @Override
-                    public void onUpdated(Preview.PreviewOutput output) {
+                    public void onUpdated(@NonNull Preview.PreviewOutput output) {
                         boolean needReverse = cameraOrientation != 0 && cameraOrientation != 180;
                         int textureWidth =
                                 needReverse
@@ -352,36 +362,6 @@ final class CameraXModule {
         throw new UnsupportedOperationException(
                 "Explicit open/close of camera not yet supported. Use bindtoLifecycle() instead.");
     }
-
-    //TODO: [SOUP] START
-    public void setAnalyzer(Analyzer analyzer) {
-        mImageAnalysisAnalyzer = analyzer;
-
-        if (mImageAnalysis == null) {
-            return;
-        }
-
-        if (getCaptureMode() == CaptureMode.VIDEO) {
-            throw new IllegalStateException("Can not set analyzer under VIDEO capture mode.");
-        }
-
-        if (analyzer == null) {
-            throw new IllegalArgumentException("Analyzer should not be empty");
-        }
-
-        mImageAnalysis.setAnalyzer(analyzer);
-    }
-
-    public void removeAnalyzer() {
-        mImageAnalysisAnalyzer = null;
-
-        if (mImageAnalysis == null) {
-            return;
-        }
-
-        mImageAnalysis.removeAnalyzer();
-    }
-    //TODO: [SOUP] END
 
     public void takePicture(OnImageCapturedListener listener) {
         if (mImageCapture == null) {
@@ -433,21 +413,21 @@ final class CameraXModule {
         mVideoIsRecording.set(true);
         mVideoCapture.startRecording(
                 file,
-                new VideoCapture.OnVideoSavedListener() {
+                new OnVideoSavedListener() {
                     @Override
-                    public void onVideoSaved(File savedFile) {
+                    public void onVideoSaved(@NonNull File savedFile) {
                         mVideoIsRecording.set(false);
                         listener.onVideoSaved(savedFile);
                     }
 
                     @Override
                     public void onError(
-                            VideoCapture.UseCaseError useCaseError,
-                            String message,
+                            @NonNull VideoCapture.VideoCaptureError videoCaptureError,
+                            @NonNull String message,
                             @Nullable Throwable cause) {
                         mVideoIsRecording.set(false);
                         Log.e(TAG, message, cause);
-                        listener.onError(useCaseError, message, cause);
+                        listener.onError(videoCaptureError, message, cause);
                     }
                 });
     }
@@ -522,31 +502,6 @@ final class CameraXModule {
             setCameraLensFacing(LensFacing.BACK);
             return;
         }
-    }
-
-    public void focus(Rect focus, Rect metering) {
-        if (mPreview == null) {
-            // Nothing to focus on since we don't yet have a preview
-            return;
-        }
-
-        Rect rescaledFocus;
-        Rect rescaledMetering;
-        try {
-            Rect sensorRegion;
-            if (mCropRegion != null) {
-                sensorRegion = mCropRegion;
-            } else {
-                sensorRegion = getSensorSize(getActiveCamera());
-            }
-            rescaledFocus = rescaleViewRectToSensorRect(focus, sensorRegion);
-            rescaledMetering = rescaleViewRectToSensorRect(metering, sensorRegion);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to rescale the focus and metering rectangles.", e);
-            return;
-        }
-
-        mPreview.focus(rescaledFocus, rescaledMetering);
     }
 
     public float getZoomLevel() {
@@ -723,16 +678,16 @@ final class CameraXModule {
             mImageCapture.setTargetRotation(getDisplaySurfaceRotation());
         }
 
+        if (mVideoCapture != null) {
+            mVideoCapture.setTargetRotation(getDisplaySurfaceRotation());
+        }
+
         //TODO: [SOUP] START
         if (mImageAnalysis != null) {
             mImageAnalysis.setAnalyzer(mImageAnalysisAnalyzer);
             mImageAnalysis.setTargetRotation(getDisplaySurfaceRotation());
         }
         //TODO: [SOUP] END
-
-        if (mVideoCapture != null) {
-            mVideoCapture.setTargetRotation(getDisplaySurfaceRotation());
-        }
     }
 
     @RequiresPermission(permission.CAMERA)
@@ -849,11 +804,11 @@ final class CameraXModule {
         mCameraView.onPreviewSourceDimensUpdated(width, height);
     }
 
-    public CameraView.CaptureMode getCaptureMode() {
+    public CaptureMode getCaptureMode() {
         return mCaptureMode;
     }
 
-    public void setCaptureMode(CameraView.CaptureMode captureMode) {
+    public void setCaptureMode(CaptureMode captureMode) {
         this.mCaptureMode = captureMode;
         rebindToLifecycle();
     }
@@ -877,4 +832,34 @@ final class CameraXModule {
     public boolean isPaused() {
         return false;
     }
+
+    //TODO: [SOUP] START
+    public void setAnalyzer(Analyzer analyzer) {
+        mImageAnalysisAnalyzer = analyzer;
+
+        if (mImageAnalysis == null) {
+            return;
+        }
+
+        if (getCaptureMode() == CaptureMode.VIDEO) {
+            throw new IllegalStateException("Can not set analyzer under VIDEO capture mode.");
+        }
+
+        if (analyzer == null) {
+            throw new IllegalArgumentException("Analyzer should not be empty");
+        }
+
+        mImageAnalysis.setAnalyzer(analyzer);
+    }
+
+    public void removeAnalyzer() {
+        mImageAnalysisAnalyzer = null;
+
+        if (mImageAnalysis == null) {
+            return;
+        }
+
+        mImageAnalysis.removeAnalyzer();
+    }
+    //TODO: [SOUP] END
 }

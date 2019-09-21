@@ -18,7 +18,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation "androidx.camera:camera-core:1.0.0-alpha04"
-    implementation "androidx.camera:camera-camera2:1.0.0-alpha04"
+    api "androidx.lifecycle:lifecycle-common:2.1.0"
+    implementation "androidx.annotation:annotation:1.1.0"
+    api "androidx.camera:camera-core:1.0.0-alpha05"
+    implementation "androidx.camera:camera-camera2:1.0.0-alpha05"
 }

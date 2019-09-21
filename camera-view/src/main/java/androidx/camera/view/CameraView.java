@@ -45,29 +45,40 @@ import android.view.ViewGroup;
 import android.view.animation.BaseInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.RestrictTo.Scope;
 import androidx.annotation.UiThread;
+import androidx.camera.core.CameraInfoUnavailableException;
+import androidx.camera.core.CameraX;
 import androidx.camera.core.CameraX.LensFacing;
 import androidx.camera.core.FlashMode;
+import androidx.camera.core.FocusMeteringAction;
+import androidx.camera.core.FocusMeteringAction.MeteringMode;
 //TODO: [SOUP] START
 import androidx.camera.core.ImageAnalysis.Analyzer;
 //TODO: [SOUP] END
 import androidx.camera.core.ImageCapture.OnImageCapturedListener;
 import androidx.camera.core.ImageCapture.OnImageSavedListener;
 import androidx.camera.core.ImageProxy;
+import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.VideoCapture.OnVideoSavedListener;
+import androidx.camera.view.CameraXModule;
+import androidx.camera.view.R;
+import androidx.camera.view.TextureViewMeteringPointFactory;
 import androidx.lifecycle.LifecycleOwner;
 
 import java.io.File;
+import java.util.concurrent.Executor;
 
 /**
  * A {@link View} that displays a preview of the camera with methods {@link
- * #takePicture(OnImageCapturedListener)}, {@link #takePicture(File, OnImageSavedListener)}, {@link
- * #startRecording(File, OnVideoSavedListener)} and {@link #stopRecording()}.
+ * #takePicture(Executor, OnImageCapturedListener)},
+ * {@link #takePicture(File, Executor, OnImageSavedListener)},
+ * {@link #startRecording(File, Executor, OnVideoSavedListener)} and {@link #stopRecording()}.
  *
  * <p>Because the Camera is a limited resource and consumes a high amount of power, CameraView must
  * be opened/closed. CameraView will handle opening/closing automatically through use of a {@link
@@ -96,15 +107,13 @@ public final class CameraView extends ViewGroup {
     private static final int FLASH_MODE_AUTO = 1;
     private static final int FLASH_MODE_ON = 2;
     private static final int FLASH_MODE_OFF = 4;
-    private final Rect mFocusingRect = new Rect();
-    private final Rect mMeteringRect = new Rect();
     // For tap-to-focus
     private long mDownEventTimestamp;
     // For pinch-to-zoom
     private PinchToZoomGestureDetector mPinchToZoomGestureDetector;
     private boolean mIsPinchToZoomEnabled = true;
     CameraXModule mCameraModule;
-    private final DisplayManager.DisplayListener mDisplayListener =
+    private final DisplayListener mDisplayListener =
             new DisplayListener() {
                 @Override
                 public void onDisplayAdded(int displayId) {
@@ -124,8 +133,7 @@ public final class CameraView extends ViewGroup {
     private ScaleType mScaleType = ScaleType.CENTER_CROP;
     // For accessibility event
     private MotionEvent mUpEvent;
-    private @Nullable
-    Paint mLayerPaint;
+    private @Nullable Paint mLayerPaint;
 
     public CameraView(Context context) {
         this(context, null);
@@ -253,7 +261,7 @@ public final class CameraView extends ViewGroup {
     @Override
     protected LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
 
     @Override
@@ -629,7 +637,8 @@ public final class CameraView extends ViewGroup {
      *
      * @param listener Listener which will receive success or failure callbacks.
      */
-    public void takePicture(OnImageCapturedListener listener) {
+    @SuppressLint("LambdaLast") // Maybe remove after https://issuetracker.google.com/135275901
+    public void takePicture(@NonNull OnImageCapturedListener listener) {
         mCameraModule.takePicture(listener);
     }
 
@@ -639,7 +648,8 @@ public final class CameraView extends ViewGroup {
      * @param file     The destination.
      * @param listener Listener which will receive success or failure callbacks.
      */
-    public void takePicture(File file, OnImageSavedListener listener) {
+    @SuppressLint("LambdaLast") // Maybe remove after https://issuetracker.google.com/135275901
+    public void takePicture(@NonNull File file, @NonNull OnImageSavedListener listener) {
         mCameraModule.takePicture(file, listener);
     }
 
@@ -647,8 +657,10 @@ public final class CameraView extends ViewGroup {
      * Takes a video and calls the OnVideoSavedListener when done.
      *
      * @param file The destination.
+     * @param listener Listener which will receive success or failure callbacks.
      */
-    public void startRecording(File file, OnVideoSavedListener listener) {
+    @SuppressLint("LambdaLast") // Maybe remove after https://issuetracker.google.com/135275901
+    public void startRecording(@NonNull File file, @NonNull OnVideoSavedListener listener) {
         mCameraModule.startRecording(file, listener);
     }
 
@@ -661,22 +673,6 @@ public final class CameraView extends ViewGroup {
     public boolean isRecording() {
         return mCameraModule.isRecording();
     }
-
-    //TODO: [SOUP] START
-    /**
-     * Set a analyzer and calls {@link Analyzer#analyze} during processing.
-     *
-     * @param analyzer Analyzer which will receive an image to produce a result.
-     */
-    public void setAnalyzer(Analyzer analyzer) {
-        mCameraModule.setAnalyzer(analyzer);
-    }
-
-    /** Removes a previously set analyzer. */
-    public void removeAnalyzer() {
-        mCameraModule.removeAnalyzer();
-    }
-    //TODO: [SOUP] END
 
     /**
      * Queries whether the current device has a camera with the specified direction.
@@ -724,27 +720,13 @@ public final class CameraView extends ViewGroup {
         return mCameraModule.getLensFacing();
     }
 
-    /**
-     * Focuses the camera on the given area.
-     *
-     * <p>Sets the focus and exposure metering rectangles. Coordinates for both X and Y dimensions
-     * are Limited from -1000 to 1000, where (0, 0) is the center of the image and the width/height
-     * represent the values from -1000 to 1000.
-     *
-     * @param focus    Area used to focus the camera.
-     * @param metering Area used for exposure metering.
-     */
-    public void focus(Rect focus, Rect metering) {
-        mCameraModule.focus(focus, metering);
-    }
-
     /** Gets the active flash strategy. */
     public FlashMode getFlash() {
         return mCameraModule.getFlash();
     }
 
     /** Sets the active flash strategy. */
-    public void setFlash(FlashMode flashMode) {
+    public void setFlash(@NonNull FlashMode flashMode) {
         mCameraModule.setFlash(flashMode);
     }
 
@@ -757,7 +739,7 @@ public final class CameraView extends ViewGroup {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         // Disable pinch-to-zoom and tap-to-focus while the camera module is paused.
         if (mCameraModule.isPaused()) {
             return false;
@@ -800,10 +782,21 @@ public final class CameraView extends ViewGroup {
         final float x = (mUpEvent != null) ? mUpEvent.getX() : getX() + getWidth() / 2f;
         final float y = (mUpEvent != null) ? mUpEvent.getY() : getY() + getHeight() / 2f;
         mUpEvent = null;
-        calculateTapArea(mFocusingRect, x, y, 1f);
-        calculateTapArea(mMeteringRect, x, y, 1.5f);
-        if (area(mFocusingRect) > 0 && area(mMeteringRect) > 0) {
-            focus(mFocusingRect, mMeteringRect);
+
+        TextureViewMeteringPointFactory pointFactory = new TextureViewMeteringPointFactory(
+                mCameraTextureView);
+        float afPointWidth = 1.0f / 6.0f;  // 1/6 total area
+        float aePointWidth = afPointWidth * 1.5f;
+        MeteringPoint afPoint = pointFactory.createPoint(x, y, afPointWidth, 1.0f);
+        MeteringPoint aePoint = pointFactory.createPoint(x, y, aePointWidth, 1.0f);
+
+        try {
+            CameraX.getCameraControl(getCameraLensFacing()).startFocusAndMetering(
+                    FocusMeteringAction.Builder.from(afPoint, MeteringMode.AF_ONLY)
+                            .addPoint(aePoint, MeteringMode.AE_ONLY)
+                            .build());
+        } catch (CameraInfoUnavailableException e) {
+            Log.d(TAG, "cannot access camera", e);
         }
 
         return true;
@@ -812,80 +805,6 @@ public final class CameraView extends ViewGroup {
     /** Returns the width * height of the given rect */
     private int area(Rect rect) {
         return rect.width() * rect.height();
-    }
-
-    /** The area must be between -1000,-1000 and 1000,1000 */
-    private void calculateTapArea(Rect rect, float x, float y, float coefficient) {
-        int max = 1000;
-        int min = -1000;
-
-        // Default to 300 (1/6th the total area) and scale by the coefficient
-        int areaSize = (int) (300 * coefficient);
-
-        // Rotate the coordinates if the camera orientation is different
-        int width = getWidth();
-        int height = getHeight();
-
-        // Compensate orientation as it's mirrored on preview for forward facing cameras
-        boolean compensateForMirroring = (getCameraLensFacing() == LensFacing.FRONT);
-        int relativeCameraOrientation = getRelativeCameraOrientation(compensateForMirroring);
-        int temp;
-        float tempf;
-        switch (relativeCameraOrientation) {
-            case 90:
-                // Fall-through
-            case 270:
-                // We're horizontal. Swap width/height. Swap x/y.
-                temp = width;
-                //noinspection SuspiciousNameCombination
-                width = height;
-                height = temp;
-
-                tempf = x;
-                //noinspection SuspiciousNameCombination
-                x = y;
-                y = tempf;
-                break;
-            default:
-                break;
-        }
-
-        switch (relativeCameraOrientation) {
-            // Map to correct coordinates according to relativeCameraOrientation
-            case 90:
-                y = height - y;
-                break;
-            case 180:
-                x = width - x;
-                y = height - y;
-                break;
-            case 270:
-                x = width - x;
-                break;
-            default:
-                break;
-        }
-
-        // Swap x if it's a mirrored preview
-        if (compensateForMirroring) {
-            x = width - x;
-        }
-
-        // Grab the x, y position from within the View and normalize it to -1000 to 1000
-        x = min + distance(max, min) * (x / width);
-        y = min + distance(max, min) * (y / height);
-
-        // Modify the rect to the bounding area
-        rect.top = (int) y - areaSize / 2;
-        rect.left = (int) x - areaSize / 2;
-        rect.bottom = rect.top + areaSize;
-        rect.right = rect.left + areaSize;
-
-        // Cap at -1000 to 1000
-        rect.top = rangeLimit(rect.top, max, min);
-        rect.left = rangeLimit(rect.left, max, min);
-        rect.bottom = rangeLimit(rect.bottom, max, min);
-        rect.right = rangeLimit(rect.right, max, min);
     }
 
     private int rangeLimit(int val, int max, int min) {
@@ -1128,4 +1047,20 @@ public final class CameraView extends ViewGroup {
         public void onScaleEnd(ScaleGestureDetector detector) {
         }
     }
+
+    //TODO: [SOUP] START
+    /**
+     * Set a analyzer and calls {@link Analyzer#analyze} during processing.
+     *
+     * @param analyzer Analyzer which will receive an image to produce a result.
+     */
+    public void setAnalyzer(Analyzer analyzer) {
+        mCameraModule.setAnalyzer(analyzer);
+    }
+
+    /** Removes a previously set analyzer. */
+    public void removeAnalyzer() {
+        mCameraModule.removeAnalyzer();
+    }
+    //TODO: [SOUP] END
 }
