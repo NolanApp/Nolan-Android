@@ -14,6 +14,7 @@ import androidx.camera.core.CameraX.LensFacing
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageProxy
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
@@ -31,6 +32,7 @@ import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.utils.lazyFast
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import timber.log.Timber
+import java.io.File
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -155,12 +157,22 @@ class CameraFragment : BaseFragment() {
         }
         binding.footer.run {
             galleryButton.setOnClickListener {
-                findNavController().navigate(CameraFragmentDirections.actionToEdit())
+//                findNavController().navigate(CameraFragmentDirections.actionToEdit())
             }
             captureButton.setOnClickListener {
-                binding.cameraPreview.takePicture(object : ImageCapture.OnImageCapturedListener() {
-                    override fun onCaptureSuccess(image: ImageProxy, rotationDegrees: Int) {
-                        image.close()
+                val file = File(it.context.cacheDir, "capture")
+                binding.cameraPreview.takePicture(file, object : ImageCapture.OnImageSavedListener {
+
+                    override fun onImageSaved(file: File) {
+                        findNavController().navigate(CameraFragmentDirections.actionToEdit(file.toUri()))
+                    }
+
+                    override fun onError(
+                        imageCaptureError: ImageCapture.ImageCaptureError,
+                        message: String,
+                        cause: Throwable?
+                    ) {
+                        //TODO
                     }
                 })
             }

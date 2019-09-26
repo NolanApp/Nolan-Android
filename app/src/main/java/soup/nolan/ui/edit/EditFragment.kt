@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import soup.nolan.databinding.EditFragmentBinding
 import soup.nolan.ui.base.BaseFragment
 
 class EditFragment : BaseFragment() {
 
+    private val args: EditFragmentArgs by navArgs()
     private val viewModel: EditViewModel by viewModel()
 
     private lateinit var binding: EditFragmentBinding
@@ -25,5 +27,6 @@ class EditFragment : BaseFragment() {
     }
 
     private fun initViewState(binding: EditFragmentBinding) {
+        binding.editImageView.setImageURI(args.fileUri)
     }
 }

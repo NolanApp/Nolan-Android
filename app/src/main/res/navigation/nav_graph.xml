@@ -35,6 +35,11 @@
     <fragment
         android:id="@+id/edit"
         android:name="soup.nolan.ui.edit.EditFragment"
-        tools:layout="@layout/edit_fragment" />
+        tools:layout="@layout/edit_fragment">
+
+        <argument
+            android:name="fileUri"
+            app:argType="android.net.Uri" />
+    </fragment>
 
 </navigation>
