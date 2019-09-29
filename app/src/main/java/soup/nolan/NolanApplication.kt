@@ -4,6 +4,7 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.alterac.blurkit.BlurKit
 import soup.nolan.di.DaggerApplicationComponent
+import soup.nolan.temp.StyleTransfer
 
 class NolanApplication : DaggerApplication() {
 
@@ -11,6 +12,7 @@ class NolanApplication : DaggerApplication() {
         super.onCreate()
         LogTracker.install(this)
         BlurKit.init(this)
+        StyleTransfer.init()
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {

@@ -2,6 +2,7 @@ package soup.nolan.ui.camera
 
 import android.Manifest
 import android.animation.AnimatorInflater
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -184,6 +185,7 @@ class CameraFragment : BaseFragment() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraFragmentBinding) {
         //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
         //binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)

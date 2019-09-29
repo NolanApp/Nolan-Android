@@ -1,12 +1,19 @@
 package soup.nolan.ui.edit
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toFile
 import androidx.navigation.fragment.navArgs
+import soup.nolan.R
 import soup.nolan.databinding.EditFragmentBinding
+import soup.nolan.temp.StyleTransfer
 import soup.nolan.ui.base.BaseFragment
+import timber.log.Timber
 
 class EditFragment : BaseFragment() {
 
@@ -28,5 +35,18 @@ class EditFragment : BaseFragment() {
 
     private fun initViewState(binding: EditFragmentBinding) {
         binding.editImageView.setImageURI(args.fileUri)
+        val style = BitmapFactory.decodeResource(resources, R.drawable.style)
+        val input = BitmapFactory.decodeFile(args.fileUri.toFile().path)
+        val start = System.currentTimeMillis()
+        StyleTransfer.transform(style, input)
+            .addOnSuccessListener {
+                Timber.d("success: $it ${System.currentTimeMillis() - start}ms")
+                activity?.runOnUiThread {
+                    binding.editImageView.setImageBitmap(it)
+                }
+            }
+            .addOnFailureListener {
+                Timber.d("failure: $it")
+            }
     }
 }

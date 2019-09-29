@@ -38,6 +38,9 @@ android {
             manifestPlaceholders = [crashlytics_enabled: true]
         }
     }
+    aaptOptions {
+        noCompress "tflite"
+    }
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
@@ -86,6 +89,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.google.firebase:firebase-ml-vision:23.0.0'
     implementation 'com.google.firebase:firebase-ml-vision-face-model:18.0.0'
+    implementation 'com.google.firebase:firebase-ml-model-interpreter:21.0.0'
 
     implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
