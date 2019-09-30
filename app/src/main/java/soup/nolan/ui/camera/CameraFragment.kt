@@ -27,7 +27,6 @@ import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
-import soup.nolan.filter.stylize.Styles
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.utils.lazyFast
@@ -93,7 +92,6 @@ class CameraFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Styles.thumbnails
         binding = CameraFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         initViewState(binding)
@@ -153,7 +151,7 @@ class CameraFragment : BaseFragment() {
             val listAdapter = CameraFilterListAdapter {
                 //TODO: 클릭 처리
             }
-            listAdapter.submitList(Styles.thumbnails.mapIndexed(::CameraFilterUiModel))
+//            listAdapter.submitList(Styles.thumbnails.mapIndexed(::CameraFilterUiModel))
             listView.adapter = listAdapter
         }
         binding.footer.run {

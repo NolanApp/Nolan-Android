@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.common.modeldownload.FirebaseLocalModel
 import com.google.firebase.ml.common.modeldownload.FirebaseModelManager
 import com.google.firebase.ml.custom.*
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -64,6 +65,7 @@ object StyleTransfer {
         return predictModel.run(inputs, predictOptions)
                 .continueWith {
                     it.result!!.getOutput<Array<Array<Array<FloatArray>>>>(0)
+//                            .apply { Timber.d("predict=${first().first().first().toList()}") }
                 }
     }
 
@@ -80,21 +82,6 @@ object StyleTransfer {
                     val result = it.result!!.getOutput<Array<Array<Array<FloatArray>>>>(0)
                     toBitmap(result)
                 }
-    }
-
-    private fun toBitmap(result: Array<Array<Array<FloatArray>>>): Bitmap {
-        var index = 0
-        for (i in 0 until IMAGE_SIZE) {
-            for (j in 0 until IMAGE_SIZE) {
-                intValues[index++] = (-0x1000000 or
-                        (result[0][i][j][0] * 255).toInt().shl(16) or
-                        (result[0][i][j][1] * 255).toInt().shl(8) or
-                        (result[0][i][j][2] * 255).toInt())
-            }
-        }
-        return Bitmap.createBitmap(IMAGE_SIZE, IMAGE_SIZE, Bitmap.Config.ARGB_8888).apply {
-            setPixels(intValues, 0, width, 0, 0, width, height)
-        }
     }
 
     private val intValues = IntArray(IMAGE_SIZE * IMAGE_SIZE)
@@ -115,6 +102,7 @@ object StyleTransfer {
                 imgData.putFloat((value shr 16 and 0xFF) / 255f)
                 imgData.putFloat((value shr 8 and 0xFF) / 255f)
                 imgData.putFloat((value and 0xFF) / 255f)
+//                Timber.d("$i, $j = ${(value shr 16 and 0xFF) / 255f} ${(value shr 8 and 0xFF) / 255f} ${(value and 0xFF) / 255f}")
             }
         }
         return imgData
@@ -134,5 +122,21 @@ object StyleTransfer {
     private fun Bitmap.toPixels(): IntArray {
         getPixels(intValues, 0, width, 0, 0, width, height)
         return intValues
+    }
+
+    private fun toBitmap(result: Array<Array<Array<FloatArray>>>): Bitmap {
+        var index = 0
+        for (i in 0 until IMAGE_SIZE) {
+            for (j in 0 until IMAGE_SIZE) {
+                intValues[index++] = (-0x1000000 or
+                        (result[0][i][j][0] * 255).toInt().shl(16) or
+                        (result[0][i][j][1] * 255).toInt().shl(8) or
+                        (result[0][i][j][2] * 255).toInt())
+//                Timber.d("$i, $j = ${result[0][i][j][0]} ${result[0][i][j][1]} ${result[0][i][j][2]}")
+            }
+        }
+        return Bitmap.createBitmap(IMAGE_SIZE, IMAGE_SIZE, Bitmap.Config.ARGB_8888).apply {
+            setPixels(intValues, 0, width, 0, 0, width, height)
+        }
     }
 }
