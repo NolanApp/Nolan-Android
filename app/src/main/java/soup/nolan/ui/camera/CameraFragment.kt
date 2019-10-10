@@ -120,7 +120,9 @@ class CameraFragment : BaseFragment() {
             }
         }
         binding.header.run {
-            moreButton.setOnClickListener {}
+            moreButton.setOnClickListener {
+                findNavController().navigate(CameraFragmentDirections.actionToSettings())
+            }
             ratioButton.setOnClickListener {}
 
             val flipOut = AnimatorInflater.loadAnimator(root.context, R.animator.flip_out)

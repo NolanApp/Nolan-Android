@@ -30,6 +30,9 @@
             android:id="@+id/action_to_edit"
             app:destination="@id/edit" />
 
+        <action
+            android:id="@+id/action_to_settings"
+            app:destination="@id/settings" />
     </fragment>
 
     <fragment
@@ -40,6 +43,25 @@
         <argument
             android:name="fileUri"
             app:argType="android.net.Uri" />
+
+        <action
+            android:id="@+id/action_to_share"
+            app:destination="@id/share" />
     </fragment>
+
+    <fragment
+        android:id="@+id/share"
+        android:name="soup.nolan.ui.share.ShareFragment"
+        tools:layout="@layout/share_fragment">
+
+        <argument
+            android:name="fileUri"
+            app:argType="android.net.Uri" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="soup.nolan.ui.settings.SettingsFragment"
+        tools:layout="@layout/settings_fragment" />
 
 </navigation>

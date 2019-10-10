@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toFile
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import soup.nolan.R
 import soup.nolan.databinding.EditFragmentBinding
 import soup.nolan.temp.StyleTransfer
 import soup.nolan.ui.base.BaseFragment
+import soup.nolan.ui.utils.setOnDebounceClickListener
 import timber.log.Timber
 
 class EditFragment : BaseFragment() {
@@ -35,6 +37,10 @@ class EditFragment : BaseFragment() {
 
     private fun initViewState(binding: EditFragmentBinding) {
         binding.editImageView.setImageURI(args.fileUri)
+        binding.editImageView.setOnDebounceClickListener {
+            //TODO: UI 추가
+            findNavController().navigate(EditFragmentDirections.actionToShare(args.fileUri))
+        }
         val style = BitmapFactory.decodeResource(resources, R.drawable.style)
         val input = BitmapFactory.decodeFile(args.fileUri.toFile().path)
         val start = System.currentTimeMillis()
