@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FEE934</color>
-    <color name="colorPrimaryDark">#FEE934</color>
-    <color name="colorAccent">#FEE934</color>
-    <color name="windowBackground">#121212</color>
+    <color name="colorPrimary">@color/bi</color>
+    <color name="colorPrimaryDark">@color/bi</color>
+    <color name="colorAccent">@color/bi</color>
+    <color name="windowBackground">@color/white</color>
 
     <color name="system_ui_scrim_light">#B3FFFFFF</color> <!-- 70% white -->
     <color name="system_ui_scrim_dark">#40000000</color> <!-- 25% black -->
