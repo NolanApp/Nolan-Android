@@ -56,30 +56,35 @@ android {
 dependencies {
     implementation project(':camera-view')
 //    implementation project(':filter-stylize')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0-beta01'
-    implementation 'androidx.fragment:fragment-ktx:1.2.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
-    implementation "com.google.android.material:material:1.1.0-beta01"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+
+    implementation deps.kotlin.stdlib
+
+    implementation deps.androidx.activity_ktx
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.core_ktx
+    implementation deps.androidx.fragment_ktx
+    implementation deps.androidx.preference_ktx
+    implementation deps.androidx.recyclerview
+    implementation deps.androidx.material
+
+    implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.compiler
+    implementation deps.navigation.fragment_ktx
 
     implementation 'com.android.billingclient:billing:2.0.3'
 
-    def lifecycle_version = "2.2.0-alpha05"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+    implementation deps.dagger.runtime
+    implementation deps.dagger.android
+    implementation deps.dagger.android_support
+    kapt deps.dagger.compiler
+    kapt deps.dagger.android_processor
 
-    def dagger_version = "2.24"
-    implementation "com.google.dagger:dagger:$dagger_version"
-    implementation "com.google.dagger:dagger-android:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    implementation deps.rx.java2
+    implementation deps.rx.kotlin
+    implementation deps.rx.android
 
-    implementation "io.reactivex.rxjava2:rxjava:2.2.10"
-    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    implementation deps.util.timber
 
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.firebase:firebase-core:17.2.0'
@@ -87,14 +92,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision-face-model:18.0.0'
     implementation 'com.google.firebase:firebase-ml-model-interpreter:21.0.0'
 
-    implementation 'com.jakewharton.timber:timber:4.7.1'
-
     implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.android
+    androidTestImplementation deps.test.espresso
 }
 
 apply plugin: 'com.google.gms.google-services'
