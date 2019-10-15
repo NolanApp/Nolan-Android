@@ -1,0 +1,23 @@
+
+def build_versions = [:]
+build_versions.appId = 'soup.nolan'
+build_versions.min_sdk = 23
+build_versions.target_sdk = 29
+build_versions.compile_sdk = 29
+build_versions.build_tools = "29.0.2"
+build_versions.versionCode = 2
+build_versions.versionName = '0.0.2'
+ext.build_versions = build_versions
+
+static def addProjectRepositories(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.maven { url 'https://maven.fabric.io/public' }
+}
+ext.addProjectRepositories = this.&addProjectRepositories
+
+static def addDefaultRepositories(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+}
+ext.addDefaultRepositories = this.&addDefaultRepositories
