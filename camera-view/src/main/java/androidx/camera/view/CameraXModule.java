@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
+import androidx.camera.core.AspectRatio;
 import androidx.camera.core.CameraInfo;
 import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraOrientationUtil;
@@ -49,7 +50,7 @@ import androidx.camera.core.PreviewConfig;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.core.VideoCapture.OnVideoSavedListener;
 import androidx.camera.core.VideoCaptureConfig;
-import androidx.camera.view.CameraView;
+import androidx.camera.core.impl.utils.executor.CameraXExecutors;
 import androidx.camera.view.CameraView.CaptureMode;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -64,9 +65,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //TODO: [SOUP] START
-import android.os.Handler;
-import android.os.HandlerThread;
-import androidx.camera.core.CameraXThreads;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageAnalysis.Analyzer;
 import androidx.camera.core.ImageAnalysisConfig;
@@ -90,7 +88,7 @@ final class CameraXModule {
     private final ImageCaptureConfig.Builder mImageCaptureConfigBuilder;
     private final CameraView mCameraView;
     final AtomicBoolean mVideoIsRecording = new AtomicBoolean(false);
-    private CaptureMode mCaptureMode = CaptureMode.IMAGE;
+    private CameraView.CaptureMode mCaptureMode = CaptureMode.IMAGE;
     private long mMaxVideoDuration = CameraView.INDEFINITE_VIDEO_DURATION;
     private long mMaxVideoSize = CameraView.INDEFINITE_VIDEO_SIZE;
     private FlashMode mFlash = FlashMode.OFF;
@@ -109,10 +107,6 @@ final class CameraXModule {
                     if (owner == mCurrentLifecycle) {
                         clearCurrentLifecycle();
                         mPreview.removePreviewOutputListener();
-                        //TODO: [SOUP] START
-                        mImageAnalysisAnalyzerThread.quitSafely();
-                        mImageAnalysisAnalyzerThread = null;
-                        //TODO: [SOUP] END
                     }
                 }
             };
@@ -122,14 +116,12 @@ final class CameraXModule {
     @Nullable
     private Rect mCropRegion;
     @Nullable
-    private LensFacing mCameraLensFacing = LensFacing.BACK;
+    private CameraX.LensFacing mCameraLensFacing = LensFacing.BACK;
 
     //TODO: [SOUP] START
     private final ImageAnalysisConfig.Builder mImageAnalysisConfigBuilder;
     @Nullable
     private ImageAnalysis mImageAnalysis;
-    @Nullable
-    private HandlerThread mImageAnalysisAnalyzerThread;
     @Nullable
     private ImageAnalysis.Analyzer mImageAnalysisAnalyzer;
     //TODO: [SOUP] END
@@ -256,21 +248,21 @@ final class CameraXModule {
                 || getDisplayRotationDegrees() == 180;
 
         if (getCaptureMode() == CaptureMode.IMAGE) {
-            mImageCaptureConfigBuilder.setTargetAspectRatio(
+            mImageCaptureConfigBuilder.setTargetAspectRatioCustom(
                     isDisplayPortrait ? ASPECT_RATIO_3_4 : ASPECT_RATIO_4_3);
-            mPreviewConfigBuilder.setTargetAspectRatio(
+            mPreviewConfigBuilder.setTargetAspectRatioCustom(
                     isDisplayPortrait ? ASPECT_RATIO_3_4 : ASPECT_RATIO_4_3);
             //TODO: [SOUP] START
-            mImageAnalysisConfigBuilder.setTargetAspectRatio(
+            mImageAnalysisConfigBuilder.setTargetAspectRatioCustom(
                     isDisplayPortrait ? ASPECT_RATIO_3_4 : ASPECT_RATIO_4_3);
             //TODO: [SOUP] END
         } else {
-            mImageCaptureConfigBuilder.setTargetAspectRatio(
+            mImageCaptureConfigBuilder.setTargetAspectRatioCustom(
                     isDisplayPortrait ? ASPECT_RATIO_9_16 : ASPECT_RATIO_16_9);
-            mPreviewConfigBuilder.setTargetAspectRatio(
+            mPreviewConfigBuilder.setTargetAspectRatioCustom(
                     isDisplayPortrait ? ASPECT_RATIO_9_16 : ASPECT_RATIO_16_9);
             //TODO: [SOUP] START
-            mImageAnalysisConfigBuilder.setTargetAspectRatio(
+            mImageAnalysisConfigBuilder.setTargetAspectRatioCustom(
                     isDisplayPortrait ? ASPECT_RATIO_9_16 : ASPECT_RATIO_16_9);
             //TODO: [SOUP] END
         }
@@ -303,11 +295,6 @@ final class CameraXModule {
         }
 
         //TODO: [SOUP] START
-        if (mImageAnalysisAnalyzerThread == null) {
-            mImageAnalysisAnalyzerThread = new HandlerThread(CameraXThreads.TAG + "ImageAnalysis");
-            mImageAnalysisAnalyzerThread.start();
-        }
-        mImageAnalysisConfigBuilder.setCallbackHandler(new Handler(mImageAnalysisAnalyzerThread.getLooper()));
         mImageAnalysisConfigBuilder.setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE);
         mImageAnalysisConfigBuilder.setTargetRotation(getDisplaySurfaceRotation());
         mImageAnalysisConfigBuilder.setLensFacing(mCameraLensFacing);
@@ -363,7 +350,7 @@ final class CameraXModule {
                 "Explicit open/close of camera not yet supported. Use bindtoLifecycle() instead.");
     }
 
-    public void takePicture(OnImageCapturedListener listener) {
+    public void takePicture(Executor executor, OnImageCapturedListener listener) {
         if (mImageCapture == null) {
             return;
         }
@@ -376,10 +363,10 @@ final class CameraXModule {
             throw new IllegalArgumentException("OnImageCapturedListener should not be empty");
         }
 
-        mImageCapture.takePicture(listener);
+        mImageCapture.takePicture(executor, listener);
     }
 
-    public void takePicture(File saveLocation, OnImageSavedListener listener) {
+    public void takePicture(File saveLocation, Executor executor, OnImageSavedListener listener) {
         if (mImageCapture == null) {
             return;
         }
@@ -394,10 +381,10 @@ final class CameraXModule {
 
         ImageCapture.Metadata metadata = new ImageCapture.Metadata();
         metadata.isReversedHorizontal = mCameraLensFacing == LensFacing.FRONT;
-        mImageCapture.takePicture(saveLocation, listener, metadata);
+        mImageCapture.takePicture(saveLocation, metadata, executor, listener);
     }
 
-    public void startRecording(File file, final OnVideoSavedListener listener) {
+    public void startRecording(File file, Executor executor, final OnVideoSavedListener listener) {
         if (mVideoCapture == null) {
             return;
         }
@@ -413,7 +400,8 @@ final class CameraXModule {
         mVideoIsRecording.set(true);
         mVideoCapture.startRecording(
                 file,
-                new OnVideoSavedListener() {
+                executor,
+                new VideoCapture.OnVideoSavedListener() {
                     @Override
                     public void onVideoSaved(@NonNull File savedFile) {
                         mVideoIsRecording.set(false);
@@ -674,7 +662,7 @@ final class CameraXModule {
     // Update view related information used in use cases
     private void updateViewInfo() {
         if (mImageCapture != null) {
-            mImageCapture.setTargetAspectRatio(new Rational(getWidth(), getHeight()));
+            mImageCapture.setTargetAspectRatioCustom(new Rational(getWidth(), getHeight()));
             mImageCapture.setTargetRotation(getDisplaySurfaceRotation());
         }
 
@@ -684,7 +672,7 @@ final class CameraXModule {
 
         //TODO: [SOUP] START
         if (mImageAnalysis != null) {
-            mImageAnalysis.setAnalyzer(mImageAnalysisAnalyzer);
+            mImageAnalysis.setAnalyzer(CameraXExecutors.highPriorityExecutor(), mImageAnalysisAnalyzer);
             mImageAnalysis.setTargetRotation(getDisplaySurfaceRotation());
         }
         //TODO: [SOUP] END
@@ -804,11 +792,11 @@ final class CameraXModule {
         mCameraView.onPreviewSourceDimensUpdated(width, height);
     }
 
-    public CaptureMode getCaptureMode() {
+    public CameraView.CaptureMode getCaptureMode() {
         return mCaptureMode;
     }
 
-    public void setCaptureMode(CaptureMode captureMode) {
+    public void setCaptureMode(CameraView.CaptureMode captureMode) {
         this.mCaptureMode = captureMode;
         rebindToLifecycle();
     }
@@ -849,7 +837,7 @@ final class CameraXModule {
             throw new IllegalArgumentException("Analyzer should not be empty");
         }
 
-        mImageAnalysis.setAnalyzer(analyzer);
+        mImageAnalysis.setAnalyzer(CameraXExecutors.highPriorityExecutor(), analyzer);
     }
 
     public void removeAnalyzer() {

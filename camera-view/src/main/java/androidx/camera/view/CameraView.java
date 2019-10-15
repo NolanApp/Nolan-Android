@@ -58,21 +58,19 @@ import androidx.camera.core.CameraX.LensFacing;
 import androidx.camera.core.FlashMode;
 import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.FocusMeteringAction.MeteringMode;
-//TODO: [SOUP] START
-import androidx.camera.core.ImageAnalysis.Analyzer;
-//TODO: [SOUP] END
 import androidx.camera.core.ImageCapture.OnImageCapturedListener;
 import androidx.camera.core.ImageCapture.OnImageSavedListener;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.VideoCapture.OnVideoSavedListener;
-import androidx.camera.view.CameraXModule;
-import androidx.camera.view.R;
-import androidx.camera.view.TextureViewMeteringPointFactory;
 import androidx.lifecycle.LifecycleOwner;
 
 import java.io.File;
 import java.util.concurrent.Executor;
+
+//TODO: [SOUP] START
+import androidx.camera.core.ImageAnalysis.Analyzer;
+//TODO: [SOUP] END
 
 /**
  * A {@link View} that displays a preview of the camera with methods {@link
@@ -113,7 +111,7 @@ public final class CameraView extends ViewGroup {
     private PinchToZoomGestureDetector mPinchToZoomGestureDetector;
     private boolean mIsPinchToZoomEnabled = true;
     CameraXModule mCameraModule;
-    private final DisplayListener mDisplayListener =
+    private final DisplayManager.DisplayListener mDisplayListener =
             new DisplayListener() {
                 @Override
                 public void onDisplayAdded(int displayId) {
@@ -261,7 +259,7 @@ public final class CameraView extends ViewGroup {
     @Override
     protected LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     @Override
@@ -635,33 +633,38 @@ public final class CameraView extends ViewGroup {
      * Takes a picture, and calls {@link OnImageCapturedListener#onCaptureSuccess(ImageProxy, int)}
      * once when done.
      *
+     * @param executor The executor in which the listener callback methods will be run.
      * @param listener Listener which will receive success or failure callbacks.
      */
     @SuppressLint("LambdaLast") // Maybe remove after https://issuetracker.google.com/135275901
-    public void takePicture(@NonNull OnImageCapturedListener listener) {
-        mCameraModule.takePicture(listener);
+    public void takePicture(@NonNull Executor executor, @NonNull OnImageCapturedListener listener) {
+        mCameraModule.takePicture(executor, listener);
     }
 
     /**
      * Takes a picture and calls {@link OnImageSavedListener#onImageSaved(File)} when done.
      *
      * @param file     The destination.
+     * @param executor The executor in which the listener callback methods will be run.
      * @param listener Listener which will receive success or failure callbacks.
      */
     @SuppressLint("LambdaLast") // Maybe remove after https://issuetracker.google.com/135275901
-    public void takePicture(@NonNull File file, @NonNull OnImageSavedListener listener) {
-        mCameraModule.takePicture(file, listener);
+    public void takePicture(@NonNull File file, @NonNull Executor executor,
+                            @NonNull OnImageSavedListener listener) {
+        mCameraModule.takePicture(file, executor, listener);
     }
 
     /**
      * Takes a video and calls the OnVideoSavedListener when done.
      *
      * @param file The destination.
+     * @param executor The executor in which the listener callback methods will be run.
      * @param listener Listener which will receive success or failure callbacks.
      */
     @SuppressLint("LambdaLast") // Maybe remove after https://issuetracker.google.com/135275901
-    public void startRecording(@NonNull File file, @NonNull OnVideoSavedListener listener) {
-        mCameraModule.startRecording(file, listener);
+    public void startRecording(@NonNull File file, @NonNull Executor executor,
+                               @NonNull OnVideoSavedListener listener) {
+        mCameraModule.startRecording(file, executor, listener);
     }
 
     /** Stops an in progress video. */

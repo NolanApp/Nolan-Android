@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.CameraX.LensFacing
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageProxy
+import androidx.camera.core.impl.utils.executor.CameraXExecutors
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -162,7 +162,7 @@ class CameraFragment : BaseFragment() {
             }
             captureButton.setOnClickListener {
                 val file = File(it.context.cacheDir, "capture")
-                binding.cameraPreview.takePicture(file, object : ImageCapture.OnImageSavedListener {
+                binding.cameraPreview.takePicture(file, CameraXExecutors.mainThreadExecutor(), object : ImageCapture.OnImageSavedListener {
 
                     override fun onImageSaved(file: File) {
                         findNavController().navigate(CameraFragmentDirections.actionToEdit(file.toUri()))
