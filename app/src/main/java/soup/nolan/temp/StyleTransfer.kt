@@ -8,6 +8,7 @@ import com.google.firebase.ml.common.modeldownload.FirebaseModelManager
 import com.google.firebase.ml.custom.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.random.Random
 
 object StyleTransfer {
 
@@ -74,17 +75,31 @@ object StyleTransfer {
     }
 
     fun transform(style: Bitmap, bitmap: Bitmap): Task<Bitmap> {
-        return predict(style)
-                .continueWithTask {
-                    val inputs = FirebaseModelInputs.Builder()
-                            .add(bitmap.toByteBuffer())
-                            .add(it.result!!)
-                            .build()
-                    transformModel.run(inputs, transformOptions)
-                }
-                .continueWith {
-                    toBitmap(it.result!!.getOutput(0))
-                }
+//        return predict(style)
+//                .continueWithTask {
+//                    val inputs = FirebaseModelInputs.Builder()
+//                        .add(bitmap.toByteBuffer())
+//                        .add(it.result!!)
+//                        .build()
+//                    transformModel.run(inputs, transformOptions)
+//                }
+//                .continueWith {
+//                    toBitmap(it.result!!.getOutput(0))
+//                }
+        val inputs = FirebaseModelInputs.Builder()
+            .add(bitmap.toByteBuffer())
+            .add(randomStyle())
+            .build()
+        return transformModel.run(inputs, transformOptions)
+            .continueWith {
+                toBitmap(it.result!!.getOutput(0))
+            }
+    }
+
+    private fun randomStyle(): Array<Array<Array<FloatArray>>> {
+        return arrayOf(arrayOf(arrayOf(FloatArray(100) {
+            Random.nextDouble(-10.0, 10.0).toFloat()
+        })))
     }
 
     /**
@@ -99,13 +114,13 @@ object StyleTransfer {
             rewind()
 
             for (pixel in pixels) {
-                putFloat((pixel shr 16 and 0xFF) / IMAGE_MEAN - IMAGE_OFFSET) // R
-                putFloat((pixel shr 8 and 0xFF) / IMAGE_MEAN - IMAGE_OFFSET)  // G
-                putFloat((pixel and 0xFF) / IMAGE_MEAN - IMAGE_OFFSET)        // B
+                putFloat((pixel shr 16 and 0xFF).toFloat()) // R
+                putFloat((pixel shr 8 and 0xFF).toFloat())  // G
+                putFloat((pixel and 0xFF).toFloat())        // B
 //                Timber.d("$pixel =" +
-//                        " ${(pixel shr 16 and 0xFF) / IMAGE_MEAN - IMAGE_OFFSET}" +
-//                        " ${(pixel shr 8 and 0xFF) / IMAGE_MEAN - IMAGE_OFFSET}" +
-//                        " ${(pixel and 0xFF) / IMAGE_MEAN - IMAGE_OFFSET}")
+//                        " ${(pixel shr 16 and 0xFF)}" +
+//                        " ${(pixel shr 8 and 0xFF)}" +
+//                        " ${(pixel and 0xFF)}")
             }
         }
     }
@@ -136,12 +151,12 @@ object StyleTransfer {
                         ((output[0][i][j][2] + IMAGE_OFFSET) * IMAGE_MEAN).toInt())
             }
         }
-//        val i = 0
-//        val j = 0
-//        val R = ((output[0][i][j][0] + IMAGE_OFFSET) * IMAGE_MEAN).toInt().shl(16)
-//        val G = ((output[0][i][j][1] + IMAGE_OFFSET) * IMAGE_MEAN).toInt().shl(8)
-//        val B = ((output[0][i][j][2] + IMAGE_OFFSET) * IMAGE_MEAN).toInt()
-//        Timber.d("$i, $j = $R $G $B")
+        //val i = 0
+        //val j = 0
+        //val R = ((output[0][i][j][0] + IMAGE_OFFSET) * IMAGE_MEAN).toInt()
+        //val G = ((output[0][i][j][1] + IMAGE_OFFSET) * IMAGE_MEAN).toInt()
+        //val B = ((output[0][i][j][2] + IMAGE_OFFSET) * IMAGE_MEAN).toInt()
+        //timber.log.Timber.d("$i, $j = $R $G $B")
         return Bitmap.createBitmap(IMAGE_SIZE, IMAGE_SIZE, Bitmap.Config.ARGB_8888).apply {
             setPixels(intValues, 0, width, 0, 0, width, height)
         }
