@@ -55,7 +55,7 @@ android {
 
 dependencies {
     implementation project(':camera-view')
-//    implementation project(':filter-stylize')
+//    implementation project(':stylize-legacy')
 
     implementation deps.kotlin.stdlib
 
