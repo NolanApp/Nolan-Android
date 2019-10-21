@@ -4,7 +4,7 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.alterac.blurkit.BlurKit
 import soup.nolan.di.DaggerApplicationComponent
-import soup.nolan.temp.StyleTransfer
+import soup.nolan.stylize.experimental.StyleTransfer
 
 class NolanApplication : DaggerApplication() {
 

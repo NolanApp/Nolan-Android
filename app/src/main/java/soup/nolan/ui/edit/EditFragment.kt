@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import soup.nolan.R
 import soup.nolan.databinding.EditFragmentBinding
-import soup.nolan.temp.StyleTransfer
+import soup.nolan.stylize.experimental.StyleTransfer
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.EditFragmentDirections.Companion.actionToShare
 import soup.nolan.ui.utils.setOnDebounceClickListener
