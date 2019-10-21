@@ -11,6 +11,7 @@ android {
         versionCode build_versions.versionCode
         versionName build_versions.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
     buildTypes {
         release {
@@ -28,14 +29,10 @@ android {
 }
 
 dependencies {
-    implementation project(':stylize-common')
-
     implementation deps.kotlin.stdlib
     implementation deps.androidx.appcompat
+    implementation deps.androidx.core_ktx
     implementation deps.util.timber
-
-    implementation 'org.tensorflow:tensorflow-android:1.13.1'
-
     testImplementation deps.test.junit
     androidTestImplementation deps.test.android
     androidTestImplementation deps.test.espresso
