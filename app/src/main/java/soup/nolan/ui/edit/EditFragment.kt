@@ -5,18 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.net.toFile
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import soup.nolan.R
 import soup.nolan.databinding.EditFragmentBinding
 import soup.nolan.stylize.experimental.PopStyleTransfer
-import soup.nolan.stylize.experimental.StyleTransfer
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.EditFragmentDirections.Companion.actionToShare
 import soup.nolan.ui.utils.setOnDebounceClickListener
+import soup.nolan.ui.utils.toast
 import timber.log.Timber
 
 class EditFragment : BaseFragment() {
@@ -54,11 +52,11 @@ class EditFragment : BaseFragment() {
                 activity?.runOnUiThread {
                     binding.editImageView.setImageBitmap(it)
                 }
-                Toast.makeText(context, "Success! ($duration ms)", Toast.LENGTH_SHORT).show()
+                toast("Success! ($duration ms)")
             }
             .addOnFailureListener {
                 Timber.d("failure: $it")
-                Toast.makeText(context, "Error: $it", Toast.LENGTH_SHORT).show()
+                toast("Error: $it")
             }
     }
 }
