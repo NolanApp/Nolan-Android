@@ -1,11 +1,12 @@
-package soup.nolan.stylize.experimental
+package soup.nolan.stylize.popart
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.common.modeldownload.FirebaseLocalModel
 import com.google.firebase.ml.common.modeldownload.FirebaseModelManager
 import com.google.firebase.ml.custom.*
+import soup.nolan.stylize.common.centerCropped
+import soup.nolan.stylize.common.toPixels
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -58,7 +59,7 @@ class PopStyleTransfer {
      */
     @Synchronized
     private fun Bitmap.toByteBuffer(): ByteBuffer {
-        val pixels = centerCropped(IMAGE_SIZE).toPixels()
+        val pixels = centerCropped(IMAGE_SIZE).toPixels(intValues)
         val inputSize = FLOAT_TYPE_SIZE * IMAGE_SIZE * IMAGE_SIZE * PIXEL_SIZE
         return ByteBuffer.allocateDirect(inputSize).apply {
             order(ByteOrder.nativeOrder())
@@ -72,22 +73,6 @@ class PopStyleTransfer {
         }
     }
 
-    private fun Bitmap.centerCropped(size: Int): Bitmap {
-        return Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888).also {
-            val frameToCropTransform = ImageUtils.getTransformationMatrix(
-                width, height,
-                size, size,
-                0, true
-            )
-            Canvas(it).drawBitmap(this, frameToCropTransform, null)
-        }
-    }
-
-    private fun Bitmap.toPixels(): IntArray {
-        getPixels(intValues, 0, width, 0, 0, width, height)
-        return intValues
-    }
-
     private fun toBitmap(output: Array<Array<Array<FloatArray>>>): Bitmap {
         var index = 0
         for (i in 0 until IMAGE_SIZE) {
@@ -98,12 +83,6 @@ class PopStyleTransfer {
                         output[0][i][j][2].toInt())
             }
         }
-        //val i = 0
-        //val j = 0
-        //val R = output[0][i][j][0].toInt()
-        //val G = output[0][i][j][1].toInt()
-        //val B = output[0][i][j][2].toInt()
-        //timber.log.Timber.d("$i, $j = $R $G $B")
         return Bitmap.createBitmap(IMAGE_SIZE, IMAGE_SIZE, Bitmap.Config.ARGB_8888).apply {
             setPixels(intValues, 0, width, 0, 0, width, height)
         }

@@ -1,25 +1,17 @@
 package soup.nolan.stylize.experimental
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.common.modeldownload.FirebaseLocalModel
 import com.google.firebase.ml.common.modeldownload.FirebaseModelManager
 import com.google.firebase.ml.custom.*
+import soup.nolan.stylize.common.centerCropped
+import soup.nolan.stylize.common.toPixels
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.random.Random
 
-object StyleTransfer {
-
-    private const val STYLE_PREDICT = "style_predict"
-    private const val STYLE_TRANSFORM = "style_transform"
-
-    private const val IMAGE_SIZE = 512
-    private const val IMAGE_MEAN = 128f
-    private const val IMAGE_OFFSET = 1f
-    private const val FLOAT_TYPE_SIZE = 4
-    private const val PIXEL_SIZE = 3
+class ExperimentalStyleTransfer {
 
     private val intValues = IntArray(IMAGE_SIZE * IMAGE_SIZE)
 
@@ -52,7 +44,7 @@ object StyleTransfer {
                 .build()
     }
 
-    fun init() {
+    init {
         val predict = FirebaseLocalModel.Builder(STYLE_PREDICT)
                 .setAssetFilePath("style_predict-512.tflite")
                 .build()
@@ -107,7 +99,7 @@ object StyleTransfer {
      */
     @Synchronized
     private fun Bitmap.toByteBuffer(): ByteBuffer {
-        val pixels = centerCropped(IMAGE_SIZE).toPixels()
+        val pixels = centerCropped(IMAGE_SIZE).toPixels(intValues)
         val inputSize = FLOAT_TYPE_SIZE * IMAGE_SIZE * IMAGE_SIZE * PIXEL_SIZE
         return ByteBuffer.allocateDirect(inputSize).apply {
             order(ByteOrder.nativeOrder())
@@ -123,22 +115,6 @@ object StyleTransfer {
 //                        " ${(pixel and 0xFF)}")
             }
         }
-    }
-
-    private fun Bitmap.centerCropped(size: Int): Bitmap {
-        return Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888).also {
-            val frameToCropTransform = ImageUtils.getTransformationMatrix(
-                    width, height,
-                    size, size,
-                    0, true
-            )
-            Canvas(it).drawBitmap(this, frameToCropTransform, null)
-        }
-    }
-
-    private fun Bitmap.toPixels(): IntArray {
-        getPixels(intValues, 0, width, 0, 0, width, height)
-        return intValues
     }
 
     private fun toBitmap(output: Array<Array<Array<FloatArray>>>): Bitmap {
@@ -160,5 +136,17 @@ object StyleTransfer {
         return Bitmap.createBitmap(IMAGE_SIZE, IMAGE_SIZE, Bitmap.Config.ARGB_8888).apply {
             setPixels(intValues, 0, width, 0, 0, width, height)
         }
+    }
+
+    companion object {
+
+        private const val STYLE_PREDICT = "style_predict"
+        private const val STYLE_TRANSFORM = "style_transform"
+
+        private const val IMAGE_SIZE = 512
+        private const val IMAGE_MEAN = 128f
+        private const val IMAGE_OFFSET = 1f
+        private const val FLOAT_TYPE_SIZE = 4
+        private const val PIXEL_SIZE = 3
     }
 }

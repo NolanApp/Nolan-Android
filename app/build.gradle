@@ -56,7 +56,8 @@ android {
 dependencies {
     implementation project(':camera-view')
 //    implementation project(':stylize-legacy')
-    implementation project(':stylize-experimental')
+    implementation project(':stylize-popart')
+//    implementation project(':stylize-experimental')
 
     implementation deps.kotlin.stdlib
 

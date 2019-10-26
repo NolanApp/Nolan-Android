@@ -1,4 +1,4 @@
-package soup.nolan.stylize.experimental
+package soup.nolan.stylize.common
 
 import android.graphics.Matrix
 import kotlin.math.abs

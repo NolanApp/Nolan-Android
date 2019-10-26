@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import soup.nolan.R
 import soup.nolan.databinding.EditFragmentBinding
-import soup.nolan.stylize.experimental.PopStyleTransfer
+import soup.nolan.stylize.popart.PopStyleTransfer
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.EditFragmentDirections.Companion.actionToShare
 import soup.nolan.ui.utils.setOnDebounceClickListener

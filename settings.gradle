@@ -2,8 +2,10 @@ include ':app'
 include ':camera-view'
 include ':stylize-common'
 include ':stylize-legacy'
+include ':stylize-popart'
 include ':stylize-experimental'
 
 project(":stylize-common").projectDir=new File(rootDir, "filter/stylize-common")
 project(":stylize-legacy").projectDir=new File(rootDir, "filter/stylize-legacy")
+project(":stylize-popart").projectDir=new File(rootDir, "filter/stylize-popart")
 project(":stylize-experimental").projectDir=new File(rootDir, "filter/stylize-experimental")
