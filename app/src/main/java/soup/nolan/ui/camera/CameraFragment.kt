@@ -120,7 +120,7 @@ class CameraFragment : BaseFragment() {
             }
         }
         binding.header.run {
-            moreButton.setOnClickListener {
+            moreButton.setOnDebounceClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToSettings())
             }
             ratioButton.setOnClickListener {}
@@ -157,10 +157,10 @@ class CameraFragment : BaseFragment() {
             listView.adapter = listAdapter
         }
         binding.footer.run {
-            galleryButton.setOnClickListener {
+            galleryButton.setOnDebounceClickListener {
 //                findNavController().navigate(CameraFragmentDirections.actionToEdit())
             }
-            captureButton.setOnClickListener {
+            captureButton.setOnDebounceClickListener {
                 val file = File(it.context.cacheDir, "capture")
                 binding.cameraPreview.takePicture(file, CameraXExecutors.mainThreadExecutor(), object : ImageCapture.OnImageSavedListener {
 
