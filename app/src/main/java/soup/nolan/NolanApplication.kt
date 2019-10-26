@@ -11,6 +11,7 @@ class NolanApplication : DaggerApplication() {
         super.onCreate()
         LogTracker.install(this)
         BlurKit.init(this)
+        NotificationChannels.createAll(this)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {

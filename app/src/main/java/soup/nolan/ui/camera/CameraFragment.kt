@@ -4,6 +4,7 @@ import android.Manifest
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -29,6 +30,7 @@ import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraFragmentBinding
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
+import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.utils.lazyFast
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import timber.log.Timber
@@ -158,7 +160,7 @@ class CameraFragment : BaseFragment() {
         }
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
-//                findNavController().navigate(CameraFragmentDirections.actionToEdit())
+                Gallery.takePicture(this@CameraFragment)
             }
             captureButton.setOnDebounceClickListener {
                 val file = File(it.context.cacheDir, "capture")
@@ -184,6 +186,14 @@ class CameraFragment : BaseFragment() {
             }
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Gallery.onPictureTaken(requestCode, resultCode, data) {
+            findNavController().navigate(CameraFragmentDirections.actionToEdit(it))
+        }
+    }
+
 
     @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraFragmentBinding) {

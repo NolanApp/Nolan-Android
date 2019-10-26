@@ -1,5 +1,6 @@
 package soup.nolan.ui.edit
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,6 +27,8 @@ class EditFragment : BaseFragment() {
 
     private lateinit var binding: EditFragmentBinding
 
+    private var lastBitmap: Bitmap? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,17 +41,25 @@ class EditFragment : BaseFragment() {
     }
 
     private fun initViewState(binding: EditFragmentBinding) {
+        binding.saveButton.setOnDebounceClickListener {
+            val bitmap = lastBitmap
+            if (bitmap != null) {
+                Gallery.saveBitmap(it.context, bitmap)
+            }
+        }
         binding.shareButton.setOnDebounceClickListener {
             findNavController().navigate(actionToShare(args.fileUri))
         }
         val style = BitmapFactory.decodeResource(resources, R.drawable.style)
         val input = FirebaseVisionImage.fromFilePath(requireContext(), args.fileUri).bitmap
         binding.editImageView.setImageBitmap(input)
+        lastBitmap = input
         val start = System.currentTimeMillis()
         transfer.transform(input)
             .addOnSuccessListener {
                 val duration = System.currentTimeMillis() - start
                 Timber.d("success: $it $duration ms")
+                lastBitmap = it
                 activity?.runOnUiThread {
                     binding.editImageView.setImageBitmap(it)
                 }
