@@ -55,7 +55,7 @@ android {
 
 dependencies {
     implementation project(':camera-view')
-//    implementation project(':stylize-legacy')
+    implementation project(':stylize-legacy')
     implementation project(':stylize-popart')
 //    implementation project(':stylize-experimental')
 

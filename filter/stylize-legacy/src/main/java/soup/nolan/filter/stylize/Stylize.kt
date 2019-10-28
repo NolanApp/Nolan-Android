@@ -1,12 +1,12 @@
 package soup.nolan.filter.stylize
 
-import android.content.res.AssetManager
+import android.content.Context
 import android.graphics.Bitmap
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface
 
-internal class Stylize(assetManager: AssetManager) {
+internal class Stylize(context: Context) {
 
-    private val inference = TensorFlowInferenceInterface(assetManager, MODEL_FILE)
+    private val inference = TensorFlowInferenceInterface(context.assets, MODEL_FILE)
 
     fun stylize(bitmap: Bitmap, style: StyleInput): Bitmap {
         val pixelCount = bitmap.width * bitmap.height

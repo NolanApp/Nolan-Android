@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import soup.nolan.R
 import soup.nolan.databinding.EditFragmentBinding
+import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.stylize.popart.PopStyleTransfer
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.EditFragmentDirections.Companion.actionToShare
@@ -24,6 +25,7 @@ class EditFragment : BaseFragment() {
     private val viewModel: EditViewModel by viewModel()
 
     private val transfer by lazy { PopStyleTransfer() }
+    private val legacyTransfer by lazy { LegacyStyleTransfer(requireContext()) }
 
     private lateinit var binding: EditFragmentBinding
 
@@ -55,7 +57,7 @@ class EditFragment : BaseFragment() {
         binding.editImageView.setImageBitmap(input)
         lastBitmap = input
         val start = System.currentTimeMillis()
-        transfer.transform(input)
+        legacyTransfer.transform(input)
             .addOnSuccessListener {
                 val duration = System.currentTimeMillis() - start
                 Timber.d("success: $it $duration ms")
