@@ -89,10 +89,10 @@ dependencies {
     implementation deps.util.timber
 
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.google.firebase:firebase-core:17.2.0'
-    implementation 'com.google.firebase:firebase-ml-vision:23.0.0'
-    implementation 'com.google.firebase:firebase-ml-vision-face-model:18.0.0'
-    implementation 'com.google.firebase:firebase-ml-model-interpreter:21.0.0'
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
+    implementation 'com.google.firebase:firebase-ml-vision-face-model:19.0.0'
+    implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.0'
 
     implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
