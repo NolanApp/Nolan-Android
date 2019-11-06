@@ -6,15 +6,17 @@ import android.graphics.Canvas
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import soup.nolan.stylize.common.ImageUtils
+import soup.nolan.stylize.common.StylizeExecutors
+import java.util.concurrent.Callable
 
 class LegacyStyleTransfer(context: Context) {
 
     private val stylize: Stylize = Stylize(context.applicationContext)
 
     fun transform(bitmap: Bitmap): Task<Bitmap> {
-        return Tasks.call {
+        return Tasks.call(StylizeExecutors.serialExecutor, Callable<Bitmap> {
             getStylizedImageFrom(bitmap)
-        }
+        })
     }
 
     private fun getStylizedImageFrom(bitmap: Bitmap, desiredSize: Int = 1024): Bitmap {
