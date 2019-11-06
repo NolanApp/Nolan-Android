@@ -43,6 +43,8 @@ class EditFragment : BaseFragment() {
     }
 
     private fun initViewState(binding: EditFragmentBinding) {
+        binding.loadingView.show()
+
         binding.saveButton.setOnDebounceClickListener {
             val bitmap = lastBitmap
             if (bitmap != null) {
@@ -70,6 +72,9 @@ class EditFragment : BaseFragment() {
             .addOnFailureListener {
                 Timber.d("failure: $it")
                 toast("Error: $it")
+            }
+            .addOnCompleteListener {
+                binding.loadingView.hide()
             }
     }
 }
