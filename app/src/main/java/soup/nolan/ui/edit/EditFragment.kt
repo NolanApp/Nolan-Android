@@ -1,7 +1,6 @@
 package soup.nolan.ui.edit
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import soup.nolan.R
 import soup.nolan.databinding.EditFragmentBinding
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.stylize.popart.PopStyleTransfer
@@ -54,7 +52,6 @@ class EditFragment : BaseFragment() {
         binding.shareButton.setOnDebounceClickListener {
             findNavController().navigate(actionToShare(args.fileUri))
         }
-        val style = BitmapFactory.decodeResource(resources, R.drawable.style)
         val input = FirebaseVisionImage.fromFilePath(requireContext(), args.fileUri).bitmap
         binding.editImageView.setImageBitmap(input)
         lastBitmap = input
