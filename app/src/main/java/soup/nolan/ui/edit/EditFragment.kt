@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import soup.nolan.BuildConfig
 import soup.nolan.databinding.EditFragmentBinding
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.stylize.popart.PopStyleTransfer
@@ -64,11 +65,15 @@ class EditFragment : BaseFragment() {
                 activity?.runOnUiThread {
                     binding.editImageView.setImageBitmap(it)
                 }
-                toast("Success! ($duration ms)")
+                if (BuildConfig.DEBUG) {
+                    toast("Success! ($duration ms)")
+                }
             }
             .addOnFailureListener {
                 Timber.d("failure: $it")
-                toast("Error: $it")
+                if (BuildConfig.DEBUG) {
+                    toast("Error: $it")
+                }
             }
             .addOnCompleteListener {
                 binding.loadingView.hide()
