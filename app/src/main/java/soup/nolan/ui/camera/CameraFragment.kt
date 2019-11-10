@@ -113,14 +113,14 @@ class CameraFragment : BaseFragment() {
         }
 
         binding.gpuImageView.filter = GPUImageSepiaToneFilter()
-        binding.randomButton.setOnClickListener {
-            binding.gpuImageView.filter = when (Random.nextInt() % 3) {
-                0 -> GPUImageSepiaToneFilter()
-                1 -> GPUImageSketchFilter()
-                2 -> GPUImageGrayscaleFilter()
-                else -> GPUImageGaussianBlurFilter()
-            }
-        }
+//        binding.randomButton.setOnClickListener {
+//            binding.gpuImageView.filter = when (Random.nextInt() % 3) {
+//                0 -> GPUImageSepiaToneFilter()
+//                1 -> GPUImageSketchFilter()
+//                2 -> GPUImageGrayscaleFilter()
+//                else -> GPUImageGaussianBlurFilter()
+//            }
+//        }
         binding.header.run {
             moreButton.setOnDebounceClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToSettings())
