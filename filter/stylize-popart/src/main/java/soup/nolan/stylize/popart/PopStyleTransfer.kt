@@ -2,8 +2,6 @@ package soup.nolan.stylize.popart
 
 import android.graphics.Bitmap
 import com.google.android.gms.tasks.Task
-import com.google.firebase.ml.common.modeldownload.FirebaseLocalModel
-import com.google.firebase.ml.common.modeldownload.FirebaseModelManager
 import com.google.firebase.ml.custom.*
 import soup.nolan.stylize.common.centerCropped
 import soup.nolan.stylize.common.toPixels
@@ -23,10 +21,11 @@ class PopStyleTransfer {
 
     private val intValues = IntArray(IMAGE_SIZE * IMAGE_SIZE)
 
-    private val transformModel by lazy {
-        val options = FirebaseModelOptions.Builder()
-            .setLocalModelName(STYLE_NAME)
+    private val transformModel: FirebaseModelInterpreter by lazy {
+        val localModel = FirebaseCustomLocalModel.Builder()
+            .setAssetFilePath("pop_art_styler.tflite")
             .build()
+        val options = FirebaseModelInterpreterOptions.Builder(localModel).build()
         FirebaseModelInterpreter.getInstance(options)!!
     }
 
@@ -35,13 +34,6 @@ class PopStyleTransfer {
             .setInputFormat(0, dataType, intArrayOf(1, IMAGE_SIZE, IMAGE_SIZE, PIXEL_SIZE))
             .setOutputFormat(0, dataType, intArrayOf(1, IMAGE_SIZE, IMAGE_SIZE, PIXEL_SIZE))
             .build()
-    }
-
-    init {
-        val transform = FirebaseLocalModel.Builder(STYLE_NAME)
-            .setAssetFilePath("pop_art_styler.tflite")
-            .build()
-        FirebaseModelManager.getInstance().registerLocalModel(transform)
     }
 
     fun transform(bitmap: Bitmap): Task<Bitmap> {
