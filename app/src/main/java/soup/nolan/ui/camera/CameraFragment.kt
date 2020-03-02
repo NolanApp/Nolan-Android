@@ -12,8 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.camera.core.CameraX.LensFacing
+import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.impl.utils.executor.CameraXExecutors
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -37,7 +38,6 @@ import timber.log.Timber
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.random.Random
 
 class CameraFragment : BaseFragment() {
 
@@ -75,7 +75,7 @@ class CameraFragment : BaseFragment() {
             })
         }
         FaceImageAnalyzer(detector).apply {
-            isMirror = binding.cameraPreview.cameraLensFacing?.isFront() ?: false
+            isMirror = binding.cameraPreview.cameraLensFacing == LENS_FACING_FRONT
         }
     }
 
@@ -83,7 +83,7 @@ class CameraFragment : BaseFragment() {
         GpuImageAnalyzer {
             binding.gpuImageView.setImage(it)
         }.apply {
-            isMirror = binding.cameraPreview.cameraLensFacing?.isFront() ?: false
+            isMirror = binding.cameraPreview.cameraLensFacing == LENS_FACING_FRONT
         }
     }
 
@@ -133,7 +133,7 @@ class CameraFragment : BaseFragment() {
             facingButton.setOnClickListener {
                 binding.cameraPreview.toggleCamera()
                 binding.cameraPreview.cameraLensFacing?.let { lensFacing ->
-                    val isFrontLens = lensFacing.isFront()
+                    val isFrontLens = lensFacing == LENS_FACING_FRONT
                     if (!isFrontLens) {
                         flipOut.setTarget(facingFrontButton)
                         flipIn.setTarget(facingBackButton)
@@ -163,21 +163,20 @@ class CameraFragment : BaseFragment() {
                 Gallery.takePicture(this@CameraFragment)
             }
             captureButton.setOnDebounceClickListener {
-                val file = File(it.context.cacheDir, "capture")
-                binding.cameraPreview.takePicture(file, CameraXExecutors.mainThreadExecutor(), object : ImageCapture.OnImageSavedListener {
+                val saveFile = File(it.context.cacheDir, "capture")
+                binding.cameraPreview.takePicture(
+                    saveFile,
+                    CameraXExecutors.mainThreadExecutor(),
+                    object : ImageCapture.OnImageSavedCallback {
 
-                    override fun onImageSaved(file: File) {
-                        findNavController().navigate(CameraFragmentDirections.actionToEdit(file.toUri()))
-                    }
+                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                            findNavController().navigate(CameraFragmentDirections.actionToEdit(saveFile.toUri()))
+                        }
 
-                    override fun onError(
-                        imageCaptureError: ImageCapture.ImageCaptureError,
-                        message: String,
-                        cause: Throwable?
-                    ) {
-                        //TODO
-                    }
-                })
+                        override fun onError(exception: ImageCaptureException) {
+                            //TODO
+                        }
+                    })
             }
             filterButton.setOnDebounceClickListener {
                 binding.filter.root.run {
@@ -194,16 +193,11 @@ class CameraFragment : BaseFragment() {
         }
     }
 
-
     @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraFragmentBinding) {
         //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
         //binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
-    }
-
-    private fun LensFacing.isFront(): Boolean {
-        return this == LensFacing.FRONT
     }
 
     override fun onRequestPermissionsResult(

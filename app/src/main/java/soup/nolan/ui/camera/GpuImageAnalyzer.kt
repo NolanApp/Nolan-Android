@@ -13,16 +13,19 @@ class GpuImageAnalyzer(
 
     var isMirror: Boolean = false
 
-    override fun analyze(proxy: ImageProxy, rotationDegrees: Int) {
-        val image = proxy.image ?: return
-        val rawImage = RawImage(
-            image,
-            proxy.width,
-            proxy.height,
-            rotationDegrees,
-            isMirror
-        )
-        consumer(rawImage.toBitmap())
+    override fun analyze(image: ImageProxy) {
+        image.use { proxy ->
+            image.image?.use {
+                val rawImage = RawImage(
+                    it,
+                    proxy.width,
+                    proxy.height,
+                    proxy.imageInfo.rotationDegrees,
+                    isMirror
+                )
+                consumer(rawImage.toBitmap())
+            }
+        }
     }
 
     private fun RawImage.toBitmap(): Bitmap {

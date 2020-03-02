@@ -11,18 +11,21 @@ class FaceImageAnalyzer(
 
     var isMirror: Boolean = false
 
-    override fun analyze(proxy: ImageProxy, rotationDegrees: Int) {
-        val image = proxy.image ?: return
-        if (detector.isInDetecting().not()) {
-            detector.detect(
-                RawImage(
-                    image,
-                    proxy.width,
-                    proxy.height,
-                    rotationDegrees,
-                    isMirror
-                )
-            )
+    override fun analyze(image: ImageProxy) {
+        image.use { proxy ->
+            image.image?.use {
+                if (detector.isInDetecting().not()) {
+                    detector.detect(
+                        RawImage(
+                            it,
+                            proxy.width,
+                            proxy.height,
+                            proxy.imageInfo.rotationDegrees,
+                            isMirror
+                        )
+                    )
+                }
+            }
         }
     }
 }

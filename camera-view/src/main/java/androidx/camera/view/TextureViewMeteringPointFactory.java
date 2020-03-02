@@ -22,6 +22,7 @@ import android.graphics.SurfaceTexture;
 import android.view.TextureView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.MeteringPointFactory;
 
@@ -45,10 +46,13 @@ public class TextureViewMeteringPointFactory extends MeteringPointFactory {
 
     /**
      * Translates a (x,y) from TextureView.
+     *
+     * @hide
      */
     @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    protected PointF translatePoint(float x, float y) {
+    protected PointF convertPoint(float x, float y) {
         Matrix transform = new Matrix();
         mTextureView.getTransform(transform);
 
