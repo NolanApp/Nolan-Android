@@ -83,10 +83,6 @@ dependencies {
     kapt deps.dagger.compiler
     kapt deps.dagger.android_processor
 
-    implementation deps.rx.java2
-    implementation deps.rx.kotlin
-    implementation deps.rx.android
-
     implementation deps.util.timber
 
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
