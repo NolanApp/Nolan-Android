@@ -66,16 +66,16 @@ dependencies {
     implementation deps.androidx.constraintlayout
     implementation deps.androidx.core_ktx
     implementation deps.androidx.fragment_ktx
-    implementation deps.androidx.preference_ktx
     implementation deps.androidx.recyclerview
     implementation deps.androidx.material
     implementation "androidx.camera:camera-camera2:1.0.0-alpha10"
 
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.compiler
+
     implementation deps.navigation.fragment_ktx
 
-    implementation 'com.android.billingclient:billing:2.0.3'
+    implementation 'com.android.billingclient:billing:2.1.0'
 
     implementation deps.dagger.runtime
     implementation deps.dagger.android
@@ -86,10 +86,10 @@ dependencies {
     implementation deps.util.timber
 
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
     implementation 'com.google.firebase:firebase-ml-vision-face-model:19.0.0'
-    implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.0'
+    implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.1'
 
     implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
