@@ -7,7 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/white">
+        android:background="@color/off_white">
 
         <ImageView
             android:id="@+id/moreButton"

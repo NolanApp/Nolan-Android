@@ -7,7 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="108dp"
-        android:background="@color/white">
+        android:background="@color/off_white">
 
         <ImageView
             android:id="@+id/galleryButton"
@@ -22,12 +22,45 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/shadow_white"
+            android:scaleType="centerInside"
+            android:translationX="-5dp"
+            android:translationY="-5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/shadow_black"
+            android:scaleType="centerInside"
+            android:translationX="5dp"
+            android:translationY="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/shadow_off_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
             android:id="@+id/captureButton"
             android:layout_width="96dp"
             android:layout_height="0dp"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_photo_capture"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
