@@ -4,6 +4,9 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import soup.nolan.NolanApplication
+import soup.nolan.ads.AdManager
+import soup.nolan.ads.AdManagerImpl
+import javax.inject.Singleton
 
 @Module
 class ApplicationModule {
@@ -12,4 +15,10 @@ class ApplicationModule {
     fun provideContext(
         application: NolanApplication
     ): Context = application.applicationContext
+
+    @Singleton
+    @Provides
+    fun provideAdManager(
+        context: Context
+    ): AdManager = AdManagerImpl(context)
 }

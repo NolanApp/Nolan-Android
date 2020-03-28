@@ -18,12 +18,17 @@ import androidx.camera.core.ImageCaptureException
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
+import kotlinx.coroutines.launch
 import soup.nolan.R
+import soup.nolan.ads.AdManager
 import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
@@ -35,10 +40,14 @@ import soup.nolan.ui.utils.lazyFast
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 
 class CameraFragment : BaseFragment() {
+
+    @Inject
+    lateinit var adManager: AdManager
 
     private val viewModel: CameraViewModel by viewModel()
 
@@ -159,7 +168,29 @@ class CameraFragment : BaseFragment() {
         }
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
-                Gallery.takePicture(this@CameraFragment)
+                lifecycleScope.launch {
+                    adManager.loadRewardedAd()?.let {
+                        if (it.isLoaded) {
+                            val adCallback = object: RewardedAdCallback() {
+                                override fun onRewardedAdOpened() {
+                                    Timber.d("onRewardedAdOpened:")
+                                }
+                                override fun onRewardedAdClosed() {
+                                    Timber.d("onRewardedAdClosed:")
+                                    Gallery.takePicture(this@CameraFragment)
+                                    //TODO: reload rewarded ad
+                                }
+                                override fun onUserEarnedReward(reward: RewardItem) {
+                                    Timber.i("onUserEarnedReward: amount=${reward.amount}")
+                                }
+                                override fun onRewardedAdFailedToShow(errorCode: Int) {
+                                    Timber.w("onRewardedAdFailedToShow: errorCode=$errorCode")
+                                }
+                            }
+                            it.show(activity, adCallback)
+                        }
+                    }
+                }
             }
             captureButton.setOnDebounceClickListener {
                 val saveFile = File(it.context.cacheDir, "capture")

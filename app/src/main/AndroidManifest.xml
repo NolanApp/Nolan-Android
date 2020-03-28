@@ -28,6 +28,10 @@
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="face" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
+
         <activity android:name=".ui.NolanActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -94,6 +94,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
     implementation 'com.google.firebase:firebase-ml-vision-face-model:19.0.0'
     implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.1'
+    implementation 'com.google.firebase:firebase-ads:19.0.1'
 
     implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
