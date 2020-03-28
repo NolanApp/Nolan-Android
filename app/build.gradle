@@ -54,7 +54,6 @@ android {
 }
 
 dependencies {
-    implementation project(':camera-view')
     implementation project(':stylize-legacy')
     implementation project(':stylize-popart')
 //    implementation project(':stylize-experimental')
@@ -68,7 +67,9 @@ dependencies {
     implementation deps.androidx.fragment_ktx
     implementation deps.androidx.recyclerview
     implementation deps.androidx.material
-    implementation "androidx.camera:camera-camera2:1.0.0-alpha10"
+
+    implementation 'com.github.fornewid:CameraView:1.0.0-alpha08'
+    implementation "androidx.camera:camera-camera2:1.0.0-beta01"
 
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.compiler

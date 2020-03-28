@@ -1,5 +1,4 @@
 include ':app'
-include ':camera-view'
 include ':stylize-common'
 include ':stylize-legacy'
 include ':stylize-popart'

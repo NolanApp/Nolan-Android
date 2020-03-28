@@ -15,7 +15,7 @@ class GpuImageAnalyzer(
 
     override fun analyze(image: ImageProxy) {
         image.use { proxy ->
-            image.image?.use {
+            proxy.image?.use {
                 val rawImage = RawImage(
                     it,
                     proxy.width,

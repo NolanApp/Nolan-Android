@@ -13,7 +13,7 @@ class FaceImageAnalyzer(
 
     override fun analyze(image: ImageProxy) {
         image.use { proxy ->
-            image.image?.use {
+            proxy.image?.use {
                 if (detector.isInDetecting().not()) {
                     detector.detect(
                         RawImage(

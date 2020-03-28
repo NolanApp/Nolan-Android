@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.impl.utils.executor.CameraXExecutors
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -166,7 +165,7 @@ class CameraFragment : BaseFragment() {
                 val saveFile = File(it.context.cacheDir, "capture")
                 binding.cameraPreview.takePicture(
                     saveFile,
-                    CameraXExecutors.mainThreadExecutor(),
+                    ContextCompat.getMainExecutor(it.context),
                     object : ImageCapture.OnImageSavedCallback {
 
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
