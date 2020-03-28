@@ -2,35 +2,34 @@ package soup.nolan
 
 import android.content.Context
 import android.util.Log
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
-import io.fabric.sdk.android.Fabric
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 
 object LogTracker {
 
-    fun install(context: Context) {
-        initCrashlytics(context.applicationContext)
-        Timber.plant(CrashlyticsTree())
-    }
+    private const val E_TAG = "E/TAG:"
 
-    private fun initCrashlytics(context: Context) {
-        val core = CrashlyticsCore.Builder()
-            .disabled(BuildConfig.DEBUG)
-            .build()
-        Fabric.with(context, Crashlytics.Builder().core(core).build())
+    private val crashlytics = FirebaseCrashlytics.getInstance()
+
+    fun install(context: Context) {
+        Timber.plant(CrashlyticsTree())
     }
 
     private class CrashlyticsTree : Timber.Tree() {
 
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-            if (priority == Log.VERBOSE || priority == Log.DEBUG || priority == Log.INFO) {
-                return
-            }
-            when {
-                t != null -> Crashlytics.logException(t)
-                tag != null -> Crashlytics.log("$tag: $message")
-                else -> Crashlytics.log(message)
+            if (priority == Log.VERBOSE || priority == Log.DEBUG || priority == Log.INFO) return
+            when (priority) {
+                Log.WARN -> when {
+                    t != null -> crashlytics.recordException(t)
+                    tag != null -> crashlytics.log("$tag: $message")
+                    else -> crashlytics.log(message)
+                }
+                Log.ERROR, Log.ASSERT -> when {
+                    t != null -> crashlytics.recordException(t)
+                    tag != null -> crashlytics.log("$E_TAG $tag: $message")
+                    else -> crashlytics.log("$E_TAG $message")
+                }
             }
         }
     }

@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion build_versions.compile_sdk
@@ -30,6 +30,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders = [crashlytics_enabled: false]
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
         }
         release {
             signingConfig signingConfigs.release
@@ -86,8 +89,8 @@ dependencies {
 
     implementation deps.util.timber
 
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-core:17.2.3'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta02'
     implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
     implementation 'com.google.firebase:firebase-ml-vision-face-model:19.0.0'
     implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.1'
