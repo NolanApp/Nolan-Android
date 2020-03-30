@@ -7,11 +7,11 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 
-fun Fragment.toast(msg: CharSequence) {
+inline fun Fragment.toast(msg: CharSequence) {
     context?.toast(msg)
 }
 
-fun Fragment.toast(@StringRes msg: Int) {
+inline fun Fragment.toast(@StringRes msg: Int) {
     context?.toast(msg)
 }
 

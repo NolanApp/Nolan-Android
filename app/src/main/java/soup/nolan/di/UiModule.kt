@@ -14,7 +14,7 @@ abstract class UiModule {
         modules = [
             SplashUiModule::class,
             CameraUiModule::class,
-            EditUiModule::class,
+            PhotoEditUiModule::class,
             ShareUiModule::class,
             SettingsUiModule::class
         ]

@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/camera"
         android:name="soup.nolan.ui.camera.CameraFragment"
-        tools:layout="@layout/camera_fragment">
+        tools:layout="@layout/camera">
 
         <action
             android:id="@+id/action_to_edit"
@@ -37,8 +37,8 @@
 
     <fragment
         android:id="@+id/edit"
-        android:name="soup.nolan.ui.edit.EditFragment"
-        tools:layout="@layout/edit_fragment">
+        android:name="soup.nolan.ui.edit.PhotoEditFragment"
+        tools:layout="@layout/photo_edit">
 
         <argument
             android:name="fileUri"

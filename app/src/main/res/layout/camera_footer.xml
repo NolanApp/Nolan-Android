@@ -6,11 +6,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="108dp"
-        android:background="@color/off_white">
+        android:layout_height="wrap_content"
+        tools:background="@color/off_white">
 
         <ImageView
-            android:id="@+id/galleryButton"
+            android:id="@+id/gallery_button"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_marginStart="32dp"
@@ -56,9 +56,9 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/captureButton"
+            android:id="@+id/capture_button"
             android:layout_width="96dp"
-            android:layout_height="0dp"
+            android:layout_height="96dp"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -67,7 +67,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/filterButton"
+            android:id="@+id/filter_button"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_marginEnd="32dp"

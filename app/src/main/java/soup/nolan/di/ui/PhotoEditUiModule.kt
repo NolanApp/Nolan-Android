@@ -7,18 +7,18 @@ import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 import soup.nolan.di.scope.FragmentScope
 import soup.nolan.di.scope.ViewModelKey
-import soup.nolan.ui.edit.EditFragment
-import soup.nolan.ui.edit.EditViewModel
+import soup.nolan.ui.edit.PhotoEditFragment
+import soup.nolan.ui.edit.PhotoEditViewModel
 
 @Module
-abstract class EditUiModule {
+abstract class PhotoEditUiModule {
 
     @FragmentScope
     @ContributesAndroidInjector
-    abstract fun bindEditFragment(): EditFragment
+    abstract fun bindEditFragment(): PhotoEditFragment
 
     @Binds
     @IntoMap
-    @ViewModelKey(EditViewModel::class)
-    abstract fun bindEditViewModel(viewModel: EditViewModel): ViewModel
+    @ViewModelKey(PhotoEditViewModel::class)
+    abstract fun bindEditViewModel(viewModel: PhotoEditViewModel): ViewModel
 }

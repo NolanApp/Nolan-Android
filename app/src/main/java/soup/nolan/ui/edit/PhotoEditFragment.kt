@@ -9,24 +9,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import soup.nolan.BuildConfig
-import soup.nolan.databinding.EditFragmentBinding
+import soup.nolan.databinding.PhotoEditBinding
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.stylize.popart.PopStyleTransfer
 import soup.nolan.ui.base.BaseFragment
-import soup.nolan.ui.edit.EditFragmentDirections.Companion.actionToShare
+import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToShare
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
 import timber.log.Timber
 
-class EditFragment : BaseFragment() {
+class PhotoEditFragment : BaseFragment() {
 
-    private val args: EditFragmentArgs by navArgs()
-    private val viewModel: EditViewModel by viewModel()
+    private val args: PhotoEditFragmentArgs by navArgs()
+    private val viewModel: PhotoEditViewModel by viewModel()
 
     private val transfer by lazy { PopStyleTransfer() }
     private val legacyTransfer by lazy { LegacyStyleTransfer(requireContext()) }
 
-    private lateinit var binding: EditFragmentBinding
+    private lateinit var binding: PhotoEditBinding
 
     private var lastBitmap: Bitmap? = null
 
@@ -35,13 +35,13 @@ class EditFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = EditFragmentBinding.inflate(inflater, container, false)
+        binding = PhotoEditBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         initViewState(binding)
         return binding.root
     }
 
-    private fun initViewState(binding: EditFragmentBinding) {
+    private fun initViewState(binding: PhotoEditBinding) {
         binding.loadingView.show()
 
         binding.saveButton.setOnDebounceClickListener {
@@ -54,7 +54,7 @@ class EditFragment : BaseFragment() {
             findNavController().navigate(actionToShare(args.fileUri))
         }
         val input = FirebaseVisionImage.fromFilePath(requireContext(), args.fileUri).bitmap
-        binding.editImageView.setImageBitmap(input)
+        binding.editableImage.setImageBitmap(input)
         lastBitmap = input
         val start = System.currentTimeMillis()
         legacyTransfer.transform(input)
@@ -63,7 +63,7 @@ class EditFragment : BaseFragment() {
                 Timber.d("success: $it $duration ms")
                 lastBitmap = it
                 activity?.runOnUiThread {
-                    binding.editImageView.setImageBitmap(it)
+                    binding.editableImage.setImageBitmap(it)
                 }
                 if (BuildConfig.DEBUG) {
                     toast("Success! ($duration ms)")

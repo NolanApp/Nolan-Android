@@ -32,12 +32,14 @@ import soup.nolan.ads.AdManager
 import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.firebase.FirebaseFaceDetector
 import soup.nolan.core.detector.model.Frame
-import soup.nolan.databinding.CameraFragmentBinding
+import soup.nolan.databinding.CameraBinding
+import soup.nolan.filter.stylize.Styles
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.utils.lazyFast
 import soup.nolan.ui.utils.setOnDebounceClickListener
+import soup.nolan.ui.utils.toast
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -51,7 +53,7 @@ class CameraFragment : BaseFragment() {
 
     private val viewModel: CameraViewModel by viewModel()
 
-    private lateinit var binding: CameraFragmentBinding
+    private lateinit var binding: CameraBinding
 
     private val faceImageAnalyzer by lazyFast {
         val detector: FaceDetector = FirebaseFaceDetector().apply {
@@ -102,13 +104,13 @@ class CameraFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = CameraFragmentBinding.inflate(inflater, container, false)
+        binding = CameraBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         initViewState(binding)
         return binding.root
     }
 
-    private fun initViewState(binding: CameraFragmentBinding) {
+    private fun initViewState(binding: CameraBinding) {
         if (allPermissionsGranted(binding.root.context)) {
             binding.cameraPreview.post {
                 startCameraWith(binding)
@@ -133,8 +135,6 @@ class CameraFragment : BaseFragment() {
             moreButton.setOnDebounceClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToSettings())
             }
-            ratioButton.setOnClickListener {}
-
             val flipOut = AnimatorInflater.loadAnimator(root.context, R.animator.flip_out)
             val flipIn = AnimatorInflater.loadAnimator(root.context, R.animator.flip_in)
 
@@ -162,8 +162,9 @@ class CameraFragment : BaseFragment() {
         binding.filter.run {
             val listAdapter = CameraFilterListAdapter {
                 //TODO: 클릭 처리
+                toast("준비 중입니다.")
             }
-//            listAdapter.submitList(Styles.thumbnails.mapIndexed(::CameraFilterUiModel))
+            listAdapter.submitList(Styles.thumbnails.mapIndexed(::CameraFilterUiModel))
             listView.adapter = listAdapter
         }
         binding.footer.run {
@@ -204,7 +205,7 @@ class CameraFragment : BaseFragment() {
                         }
 
                         override fun onError(exception: ImageCaptureException) {
-                            //TODO
+                            Timber.w(exception)
                         }
                     })
             }
@@ -224,7 +225,7 @@ class CameraFragment : BaseFragment() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun startCameraWith(binding: CameraFragmentBinding) {
+    private fun startCameraWith(binding: CameraBinding) {
         //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
         //binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)

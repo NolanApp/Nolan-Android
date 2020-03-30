@@ -9,37 +9,39 @@
         android:layout_height="match_parent">
 
         <androidx.camera.view.CameraView
-            android:id="@+id/cameraPreview"
+            android:id="@+id/camera_preview"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="60dp"
             app:captureMode="image"
-            app:layout_constraintBottom_toTopOf="@id/footer"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintTop_toTopOf="parent"
             app:lensFacing="front"
             app:pinchToZoomEnabled="true" />
 
         <jp.co.cyberagent.android.gpuimage.GPUImageView
-            android:id="@+id/gpuImageView"
+            android:id="@+id/gpu_image_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
             app:gpuimage_surface_type="texture_view"
-            app:layout_constraintBottom_toTopOf="@id/footer"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header" />
+            app:layout_constraintBottom_toBottomOf="@id/camera_preview"
+            app:layout_constraintEnd_toEndOf="@id/camera_preview"
+            app:layout_constraintStart_toStartOf="@id/camera_preview"
+            app:layout_constraintTop_toTopOf="@id/camera_preview" />
 
         <soup.nolan.ui.widget.FaceBlurView
-            android:id="@+id/faceBlurView"
+            android:id="@+id/face_blur_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/cameraPreview"
-            app:layout_constraintEnd_toEndOf="@id/cameraPreview"
-            app:layout_constraintStart_toStartOf="@id/cameraPreview"
-            app:layout_constraintTop_toTopOf="@id/cameraPreview"
+            app:layout_constraintBottom_toBottomOf="@id/camera_preview"
+            app:layout_constraintEnd_toEndOf="@id/camera_preview"
+            app:layout_constraintStart_toStartOf="@id/camera_preview"
+            app:layout_constraintTop_toTopOf="@id/camera_preview"
             app:showDebugBound="false" />
 
         <include
@@ -64,10 +66,11 @@
             android:id="@+id/footer"
             layout="@layout/camera_footer"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/camera_preview" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
