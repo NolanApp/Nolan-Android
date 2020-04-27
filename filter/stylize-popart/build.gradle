@@ -35,7 +35,7 @@ dependencies {
     implementation deps.androidx.core_ktx
     implementation deps.util.timber
 
-    api 'com.google.firebase:firebase-ml-model-interpreter:22.0.1'
+    api 'com.google.firebase:firebase-ml-model-interpreter:22.0.0'
 
     testImplementation deps.test.junit
     androidTestImplementation deps.test.android
