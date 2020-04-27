@@ -1,5 +1,6 @@
 package soup.nolan.ui.utils
 
+import android.os.SystemClock
 import android.view.View
 import androidx.core.view.postOnAnimationDelayed
 import androidx.databinding.BindingAdapter
@@ -41,8 +42,10 @@ fun View.setOnDebounceClickListener(delay: Long = 0, listener: OnClickListener?)
 
 class OnDebounceClickListener(private val listener: OnClickListener) : View.OnClickListener {
 
+    private var lastTime: Long = 0
+
     override fun onClick(v: View?) {
-        val now = System.currentTimeMillis()
+        val now = SystemClock.elapsedRealtime()
         if (now - lastTime < INTERVAL) return
         lastTime = now
         if (v != null) {
@@ -53,7 +56,5 @@ class OnDebounceClickListener(private val listener: OnClickListener) : View.OnCl
     companion object {
 
         private const val INTERVAL: Long = 300
-
-        private var lastTime: Long = 0
     }
 }

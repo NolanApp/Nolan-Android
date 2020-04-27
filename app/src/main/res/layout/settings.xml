@@ -1,11 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
     tools:context=".ui.settings.SettingsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/bug_report_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/on_surface_dim_bg"
+        android:drawableStart="@drawable/ic_bug_report"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_item_bug_report"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+    <TextView
+        android:id="@+id/version_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/on_surface_dim_bg"
+        android:drawableStart="@drawable/ic_version"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_item_version"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bug_report_button" />
+
+    <TextView
+        android:id="@+id/current_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="?colorAccent"
+        app:layout_constraintBottom_toBottomOf="@id/version_button"
+        app:layout_constraintEnd_toEndOf="@id/version_button"
+        app:layout_constraintTop_toTopOf="@id/version_button"
+        tools:text="1.0.0" />
+
+    <TextView
+        android:id="@+id/remove_ad_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/on_surface_dim_bg"
+        android:drawableStart="@drawable/ic_remove_ad"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_item_remove_ads"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/version_button" />
+
+    <TextView
+        android:id="@+id/remove_ad_purchased"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:gravity="center_vertical"
+        android:text="@string/settings_purchased"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="?colorAccent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/remove_ad_button"
+        app:layout_constraintEnd_toEndOf="@id/remove_ad_button"
+        app:layout_constraintTop_toTopOf="@id/remove_ad_button"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/buy_coffee_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="buy_coffee_button,coffee_power_01,coffee_power_02,coffee_power_03,coffee_power_04,coffee_power_05" />
+
+    <TextView
+        android:id="@+id/buy_coffee_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/on_surface_dim_bg"
+        android:drawableStart="@drawable/ic_coffee"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_item_buy_coffee"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/remove_ad_button" />
+
+    <soup.nolan.ui.widget.CheckedImageView
+        android:id="@+id/coffee_power_01"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="50dp"
+        android:src="@drawable/ic_bolt"
+        android:tint="@color/color_coffee_power"
+        app:checked="false"
+        app:layout_constraintEnd_toEndOf="@id/buy_coffee_button"
+        app:layout_constraintTop_toTopOf="@id/buy_coffee_button"
+        tools:checked="true" />
+
+    <soup.nolan.ui.widget.CheckedImageView
+        android:id="@+id/coffee_power_02"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="30dp"
+        android:src="@drawable/ic_bolt"
+        android:tint="@color/color_coffee_power"
+        app:checked="false"
+        app:layout_constraintEnd_toEndOf="@id/buy_coffee_button"
+        app:layout_constraintTop_toTopOf="@id/buy_coffee_button"
+        tools:checked="true" />
+
+    <soup.nolan.ui.widget.CheckedImageView
+        android:id="@+id/coffee_power_03"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_bolt"
+        android:tint="@color/color_coffee_power"
+        app:checked="false"
+        app:layout_constraintEnd_toEndOf="@id/buy_coffee_button"
+        app:layout_constraintTop_toTopOf="@id/buy_coffee_button" />
+
+    <soup.nolan.ui.widget.CheckedImageView
+        android:id="@+id/coffee_power_04"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/ic_bolt"
+        android:tint="@color/color_coffee_power"
+        app:layout_constraintBottom_toBottomOf="@id/buy_coffee_button"
+        app:layout_constraintEnd_toEndOf="@id/buy_coffee_button" />
+
+    <soup.nolan.ui.widget.CheckedImageView
+        android:id="@+id/coffee_power_05"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/ic_bolt"
+        android:tint="@color/color_coffee_power"
+        app:layout_constraintBottom_toBottomOf="@id/buy_coffee_button"
+        app:layout_constraintEnd_toEndOf="@id/buy_coffee_button" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/ad_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="0dp"
+        app:adSize="BANNER"
+        app:adUnitId="@string/admob_ad_unit_banner_settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

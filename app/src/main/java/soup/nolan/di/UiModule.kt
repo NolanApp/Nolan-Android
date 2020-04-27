@@ -16,7 +16,8 @@ abstract class UiModule {
             CameraUiModule::class,
             PhotoEditUiModule::class,
             ShareUiModule::class,
-            SettingsUiModule::class
+            SettingsUiModule::class,
+            PurchaseUiModule::class
         ]
     )
     abstract fun bindNolanActivity(): NolanActivity

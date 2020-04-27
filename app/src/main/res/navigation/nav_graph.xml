@@ -62,6 +62,6 @@
     <fragment
         android:id="@+id/settings"
         android:name="soup.nolan.ui.settings.SettingsFragment"
-        tools:layout="@layout/settings_fragment" />
+        tools:layout="@layout/settings" />
 
 </navigation>

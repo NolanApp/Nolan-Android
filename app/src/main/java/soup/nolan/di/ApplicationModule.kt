@@ -6,6 +6,8 @@ import dagger.Provides
 import soup.nolan.NolanApplication
 import soup.nolan.ads.AdManager
 import soup.nolan.ads.AdManagerImpl
+import soup.nolan.settings.AppSettings
+import soup.nolan.settings.AppSettingsImpl
 import javax.inject.Singleton
 
 @Module
@@ -21,4 +23,10 @@ class ApplicationModule {
     fun provideAdManager(
         context: Context
     ): AdManager = AdManagerImpl(context)
+
+    @Singleton
+    @Provides
+    fun provideAppSettings(
+        context: Context
+    ): AppSettings = AppSettingsImpl(context)
 }

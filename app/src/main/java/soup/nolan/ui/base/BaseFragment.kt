@@ -1,6 +1,7 @@
 package soup.nolan.ui.base
 
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,11 @@ import androidx.navigation.navGraphViewModels
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-abstract class BaseFragment : DaggerFragment() {
+abstract class BaseFragment : DaggerFragment {
+
+    constructor() : super()
+
+    constructor(@LayoutRes contentLayoutId: Int) : super(contentLayoutId)
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
