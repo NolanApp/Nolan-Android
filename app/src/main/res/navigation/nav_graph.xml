@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/splash"
         android:name="soup.nolan.ui.splash.SplashFragment"
-        tools:layout="@layout/splash_fragment">
+        tools:layout="@layout/splash">
 
         <action
             android:id="@+id/action_to_camera"
@@ -52,7 +52,7 @@
     <fragment
         android:id="@+id/share"
         android:name="soup.nolan.ui.share.ShareFragment"
-        tools:layout="@layout/share_fragment">
+        tools:layout="@layout/share">
 
         <argument
             android:name="fileUri"

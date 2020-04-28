@@ -10,7 +10,7 @@ import soup.nolan.ui.purchase.PurchaseItem
 import soup.nolan.ui.purchase.PurchaseViewModel
 import timber.log.Timber
 
-class NolanActivity : BaseActivity() {
+class NolanActivity : BaseActivity(R.layout.nolan_activity) {
 
     private val purchaseViewModel: PurchaseViewModel by viewModel()
 
@@ -56,7 +56,6 @@ class NolanActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Nolan_Main)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.nolan_activity)
 
         billingProcessor.initialize()
         purchaseViewModel.purchaseItemEvent.observe(this, EventObserver {

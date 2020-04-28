@@ -8,9 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
 import androidx.camera.core.ImageCapture
@@ -22,10 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageGaussianBlurFilter
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageGrayscaleFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageSketchFilter
 import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.ads.AdManager
@@ -37,6 +32,7 @@ import soup.nolan.filter.stylize.Styles
 import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.Gallery
+import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.lazyFast
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
@@ -46,14 +42,14 @@ import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 
-class CameraFragment : BaseFragment() {
+class CameraFragment : BaseFragment(R.layout.camera) {
 
     @Inject
     lateinit var adManager: AdManager
 
     private val viewModel: CameraViewModel by viewModel()
 
-    private lateinit var binding: CameraBinding
+    private var binding: CameraBinding by autoCleared()
 
     private val faceImageAnalyzer by lazyFast {
         val detector: FaceDetector = FirebaseFaceDetector().apply {
@@ -99,15 +95,12 @@ class CameraFragment : BaseFragment() {
 
     private var startRequested = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = CameraBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        initViewState(binding)
-        return binding.root
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        with(CameraBinding.bind(view)) {
+            initViewState(this)
+            binding = this
+        }
     }
 
     private fun initViewState(binding: CameraBinding) {
@@ -159,13 +152,13 @@ class CameraFragment : BaseFragment() {
                 }
             }
         }
-        binding.filter.run {
+        binding.run {
             val listAdapter = CameraFilterListAdapter {
                 //TODO: 클릭 처리
                 toast("준비 중입니다.")
             }
             listAdapter.submitList(Styles.thumbnails.mapIndexed(::CameraFilterUiModel))
-            listView.adapter = listAdapter
+            filterListView.adapter = listAdapter
         }
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
@@ -210,7 +203,7 @@ class CameraFragment : BaseFragment() {
                     })
             }
             filterButton.setOnDebounceClickListener {
-                binding.filter.root.run {
+                binding.filterListView.run {
                     isVisible = !isVisible
                 }
             }
