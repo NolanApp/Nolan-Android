@@ -10,7 +10,6 @@ import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.PhotoEditBinding
 import soup.nolan.filter.stylize.LegacyStyleTransfer
-import soup.nolan.stylize.popart.PopStyleTransfer
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToShare
 import soup.nolan.ui.utils.setOnDebounceClickListener
@@ -22,7 +21,6 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
     private val args: PhotoEditFragmentArgs by navArgs()
     private val viewModel: PhotoEditViewModel by viewModel()
 
-    private val transfer by lazy { PopStyleTransfer() }
     private val legacyTransfer by lazy { LegacyStyleTransfer(requireContext()) }
 
     private var lastBitmap: Bitmap? = null

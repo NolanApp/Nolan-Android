@@ -63,7 +63,7 @@ androidExtensions {
 
 dependencies {
     implementation project(':stylize-legacy')
-    implementation project(':stylize-popart')
+//    implementation project(':stylize-popart')
 //    implementation project(':stylize-experimental')
 
     implementation deps.kotlin.stdlib
