@@ -3,20 +3,18 @@ package soup.nolan.filter.stylize
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import soup.nolan.stylize.common.ImageUtils
-import soup.nolan.stylize.common.StylizeExecutors
-import java.util.concurrent.Callable
 
 class LegacyStyleTransfer(context: Context) {
 
     private val stylize: Stylize = Stylize(context.applicationContext)
 
-    fun transform(bitmap: Bitmap): Task<Bitmap> {
-        return Tasks.call(StylizeExecutors.serialExecutor, Callable<Bitmap> {
+    suspend fun transform(bitmap: Bitmap): Bitmap {
+        return withContext(Dispatchers.IO) {
             getStylizedImageFrom(bitmap)
-        })
+        }
     }
 
     private fun getStylizedImageFrom(bitmap: Bitmap, desiredSize: Int = 1024): Bitmap {

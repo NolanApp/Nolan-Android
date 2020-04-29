@@ -3,9 +3,11 @@ package soup.nolan.ui.edit
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import kotlinx.coroutines.launch
 import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.PhotoEditBinding
@@ -42,9 +44,10 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
             val input = FirebaseVisionImage.fromFilePath(requireContext(), args.fileUri).bitmap
             editableImage.setImageBitmap(input)
             lastBitmap = input
-            val start = System.currentTimeMillis()
-            legacyTransfer.transform(input)
-                .addOnSuccessListener {
+            lifecycleScope.launch {
+                try {
+                    val start = System.currentTimeMillis()
+                    val it = legacyTransfer.transform(input)
                     val duration = System.currentTimeMillis() - start
                     Timber.d("success: $it $duration ms")
                     lastBitmap = it
@@ -54,16 +57,15 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
                     if (BuildConfig.DEBUG) {
                         toast("Success! ($duration ms)")
                     }
-                }
-                .addOnFailureListener {
-                    Timber.d("failure: $it")
+                } catch (e: Exception) {
+                    Timber.d("failure: $e")
                     if (BuildConfig.DEBUG) {
-                        toast("Error: $it")
+                        toast("Error: $e")
                     }
-                }
-                .addOnCompleteListener {
+                } finally {
                     loadingView.hide()
                 }
+            }
         }
     }
 }
