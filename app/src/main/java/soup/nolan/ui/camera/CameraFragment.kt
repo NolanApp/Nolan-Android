@@ -20,7 +20,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
 import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.ads.AdManager
@@ -85,14 +84,6 @@ class CameraFragment : BaseFragment(R.layout.camera) {
         }
     }
 
-    private val gpuImageAnalyzer by lazyFast {
-        GpuImageAnalyzer {
-            binding.gpuImageView.setImage(it)
-        }.apply {
-            isMirror = binding.cameraPreview.cameraLensFacing == LENS_FACING_FRONT
-        }
-    }
-
     private var startRequested = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,15 +106,6 @@ class CameraFragment : BaseFragment(R.layout.camera) {
             )
         }
 
-        binding.gpuImageView.filter = GPUImageSepiaToneFilter()
-//        binding.randomButton.setOnClickListener {
-//            binding.gpuImageView.filter = when (Random.nextInt() % 3) {
-//                0 -> GPUImageSepiaToneFilter()
-//                1 -> GPUImageSketchFilter()
-//                2 -> GPUImageGrayscaleFilter()
-//                else -> GPUImageGaussianBlurFilter()
-//            }
-//        }
         binding.header.run {
             moreButton.setOnDebounceClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToSettings())
@@ -148,7 +130,6 @@ class CameraFragment : BaseFragment(R.layout.camera) {
                     }
                     facingButton.isSelected = !isFrontLens
                     faceImageAnalyzer.isMirror = isFrontLens
-                    gpuImageAnalyzer.isMirror = isFrontLens
                 }
             }
         }
@@ -220,7 +201,6 @@ class CameraFragment : BaseFragment(R.layout.camera) {
     @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraBinding) {
         //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
-        //binding.cameraPreview.setAnalyzer(gpuImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
     }
 

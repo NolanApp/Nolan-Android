@@ -101,7 +101,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.3'
     implementation 'com.google.firebase:firebase-ads:19.1.0'
 
-    implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
 
     implementation 'com.google.android.play:core-ktx:1.7.0'
