@@ -1,9 +1,9 @@
-package soup.nolan.ui.widget
+package soup.nolan.detect.face.widget
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import soup.nolan.model.Face
+import soup.nolan.detect.face.model.Face
 import kotlin.math.hypot
 
 class FaceGraphic(

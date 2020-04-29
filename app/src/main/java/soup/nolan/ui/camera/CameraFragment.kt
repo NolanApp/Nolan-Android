@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -23,23 +22,16 @@ import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.ads.AdManager
-import soup.nolan.core.detector.FaceDetector
-import soup.nolan.core.detector.firebase.FirebaseFaceDetector
-import soup.nolan.core.detector.model.Frame
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.filter.stylize.Styles
-import soup.nolan.model.Face
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.utils.autoCleared
-import soup.nolan.ui.utils.lazyFast
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
-import kotlin.math.max
-import kotlin.math.min
 
 class CameraFragment : BaseFragment(R.layout.camera) {
 
@@ -49,42 +41,6 @@ class CameraFragment : BaseFragment(R.layout.camera) {
     private val viewModel: CameraViewModel by viewModel()
 
     private var binding: CameraBinding by autoCleared()
-
-    private val faceImageAnalyzer by lazyFast {
-        val detector: FaceDetector = FirebaseFaceDetector().apply {
-            setCallback(object : FaceDetector.Callback {
-
-                override fun onDetecting(frame: Frame) {
-                    Timber.d("onDetecting:")
-                    if (startRequested.not()) {
-                        startRequested = true
-
-                        val min = min(frame.width, frame.height)
-                        val max = max(frame.width, frame.height)
-                        binding.faceBlurView.setCameraInfo(min, max)
-                        binding.faceBlurView.clear()
-                    }
-                }
-
-                override fun onDetected(originalImage: Bitmap, faceList: List<Face>) {
-                    Timber.d("onDetected: count=${faceList.size}")
-                    binding.faceBlurView.renderFaceList(originalImage, faceList)
-                }
-
-                override fun onDetectFailed() {
-                    binding.faceBlurView.run {
-                        clear()
-                        postInvalidate()
-                    }
-                }
-            })
-        }
-        FaceImageAnalyzer(detector).apply {
-            isMirror = binding.cameraPreview.cameraLensFacing == LENS_FACING_FRONT
-        }
-    }
-
-    private var startRequested = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -129,7 +85,6 @@ class CameraFragment : BaseFragment(R.layout.camera) {
                         flipIn.start()
                     }
                     facingButton.isSelected = !isFrontLens
-                    faceImageAnalyzer.isMirror = isFrontLens
                 }
             }
         }

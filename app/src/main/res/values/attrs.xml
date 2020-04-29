@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="FaceBlurView">
-        <attr name="showDebugBound" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="CheckedImageView">
         <attr name="checked" format="boolean" />
     </declare-styleable>

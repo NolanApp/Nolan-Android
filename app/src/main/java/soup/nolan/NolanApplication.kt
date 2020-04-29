@@ -4,7 +4,6 @@ import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
-import io.alterac.blurkit.BlurKit
 import soup.nolan.di.DaggerApplicationComponent
 
 class NolanApplication : DaggerApplication(), CameraXConfig.Provider {
@@ -12,7 +11,6 @@ class NolanApplication : DaggerApplication(), CameraXConfig.Provider {
     override fun onCreate() {
         super.onCreate()
         LogTracker.install(this)
-        BlurKit.init(this)
         NotificationChannels.createAll(this)
     }
 

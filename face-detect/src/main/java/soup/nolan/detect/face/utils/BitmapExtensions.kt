@@ -1,4 +1,4 @@
-package soup.nolan.ui.utils
+package soup.nolan.detect.face.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color

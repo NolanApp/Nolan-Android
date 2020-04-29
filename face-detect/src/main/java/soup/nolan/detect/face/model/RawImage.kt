@@ -1,4 +1,4 @@
-package soup.nolan.core.detector.model
+package soup.nolan.detect.face.model
 
 import android.media.Image
 

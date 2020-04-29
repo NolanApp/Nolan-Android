@@ -1,8 +1,8 @@
-package soup.nolan.core.detector
+package soup.nolan.detect.face
 
 import android.graphics.Bitmap
-import soup.nolan.core.detector.model.Frame
-import soup.nolan.model.Face
+import soup.nolan.detect.face.model.Face
+import soup.nolan.detect.face.model.Frame
 
 interface FaceDetector : Detector {
 

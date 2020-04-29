@@ -1,15 +1,26 @@
-package soup.nolan.ui.widget
+package soup.nolan.detect.face.widget
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.widget.ImageView
-import soup.nolan.R
-import soup.nolan.model.Face
-import soup.nolan.ui.utils.blur
-import soup.nolan.ui.utils.erase
+import soup.nolan.detect.face.R
+import soup.nolan.detect.face.model.Face
+import soup.nolan.detect.face.utils.blur
+import soup.nolan.detect.face.utils.erase
 
+/**
+ * <soup.nolan.ui.widget.FaceBlurView
+ *     android:id="@+id/face_blur_view"
+ *     android:layout_width="0dp"
+ *     android:layout_height="0dp"
+ *     app:layout_constraintBottom_toBottomOf="@id/camera_preview"
+ *     app:layout_constraintEnd_toEndOf="@id/camera_preview"
+ *     app:layout_constraintStart_toStartOf="@id/camera_preview"
+ *     app:layout_constraintTop_toTopOf="@id/camera_preview"
+ *     app:showDebugBound="false" />
+ */
 class FaceBlurView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

@@ -1,6 +1,6 @@
-package soup.nolan.core.detector
+package soup.nolan.detect.face
 
-import soup.nolan.core.detector.model.RawImage
+import soup.nolan.detect.face.model.RawImage
 
 interface Detector {
 

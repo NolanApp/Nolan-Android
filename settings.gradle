@@ -3,6 +3,7 @@ include ':stylize-common'
 include ':stylize-legacy'
 include ':stylize-popart'
 include ':stylize-experimental'
+include ':face-detect'
 
 project(":stylize-common").projectDir=new File(rootDir, "filter/stylize-common")
 project(":stylize-legacy").projectDir=new File(rootDir, "filter/stylize-legacy")

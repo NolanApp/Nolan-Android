@@ -1,4 +1,4 @@
-package soup.nolan.model
+package soup.nolan.detect.face.model
 
 import android.graphics.Rect
 

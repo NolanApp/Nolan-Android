@@ -1,4 +1,4 @@
-package soup.nolan.core.detector.firebase
+package soup.nolan.detect.face.internal
 
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
@@ -7,9 +7,9 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import soup.nolan.core.detector.FaceDetector
 import soup.nolan.core.detector.model.Frame
 import soup.nolan.core.detector.model.RawImage
+import soup.nolan.detect.face.FaceDetector
 import soup.nolan.model.Face
-import soup.nolan.ui.utils.downscale
-import soup.nolan.ui.utils.flip
+import soup.nolan.detect.face.utils.flip
 import java.util.concurrent.atomic.AtomicBoolean
 
 class FirebaseFaceDetector : FaceDetector {

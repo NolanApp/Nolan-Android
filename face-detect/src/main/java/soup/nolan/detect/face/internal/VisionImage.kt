@@ -1,8 +1,8 @@
-package soup.nolan.core.detector.firebase
+package soup.nolan.detect.face.internal
 
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
-import soup.nolan.core.detector.model.RawImage
+import soup.nolan.detect.face.model.RawImage
 
 object VisionImage {
 
