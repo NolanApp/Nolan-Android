@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Nolan</string>
 
+    <string name="share">Share</string>
+
     <string name="settings">Settings</string>
     <string name="settings_item_bug_report">Report or Contact</string>
     <string name="settings_item_version">App Version</string>
