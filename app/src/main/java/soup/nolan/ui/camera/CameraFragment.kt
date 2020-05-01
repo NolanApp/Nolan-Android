@@ -130,7 +130,7 @@ class CameraFragment : BaseFragment(R.layout.camera) {
                     object : ImageCapture.OnImageSavedCallback {
 
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                            findNavController().navigate(CameraFragmentDirections.actionToEdit(saveFile.toUri()))
+                            findNavController().navigate(CameraFragmentDirections.actionToEdit(saveFile.toUri(), false))
                         }
 
                         override fun onError(exception: ImageCaptureException) {
@@ -149,7 +149,7 @@ class CameraFragment : BaseFragment(R.layout.camera) {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Gallery.onPictureTaken(requestCode, resultCode, data) {
-            findNavController().navigate(CameraFragmentDirections.actionToEdit(it))
+            findNavController().navigate(CameraFragmentDirections.actionToEdit(it, true))
         }
     }
 

@@ -15,6 +15,7 @@ abstract class UiModule {
             SplashUiModule::class,
             CameraUiModule::class,
             PhotoEditUiModule::class,
+            PhotoEditCropUiModule::class,
             ShareUiModule::class,
             SettingsUiModule::class,
             PurchaseUiModule::class

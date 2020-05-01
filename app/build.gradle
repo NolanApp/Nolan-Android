@@ -104,6 +104,8 @@ dependencies {
     implementation 'com.google.android.play:core-ktx:1.7.0'
     implementation 'com.anjlab.android.iab.v3:library:1.1.0'
 
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
     testImplementation deps.test.junit
     androidTestImplementation deps.test.android
     androidTestImplementation deps.test.espresso

@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.contentValuesOf
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import soup.nolan.NotificationChannels
 import soup.nolan.R
@@ -174,5 +175,9 @@ object Gallery {
             Timber.w(e)
         }
         return null
+    }
+
+    fun createCacheFileUri(context: Context, filename: String): Uri {
+        return File.createTempFile(filename, null, context.cacheDir).toUri()
     }
 }

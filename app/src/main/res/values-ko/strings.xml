@@ -4,6 +4,8 @@
 
     <string name="share">공유하기</string>
 
+    <string name="confirm">확인</string>
+
     <string name="settings">설정</string>
     <string name="settings_item_bug_report">버그 신고 및 문의</string>
     <string name="settings_item_version">버전 정보</string>

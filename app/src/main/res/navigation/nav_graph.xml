@@ -44,9 +44,34 @@
             android:name="fileUri"
             app:argType="android.net.Uri" />
 
+        <argument
+            android:name="fromGallery"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/action_to_share"
             app:destination="@id/share" />
+
+        <action
+            android:id="@+id/action_to_crop"
+            app:destination="@id/edit_crop" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/edit_crop"
+        android:name="soup.nolan.ui.edit.crop.PhotoEditCropFragment"
+        tools:layout="@layout/photo_edit_crop">
+
+        <argument
+            android:name="fileUri"
+            app:argType="android.net.Uri" />
+
+        <argument
+            android:name="cropRect"
+            android:defaultValue="@null"
+            app:argType="android.graphics.Rect"
+            app:nullable="true" />
     </fragment>
 
     <fragment
