@@ -4,11 +4,11 @@ import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
-import soup.nolan.core.detector.FaceDetector
-import soup.nolan.core.detector.model.Frame
-import soup.nolan.core.detector.model.RawImage
 import soup.nolan.detect.face.FaceDetector
-import soup.nolan.model.Face
+import soup.nolan.detect.face.model.Face
+import soup.nolan.detect.face.model.Frame
+import soup.nolan.detect.face.model.RawImage
+import soup.nolan.detect.face.utils.downscale
 import soup.nolan.detect.face.utils.flip
 import java.util.concurrent.atomic.AtomicBoolean
 
