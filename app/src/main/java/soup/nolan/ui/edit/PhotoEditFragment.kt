@@ -1,29 +1,57 @@
 package soup.nolan.ui.edit
 
-import android.content.Intent
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.databinding.PhotoEditBinding
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToCrop
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToShare
+import soup.nolan.ui.edit.crop.PhotoEditCropFragment
+import soup.nolan.ui.edit.crop.PhotoEditCropFragment.Companion.KEY_REQUEST
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
+import timber.log.Timber
 
 class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
 
     private val args: PhotoEditFragmentArgs by navArgs()
     private val viewModel: PhotoEditViewModel by viewModel()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener(KEY_REQUEST) { _, bundle ->
+            val fileUri: Uri? = bundle.getParcelable(PhotoEditCropFragment.EXTRA_FILE_URI)
+            if (fileUri != null) {
+                val cropRect: Rect? = bundle.getParcelable(PhotoEditCropFragment.EXTRA_CROP_RECT)
+                viewModel.update(fileUri, cropRect, requireContext().getBitmap(fileUri))
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(PhotoEditBinding.bind(view)) {
+            cropButton.isVisible = args.fromGallery
+            cropButton.setOnDebounceClickListener {
+                viewModel.onCropClick()
+            }
+            filterButton.setOnDebounceClickListener {
+                //TODO:
+            }
             saveButton.setOnDebounceClickListener {
                 viewModel.onSaveClick()
             }
@@ -43,25 +71,29 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
             })
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
-                    is PhotoEditUiEvent.Save -> Gallery.saveBitmap(view.context, it.bitmap)
-                    is PhotoEditUiEvent.GoToCrop ->
-                        findNavController().navigate(actionToCrop(it.fileUri))
-                    is PhotoEditUiEvent.GoToShare ->
+                    is PhotoEditUiEvent.Save -> lifecycleScope.launch {
+                        Gallery.saveBitmap(view.context, it.bitmap)
+                    }
+                    is PhotoEditUiEvent.GoToCrop -> {
+                        findNavController().navigate(actionToCrop(it.fileUri, it.cropRect))
+                    }
+                    is PhotoEditUiEvent.GoToShare -> {
                         findNavController().navigate(actionToShare(it.fileUri))
-                    is PhotoEditUiEvent.ShowToast ->
+                    }
+                    is PhotoEditUiEvent.ShowToast -> {
                         toast(it.message)
+                    }
                 }
             })
         }
 
+        Timber.d("savedInstanceState=$savedInstanceState")
         if (savedInstanceState == null) {
-            val input = FirebaseVisionImage.fromFilePath(view.context, args.fileUri).bitmap
-            viewModel.init(args.fileUri, input, args.fromGallery)
+            viewModel.update(args.fileUri, null, view.context.getBitmap(args.fileUri))
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        //TODO:
+    private fun Context.getBitmap(fileUri: Uri): Bitmap {
+        return FirebaseVisionImage.fromFilePath(this, fileUri).bitmap
     }
 }

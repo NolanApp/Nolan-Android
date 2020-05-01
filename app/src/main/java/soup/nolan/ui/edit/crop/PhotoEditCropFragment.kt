@@ -1,8 +1,9 @@
 package soup.nolan.ui.edit.crop
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -29,7 +30,7 @@ class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
                 }
             }
             cropImageView.setOnCropImageCompleteListener { _, result ->
-                handleCropResult(result)
+                saveResult(result)
             }
             cropImageView.setImageUriAsync(uri)
 
@@ -40,28 +41,24 @@ class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
         }
     }
 
-    private fun handleCropResult(result: CropImageView.CropResult) {
+    private fun saveResult(result: CropImageView.CropResult) {
         if (result.isSuccessful && result.uri != null) {
-            val intent = Intent().apply {
-                putExtra(
-                    EXTRA_SAVE_ITEM,
-                    CroppedPhoto(
-                        fileUri = result.uri,
-                        cropRect = result.cropRect
-                    )
+            setFragmentResult(
+                KEY_REQUEST, bundleOf(
+                    EXTRA_FILE_URI to result.uri,
+                    EXTRA_CROP_RECT to result.cropRect
                 )
-            }
-//            setResult(Activity.RESULT_OK, intent)
-//            finish()
-            Timber.d("handleCropResult: $intent")
+            )
             findNavController().navigateUp()
         } else {
-            toast("crop이 실패했습니다.")
+            toast("Cropping is failed...")
             Timber.w(result.error, "handleCropResult: ")
         }
     }
 
     companion object {
-        const val EXTRA_SAVE_ITEM = "image.save"
+        const val KEY_REQUEST = "request_photo_crop"
+        const val EXTRA_FILE_URI = "fileUri"
+        const val EXTRA_CROP_RECT = "cropRect"
     }
 }

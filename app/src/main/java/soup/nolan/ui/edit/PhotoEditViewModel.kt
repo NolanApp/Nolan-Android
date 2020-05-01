@@ -1,11 +1,14 @@
 package soup.nolan.ui.edit
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import soup.nolan.BuildConfig
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.ui.EventLiveData
@@ -30,39 +33,43 @@ class PhotoEditViewModel @Inject constructor(
     val uiEvent: EventLiveData<PhotoEditUiEvent>
         get() = _uiEvent
 
-    private var isNotInitialized: Boolean = true
     private var originImageUri: Uri? = null
     private var lastImageUri: Uri? = null
+    private var lastCropRect: Rect? = null
 
-    fun init(imageUri: Uri, image: Bitmap, fromGallery: Boolean) {
-        if (isNotInitialized && fromGallery) {
-            isNotInitialized = false
-            _uiEvent.event = PhotoEditUiEvent.GoToCrop(imageUri)
-            return
+    fun update(imageUri: Uri, cropRect: Rect?, bitmap: Bitmap) {
+        if (originImageUri == null) {
+            originImageUri = imageUri
         }
 
-        isNotInitialized = false
-        originImageUri = imageUri
-        _bitmap.value = image
+        lastImageUri = imageUri
+        lastCropRect = cropRect
+        _bitmap.value = bitmap
 
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val start = System.currentTimeMillis()
-                val it = styleTransfer.transform(image)
+                val styleBitmap = withContext(Dispatchers.IO) {
+                    styleTransfer.transform(bitmap)
+                }
                 val duration = System.currentTimeMillis() - start
-                Timber.d("success: $it $duration ms")
-
-                _bitmap.value = it
-
+                Timber.d("success: $duration ms")
                 if (BuildConfig.DEBUG) {
                     _uiEvent.event = PhotoEditUiEvent.ShowToast("Success! ($duration ms)")
                 }
+                _bitmap.value = styleBitmap
             } catch (e: Exception) {
                 Timber.w("failure: $e")
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+    fun onCropClick() {
+        originImageUri?.let {
+            _uiEvent.event = PhotoEditUiEvent.GoToCrop(it, lastCropRect)
         }
     }
 

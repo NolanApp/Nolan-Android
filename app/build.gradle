@@ -74,7 +74,7 @@ dependencies {
     implementation deps.androidx.appcompat
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation deps.androidx.core_ktx
-    implementation 'androidx.fragment:fragment-ktx:1.2.4'
+    implementation 'androidx.fragment:fragment-ktx:1.3.0-alpha04'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
 

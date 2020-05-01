@@ -21,6 +21,8 @@ import androidx.core.content.contentValuesOf
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import soup.nolan.NotificationChannels
 import soup.nolan.R
 import timber.log.Timber
@@ -53,13 +55,14 @@ object Gallery {
     private const val DIR_NAME = "Nolan"
     private const val FILE_NAME_TEMPLATE = "Nolan_%s.png"
 
-    fun saveBitmap(context: Context, bitmap: Bitmap) {
-        val imageUri =
+    suspend fun saveBitmap(context: Context, bitmap: Bitmap) {
+        val imageUri = withContext(Dispatchers.IO) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 saveBitmapQ(context, bitmap)
             } else {
                 saveBitmapM(context, bitmap)
             }
+        }
         if (imageUri == null) {
             Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show()
             return
