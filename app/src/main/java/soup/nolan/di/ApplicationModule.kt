@@ -9,6 +9,7 @@ import soup.nolan.ads.AdManagerImpl
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.settings.AppSettings
 import soup.nolan.settings.AppSettingsImpl
+import soup.nolan.ui.utils.ImageFactory
 import javax.inject.Singleton
 
 @Module
@@ -30,6 +31,12 @@ class ApplicationModule {
     fun provideAppSettings(
         context: Context
     ): AppSettings = AppSettingsImpl(context)
+
+    @Singleton
+    @Provides
+    fun provideImageFactory(
+        context: Context
+    ): ImageFactory = ImageFactory(context)
 
     @Singleton
     @Provides

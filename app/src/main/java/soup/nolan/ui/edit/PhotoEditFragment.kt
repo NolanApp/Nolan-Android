@@ -1,7 +1,5 @@
 package soup.nolan.ui.edit
 
-import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.databinding.PhotoEditBinding
@@ -24,7 +21,6 @@ import soup.nolan.ui.edit.crop.PhotoEditCropFragment
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment.Companion.KEY_REQUEST
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
-import timber.log.Timber
 
 class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
 
@@ -37,7 +33,7 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
             val fileUri: Uri? = bundle.getParcelable(PhotoEditCropFragment.EXTRA_FILE_URI)
             if (fileUri != null) {
                 val cropRect: Rect? = bundle.getParcelable(PhotoEditCropFragment.EXTRA_CROP_RECT)
-                viewModel.update(fileUri, cropRect, requireContext().getBitmap(fileUri))
+                viewModel.update(fileUri, cropRect)
             }
         }
     }
@@ -87,13 +83,6 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
             })
         }
 
-        Timber.d("savedInstanceState=$savedInstanceState")
-        if (savedInstanceState == null) {
-            viewModel.update(args.fileUri, null, view.context.getBitmap(args.fileUri))
-        }
-    }
-
-    private fun Context.getBitmap(fileUri: Uri): Bitmap {
-        return FirebaseVisionImage.fromFilePath(this, fileUri).bitmap
+        viewModel.init(args.fileUri)
     }
 }

@@ -7,7 +7,7 @@ import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 import soup.nolan.di.scope.FragmentScope
 import soup.nolan.di.scope.ViewModelKey
-import soup.nolan.ui.share.ShareFragment
+import soup.nolan.ui.share.ShareDialogFragment
 import soup.nolan.ui.share.ShareViewModel
 
 @Module
@@ -15,7 +15,7 @@ abstract class ShareUiModule {
 
     @FragmentScope
     @ContributesAndroidInjector
-    abstract fun bindShareFragment(): ShareFragment
+    abstract fun bindShareFragment(): ShareDialogFragment
 
     @Binds
     @IntoMap

@@ -6,12 +6,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import soup.nolan.R
 import soup.nolan.databinding.ShareBinding
-import soup.nolan.ui.base.BaseFragment
-import soup.nolan.ui.utils.LauncherIcons
+import soup.nolan.ui.base.BaseDialogFragment
 
-class ShareFragment : BaseFragment(R.layout.share) {
+class ShareDialogFragment : BaseDialogFragment(R.layout.share) {
 
-    private val args: ShareFragmentArgs by navArgs()
+    private val args: ShareDialogFragmentArgs by navArgs()
     private val viewModel: ShareViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

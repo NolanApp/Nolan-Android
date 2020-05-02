@@ -14,10 +14,12 @@ import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.base.BaseViewModel
+import soup.nolan.ui.utils.ImageFactory
 import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoEditViewModel @Inject constructor(
+    private val imageFactory: ImageFactory,
     private val styleTransfer: LegacyStyleTransfer
 ) : BaseViewModel() {
 
@@ -37,13 +39,16 @@ class PhotoEditViewModel @Inject constructor(
     private var lastImageUri: Uri? = null
     private var lastCropRect: Rect? = null
 
-    fun update(imageUri: Uri, cropRect: Rect?, bitmap: Bitmap) {
-        if (originImageUri == null) {
-            originImageUri = imageUri
-        }
+    fun init(fileUri: Uri) {
+        if (originImageUri != null) return
+        originImageUri = fileUri
+        update(fileUri, null)
+    }
 
+    fun update(imageUri: Uri, cropRect: Rect?) {
         lastImageUri = imageUri
         lastCropRect = cropRect
+        val bitmap = imageFactory.getBitmap(imageUri)
         _bitmap.value = bitmap
 
         viewModelScope.launch {

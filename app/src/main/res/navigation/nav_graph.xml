@@ -74,15 +74,15 @@
             app:nullable="true" />
     </fragment>
 
-    <fragment
+    <dialog
         android:id="@+id/share"
-        android:name="soup.nolan.ui.share.ShareFragment"
+        android:name="soup.nolan.ui.share.ShareDialogFragment"
         tools:layout="@layout/share">
 
         <argument
             android:name="fileUri"
             app:argType="android.net.Uri" />
-    </fragment>
+    </dialog>
 
     <fragment
         android:id="@+id/settings"
