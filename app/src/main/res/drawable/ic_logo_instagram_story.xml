@@ -16,6 +16,10 @@
                 android:type="linear" />
         </aapt:attr>
     </path>
+    <path
+        android:pathData="M252,252m-222,0a222,222 0,1 1,444 0a222,222 0,1 1,-444 0z"
+        android:strokeWidth="15"
+        android:strokeColor="#FFFFFF" />
     <group
         android:pivotX="252"
         android:pivotY="252"

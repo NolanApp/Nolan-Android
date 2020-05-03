@@ -50,10 +50,6 @@
             app:argType="boolean" />
 
         <action
-            android:id="@+id/action_to_share"
-            app:destination="@id/share" />
-
-        <action
             android:id="@+id/action_to_crop"
             app:destination="@id/edit_crop" />
     </fragment>
@@ -73,16 +69,6 @@
             app:argType="android.graphics.Rect"
             app:nullable="true" />
     </fragment>
-
-    <dialog
-        android:id="@+id/share"
-        android:name="soup.nolan.ui.share.ShareDialogFragment"
-        tools:layout="@layout/share">
-
-        <argument
-            android:name="fileUri"
-            app:argType="android.net.Uri" />
-    </dialog>
 
     <fragment
         android:id="@+id/settings"

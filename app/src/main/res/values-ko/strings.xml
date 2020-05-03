@@ -3,6 +3,15 @@
     <string name="app_name">놀란</string>
 
     <string name="share">공유하기</string>
+    <string name="share_target_instagram">인스타그램</string>
+    <string name="share_target_instagram_story">인스타그램\n스토리</string>
+    <string name="share_target_facebook">페이스북</string>
+    <string name="share_target_facebook_story">페이스북\n스토리</string>
+    <string name="share_target_line">Line</string>
+    <string name="share_target_twitter">트위터</string>
+    <string name="share_target_kakaotalk">카카오톡</string>
+    <string name="share_target_whatsapp">WhatsApp</string>
+    <string name="share_target_more">공유</string>
 
     <string name="confirm">확인</string>
 

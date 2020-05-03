@@ -1,4 +1,4 @@
-package soup.nolan.ui.share
+package soup.nolan.model
 
 import android.content.Context
 import android.content.pm.PackageManager

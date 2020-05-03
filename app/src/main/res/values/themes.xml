@@ -16,6 +16,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorSurface">@color/off_white</item>
     </style>
 
     <style name="Theme.Nolan.Main">

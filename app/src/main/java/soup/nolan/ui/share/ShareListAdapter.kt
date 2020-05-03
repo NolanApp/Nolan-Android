@@ -3,13 +3,11 @@ package soup.nolan.ui.share
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import soup.nolan.R
 import soup.nolan.databinding.ShareItemBinding
-import soup.nolan.ui.utils.LauncherIcons
+import soup.nolan.ui.utils.clipToOval
 import soup.nolan.ui.utils.setOnDebounceClickListener
-import timber.log.Timber
 
 class ShareListAdapter(
     private val clickListener: (ShareItemUiModel) -> Unit
@@ -41,7 +39,6 @@ class ShareListAdapter(
     }
 
     fun submitList(list: List<ShareItemUiModel>) {
-        Timber.d("submitList=$list")
         items.clear()
         items.addAll(list)
         notifyDataSetChanged()
@@ -51,13 +48,13 @@ class ShareListAdapter(
 
         private val binding = ShareItemBinding.bind(view)
 
-        fun bind(item: ShareItemUiModel) {
-            binding.logo.setAppIcon(item.packageName)
-            binding.description.text = item.target.name
+        init {
+            binding.logo.clipToOval(true)
         }
 
-        private fun ImageView.setAppIcon(packageName: String) {
-            setImageDrawable(LauncherIcons.getAppIcon(context, packageName))
+        fun bind(item: ShareItemUiModel) {
+            binding.logo.setImageDrawable(item.getIcon(itemView.context))
+            binding.description.text = item.getLabel(itemView.context)
         }
     }
 }
