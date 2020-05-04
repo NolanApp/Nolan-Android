@@ -85,7 +85,7 @@ class PhotoEditViewModel @Inject constructor(
     }
 
     fun onShareClick() {
-        lastImageUri?.let {
+        _bitmap.value?.let {
             _uiEvent.event = PhotoEditUiEvent.ShowShare(it)
         }
     }

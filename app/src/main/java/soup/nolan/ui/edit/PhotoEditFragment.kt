@@ -1,6 +1,9 @@
 package soup.nolan.ui.edit
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -18,6 +21,7 @@ import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToCrop
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment.Companion.KEY_REQUEST
+import soup.nolan.ui.share.ShareImageFactory
 import soup.nolan.ui.share.ShareListAdapter
 import soup.nolan.ui.share.ShareViewModel
 import soup.nolan.ui.utils.setOnDebounceClickListener
@@ -54,11 +58,14 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
                 viewModel.onSaveClick()
             }
             shareButton.setOnDebounceClickListener {
-                viewModel.onShareClick()
+                //TODO:
+                //viewModel.onShareClick()
+                editableImage.drawable?.let {
+                    onShare(view.context, it)
+                }
             }
-            scrim.setOnClickListener {
-                share.root.isVisible = false
-                scrim.isVisible = false
+            shareDim.setOnClickListener {
+                shareGroup.isVisible = false
             }
 
             viewModel.isLoading.observe(viewLifecycleOwner, Observer {
@@ -80,8 +87,7 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
                         findNavController().navigate(actionToCrop(it.fileUri, it.cropRect))
                     }
                     is PhotoEditUiEvent.ShowShare -> {
-                        share.root.isVisible = true
-                        scrim.isVisible = true
+                        shareGroup.isVisible = true
                     }
                     is PhotoEditUiEvent.ShowToast -> {
                         toast(it.message)
@@ -90,14 +96,24 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
             })
 
             val listAdapter = ShareListAdapter {
-                shareViewModel.onShareClick(it, args.fileUri)
+                //shareViewModel.onShareClick(it)
             }
-            share.listView.adapter = listAdapter
+            shareListView.adapter = listAdapter
             shareViewModel.shareList.observe(viewLifecycleOwner, Observer {
                 listAdapter.submitList(it)
             })
         }
 
         viewModel.init(args.fileUri)
+    }
+
+    private fun onShare(context: Context, drawable: Drawable) {
+        val uriToImage = ShareImageFactory.createShareImageUri(context, drawable) ?: return
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, uriToImage)
+            type = "image/jpeg"
+        }
+        startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.share)))
     }
 }

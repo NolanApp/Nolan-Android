@@ -7,6 +7,6 @@ import android.net.Uri
 sealed class PhotoEditUiEvent {
     class Save(val bitmap: Bitmap) : PhotoEditUiEvent()
     class GoToCrop(val fileUri: Uri, val cropRect: Rect?) : PhotoEditUiEvent()
-    class ShowShare(val fileUri: Uri) : PhotoEditUiEvent()
+    class ShowShare(val bitmap: Bitmap) : PhotoEditUiEvent()
     class ShowToast(val message: String) : PhotoEditUiEvent()
 }

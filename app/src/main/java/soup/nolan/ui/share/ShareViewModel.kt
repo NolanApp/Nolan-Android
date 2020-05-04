@@ -1,6 +1,5 @@
 package soup.nolan.ui.share
 
-import android.net.Uri
 import androidx.lifecycle.liveData
 import soup.nolan.data.ShareRepository
 import soup.nolan.model.ThirdPartyApp
@@ -38,7 +37,7 @@ class ShareViewModel @Inject constructor(
         emit(shareList)
     }
 
-    fun onShareClick(item: ShareItemUiModel, fileUri: Uri) {
+    fun onShareClick(item: ShareItemUiModel) {
         when (item) {
             ShareItemUiModel.Instagram -> TODO()
             ShareItemUiModel.InstagramStory -> TODO()
