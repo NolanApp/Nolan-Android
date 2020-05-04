@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:viewBindingIgnore="true">
+
+    <ImageView
+        android:id="@+id/facing_front_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_facing_front"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/facing_back_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_facing_back"
+        tools:ignore="ContentDescription" />
+</FrameLayout>

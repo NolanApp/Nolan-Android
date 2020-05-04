@@ -1,7 +1,6 @@
 package soup.nolan.ui.camera
 
 import android.Manifest
-import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -9,12 +8,14 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.camera.core.CameraSelector.LENS_FACING_BACK
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
@@ -66,27 +67,17 @@ class CameraFragment : BaseFragment(R.layout.camera) {
             moreButton.setOnDebounceClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToSettings())
             }
-            val flipOut = AnimatorInflater.loadAnimator(root.context, R.animator.flip_out)
-            val flipIn = AnimatorInflater.loadAnimator(root.context, R.animator.flip_in)
-
             facingButton.setOnClickListener {
-                binding.cameraPreview.toggleCamera()
-                binding.cameraPreview.cameraLensFacing?.let { lensFacing ->
-                    val isFrontLens = lensFacing == LENS_FACING_FRONT
-                    if (!isFrontLens) {
-                        flipOut.setTarget(facingFrontButton)
-                        flipIn.setTarget(facingBackButton)
-                        flipOut.start()
-                        flipIn.start()
-                    } else {
-                        flipOut.setTarget(facingBackButton)
-                        flipIn.setTarget(facingFrontButton)
-                        flipOut.start()
-                        flipIn.start()
-                    }
-                    facingButton.isSelected = !isFrontLens
-                }
+                viewModel.onLensFacingClick(facingButton.isLensFacingFront())
             }
+            viewModel.lensFacingFront.observe(viewLifecycleOwner, Observer { lensFacingFront ->
+                if (lensFacingFront) {
+                    binding.cameraPreview.cameraLensFacing = LENS_FACING_FRONT
+                } else {
+                    binding.cameraPreview.cameraLensFacing = LENS_FACING_BACK
+                }
+                facingButton.setLensFacing(front = lensFacingFront)
+            })
         }
         binding.run {
             val listAdapter = CameraFilterListAdapter {
