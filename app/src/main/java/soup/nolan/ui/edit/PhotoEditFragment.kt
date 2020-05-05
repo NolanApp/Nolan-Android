@@ -18,12 +18,15 @@ import soup.nolan.R
 import soup.nolan.databinding.PhotoEditBinding
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.base.BaseFragment
+import soup.nolan.ui.camera.filter.CameraFilterListAdapter
+import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToCrop
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment.Companion.KEY_REQUEST
 import soup.nolan.ui.share.ShareImageFactory
 import soup.nolan.ui.share.ShareListAdapter
 import soup.nolan.ui.share.ShareViewModel
+import soup.nolan.ui.utils.scrollToPositionInCenter
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
 
@@ -31,6 +34,7 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
 
     private val args: PhotoEditFragmentArgs by navArgs()
     private val viewModel: PhotoEditViewModel by viewModel()
+    private val filterViewModel: CameraFilterViewModel by activityViewModel()
     private val shareViewModel: ShareViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +56,10 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
                 viewModel.onCropClick()
             }
             filterButton.setOnDebounceClickListener {
-                //TODO:
+                filterGroup.isVisible = true
+            }
+            filterDim.setOnClickListener {
+                filterGroup.isVisible = false
             }
             saveButton.setOnDebounceClickListener {
                 viewModel.onSaveClick()
@@ -93,6 +100,18 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
                         toast(it.message)
                     }
                 }
+            })
+
+            val filterListAdapter = CameraFilterListAdapter {
+                filterViewModel.onFilterSelect(it)
+            }
+            filterListView.adapter = filterListAdapter
+            filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
+                filterListAdapter.submitList(it.list)
+            })
+            filterViewModel.selectedPosition.observe(viewLifecycleOwner, Observer {
+                filterListAdapter.setSelectedPosition(it)
+                filterListView.scrollToPositionInCenter(it)
             })
 
             val listAdapter = ShareListAdapter {

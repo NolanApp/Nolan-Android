@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import soup.nolan.BuildConfig
 import soup.nolan.filter.stylize.LegacyStyleTransfer
+import soup.nolan.model.CameraFilter
+import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.base.BaseViewModel
@@ -20,7 +22,8 @@ import javax.inject.Inject
 
 class PhotoEditViewModel @Inject constructor(
     private val imageFactory: ImageFactory,
-    private val styleTransfer: LegacyStyleTransfer
+    private val styleTransfer: LegacyStyleTransfer,
+    private val appSettings: AppSettings
 ) : BaseViewModel() {
 
     private val _isLoading = MutableLiveData(false)
@@ -56,7 +59,7 @@ class PhotoEditViewModel @Inject constructor(
             try {
                 val start = System.currentTimeMillis()
                 val styleBitmap = withContext(Dispatchers.IO) {
-                    styleTransfer.transform(bitmap)
+                    styleTransfer.transform(bitmap, CameraFilter.all().first { it.id == appSettings.lastFilterId }.input)
                 }
                 val duration = System.currentTimeMillis() - start
                 Timber.d("success: $duration ms")

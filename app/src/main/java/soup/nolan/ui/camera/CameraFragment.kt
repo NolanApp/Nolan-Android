@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
 import androidx.camera.core.ImageCapture
@@ -24,12 +25,13 @@ import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.ads.AdManager
 import soup.nolan.databinding.CameraBinding
-import soup.nolan.filter.stylize.Styles
 import soup.nolan.ui.base.BaseFragment
+import soup.nolan.ui.camera.filter.CameraFilterListAdapter
+import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.utils.autoCleared
+import soup.nolan.ui.utils.scrollToPositionInCenter
 import soup.nolan.ui.utils.setOnDebounceClickListener
-import soup.nolan.ui.utils.toast
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -40,8 +42,23 @@ class CameraFragment : BaseFragment(R.layout.camera) {
     lateinit var adManager: AdManager
 
     private val viewModel: CameraViewModel by viewModel()
+    private val filterViewModel: CameraFilterViewModel by activityViewModel()
 
     private var binding: CameraBinding by autoCleared()
+
+    private val backPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (binding.filterListView.isVisible) {
+                binding.filterListView.isVisible = false
+                isEnabled = false
+            }
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -79,31 +96,26 @@ class CameraFragment : BaseFragment(R.layout.camera) {
                 facingButton.setLensFacing(front = lensFacingFront)
             })
         }
-        binding.run {
-            val listAdapter = CameraFilterListAdapter {
-                //TODO: 클릭 처리
-                toast("준비 중입니다.")
-            }
-            listAdapter.submitList(Styles.thumbnails.mapIndexed(::CameraFilterUiModel))
-            filterListView.adapter = listAdapter
-        }
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
                 lifecycleScope.launch {
                     adManager.loadRewardedAd()?.let {
                         if (it.isLoaded) {
-                            val adCallback = object: RewardedAdCallback() {
+                            val adCallback = object : RewardedAdCallback() {
                                 override fun onRewardedAdOpened() {
                                     Timber.d("onRewardedAdOpened:")
                                 }
+
                                 override fun onRewardedAdClosed() {
                                     Timber.d("onRewardedAdClosed:")
                                     Gallery.takePicture(this@CameraFragment)
                                     //TODO: reload rewarded ad
                                 }
+
                                 override fun onUserEarnedReward(reward: RewardItem) {
                                     Timber.i("onUserEarnedReward: amount=${reward.amount}")
                                 }
+
                                 override fun onRewardedAdFailedToShow(errorCode: Int) {
                                     Timber.w("onRewardedAdFailedToShow: errorCode=$errorCode")
                                 }
@@ -121,7 +133,12 @@ class CameraFragment : BaseFragment(R.layout.camera) {
                     object : ImageCapture.OnImageSavedCallback {
 
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                            findNavController().navigate(CameraFragmentDirections.actionToEdit(saveFile.toUri(), false))
+                            findNavController().navigate(
+                                CameraFragmentDirections.actionToEdit(
+                                    saveFile.toUri(),
+                                    false
+                                )
+                            )
                         }
 
                         override fun onError(exception: ImageCaptureException) {
@@ -130,10 +147,21 @@ class CameraFragment : BaseFragment(R.layout.camera) {
                     })
             }
             filterButton.setOnDebounceClickListener {
-                binding.filterListView.run {
-                    isVisible = !isVisible
-                }
+                binding.filterListView.isVisible = true
+                backPressedCallback.isEnabled = true
             }
+
+            val listAdapter = CameraFilterListAdapter {
+                filterViewModel.onFilterSelect(it)
+            }
+            binding.filterListView.adapter = listAdapter
+            filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
+                listAdapter.submitList(it.list)
+            })
+            filterViewModel.selectedPosition.observe(viewLifecycleOwner, Observer {
+                listAdapter.setSelectedPosition(it)
+                binding.filterListView.scrollToPositionInCenter(it)
+            })
         }
     }
 
@@ -160,7 +188,8 @@ class CameraFragment : BaseFragment(R.layout.camera) {
             if (allPermissionsGranted(context)) {
                 startCameraWith(binding)
             } else {
-                Toast.makeText(context, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
+                    .show()
                 findNavController().popBackStack()
             }
         }

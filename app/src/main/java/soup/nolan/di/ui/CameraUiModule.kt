@@ -9,6 +9,7 @@ import soup.nolan.di.scope.FragmentScope
 import soup.nolan.di.scope.ViewModelKey
 import soup.nolan.ui.camera.CameraFragment
 import soup.nolan.ui.camera.CameraViewModel
+import soup.nolan.ui.camera.filter.CameraFilterViewModel
 
 @Module
 abstract class CameraUiModule {
@@ -21,4 +22,9 @@ abstract class CameraUiModule {
     @IntoMap
     @ViewModelKey(CameraViewModel::class)
     abstract fun bindCameraViewModel(viewModel: CameraViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CameraFilterViewModel::class)
+    abstract fun bindCameraFilterViewModel(viewModel: CameraFilterViewModel): ViewModel
 }

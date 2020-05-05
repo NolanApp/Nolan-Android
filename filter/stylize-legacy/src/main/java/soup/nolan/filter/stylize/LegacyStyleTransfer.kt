@@ -11,13 +11,13 @@ class LegacyStyleTransfer(context: Context) {
 
     private val stylize: Stylize = Stylize(context.applicationContext)
 
-    suspend fun transform(bitmap: Bitmap): Bitmap {
+    suspend fun transform(bitmap: Bitmap, style: StyleInput): Bitmap {
         return withContext(Dispatchers.IO) {
-            getStylizedImageFrom(bitmap)
+            getStylizedImageFrom(bitmap, style)
         }
     }
 
-    private fun getStylizedImageFrom(bitmap: Bitmap, desiredSize: Int = 1024): Bitmap {
+    private fun getStylizedImageFrom(bitmap: Bitmap, style: StyleInput, desiredSize: Int = 1024): Bitmap {
         val previewWidth = bitmap.width
         val previewHeight = bitmap.height
         val frameToCropTransform = ImageUtils.getTransformationMatrix(
@@ -29,6 +29,6 @@ class LegacyStyleTransfer(context: Context) {
         val canvas = Canvas(croppedBitmap)
         canvas.drawBitmap(bitmap, frameToCropTransform, null)
 
-        return stylize.stylize(croppedBitmap, StyleInput(style24 = 1f))
+        return stylize.stylize(croppedBitmap, style)
     }
 }
