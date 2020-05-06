@@ -23,3 +23,5 @@
 # For Image Cropper
 # Refer to https://github.com/ArthurHub/Android-Image-Cropper
 -keep class androidx.appcompat.widget.** { *; }
+-keep class androidx.navigation.fragment.NavHostFragment
+-keep class soup.nolan.**.model.** { *; }
