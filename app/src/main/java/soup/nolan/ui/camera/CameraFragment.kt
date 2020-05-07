@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import kotlinx.coroutines.launch
+import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.ads.AdManager
 import soup.nolan.databinding.CameraBinding
@@ -98,31 +99,35 @@ class CameraFragment : BaseFragment(R.layout.camera) {
         }
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
-                lifecycleScope.launch {
-                    adManager.loadRewardedAd()?.let {
-                        if (it.isLoaded) {
-                            val adCallback = object : RewardedAdCallback() {
-                                override fun onRewardedAdOpened() {
-                                    Timber.d("onRewardedAdOpened:")
-                                }
+                if (BuildConfig.DEBUG) {
+                    lifecycleScope.launch {
+                        adManager.loadRewardedAd()?.let {
+                            if (it.isLoaded) {
+                                val adCallback = object : RewardedAdCallback() {
+                                    override fun onRewardedAdOpened() {
+                                        Timber.d("onRewardedAdOpened:")
+                                    }
 
-                                override fun onRewardedAdClosed() {
-                                    Timber.d("onRewardedAdClosed:")
-                                    Gallery.takePicture(this@CameraFragment)
-                                    //TODO: reload rewarded ad
-                                }
+                                    override fun onRewardedAdClosed() {
+                                        Timber.d("onRewardedAdClosed:")
+                                        Gallery.takePicture(this@CameraFragment)
+                                        //TODO: reload rewarded ad
+                                    }
 
-                                override fun onUserEarnedReward(reward: RewardItem) {
-                                    Timber.i("onUserEarnedReward: amount=${reward.amount}")
-                                }
+                                    override fun onUserEarnedReward(reward: RewardItem) {
+                                        Timber.i("onUserEarnedReward: amount=${reward.amount}")
+                                    }
 
-                                override fun onRewardedAdFailedToShow(errorCode: Int) {
-                                    Timber.w("onRewardedAdFailedToShow: errorCode=$errorCode")
+                                    override fun onRewardedAdFailedToShow(errorCode: Int) {
+                                        Timber.w("onRewardedAdFailedToShow: errorCode=$errorCode")
+                                    }
                                 }
+                                it.show(activity, adCallback)
                             }
-                            it.show(activity, adCallback)
                         }
                     }
+                } else {
+                    Gallery.takePicture(this@CameraFragment)
                 }
             }
             captureButton.setOnDebounceClickListener {

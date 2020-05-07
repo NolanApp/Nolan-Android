@@ -1,6 +1,7 @@
 package soup.nolan.settings
 
 import android.content.Context
+import soup.nolan.model.CameraFilter
 
 interface AppSettings {
     var lensFacingFront: Boolean
@@ -20,7 +21,7 @@ class AppSettingsImpl(context: Context) : AppSettings {
     private val prefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
 
     override var lensFacingFront: Boolean by BooleanPreference(prefs, "lens_facing_front", true)
-    override var lastFilterId: String by StringPreference(prefs, "last_filter_id", "A24")
+    override var lastFilterId: String by StringPreference(prefs, "last_filter_id", CameraFilter.A25.id)
 
     override var noAds: Boolean by BooleanPreference(prefs, "no_ads", false)
     override var buyCoffee01: Boolean by BooleanPreference(prefs, "buy_coffee_01", false)
