@@ -2,23 +2,20 @@ package soup.nolan.ui.camera.filter
 
 import androidx.annotation.DrawableRes
 import soup.nolan.R
-import soup.nolan.filter.stylize.StyleInput
 import soup.nolan.model.CameraFilter
 
 class CameraFilterUiModel(
     val list: List<CameraFilterItemUiModel>
 )
 
-class CameraFilterItemUiModel(
-    val id: String,
-    val style: StyleInput,
-    @DrawableRes
-    val thumbnailResId: Int
-)
+data class CameraFilterItemUiModel(
+    val filter: CameraFilter
+) {
+    val id: String
+        get() = filter.id
 
-@DrawableRes
-fun CameraFilter.getThumbnailResId(): Int {
-    return when (id) {
+    @DrawableRes
+    val thumbnailResId: Int = when (filter.id) {
         CameraFilter.A01.id -> R.drawable.style0
         CameraFilter.A02.id -> R.drawable.style1
         CameraFilter.A03.id -> R.drawable.style2
@@ -45,6 +42,6 @@ fun CameraFilter.getThumbnailResId(): Int {
         CameraFilter.A24.id -> R.drawable.style23
         CameraFilter.A25.id -> R.drawable.style24
         CameraFilter.A26.id -> R.drawable.style25
-        else -> throw IllegalArgumentException()
+        else -> throw IllegalArgumentException("CameraFilter(${filter.id}) is invalid.")
     }
 }

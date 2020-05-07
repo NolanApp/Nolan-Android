@@ -21,8 +21,13 @@ class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val uri = args.fileUri
         with(PhotoEditCropBinding.bind(view)) {
+            initViewState(this)
+        }
+    }
+
+    private fun initViewState(binding: PhotoEditCropBinding) {
+        binding.run {
             cropImageView.setOnSetImageUriCompleteListener { view, _, error ->
                 if (error == null) {
                     // 특정 형태로 Crop 된 상태 노출 처리
@@ -32,7 +37,7 @@ class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
             cropImageView.setOnCropImageCompleteListener { _, result ->
                 saveResult(result)
             }
-            cropImageView.setImageUriAsync(uri)
+            cropImageView.setImageUriAsync(args.fileUri)
 
             submitButton.setOnDebounceClickListener {
                 val saveFileUri = Gallery.createCacheFileUri(it.context, "cropped.png")

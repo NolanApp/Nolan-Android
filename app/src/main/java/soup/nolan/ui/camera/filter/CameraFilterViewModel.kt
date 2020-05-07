@@ -22,18 +22,18 @@ class CameraFilterViewModel @Inject constructor(
 
     init {
         _filterList.value = CameraFilter.all()
-            .map { CameraFilterItemUiModel(it.id, it.input, it.getThumbnailResId()) }
+            .map { CameraFilterItemUiModel(it) }
             .let { CameraFilterUiModel(it) }
         notifyListChanged(appSettings.lastFilterId)
     }
 
-    fun onFilterSelect(filter: CameraFilterItemUiModel) {
-        if (appSettings.lastFilterId == filter.id) {
-            Timber.w("onFilterSelect: ${filter.id} is already selected!")
+    fun onFilterSelect(item: CameraFilterItemUiModel) {
+        if (appSettings.lastFilterId == item.id) {
+            Timber.w("onFilterSelect: ${item.id} is already selected!")
             return
         }
-        appSettings.lastFilterId = filter.id
-        notifyListChanged(filter.id)
+        appSettings.lastFilterId = item.id
+        notifyListChanged(item.id)
     }
 
     private fun notifyListChanged(selectedFilterId: String) {

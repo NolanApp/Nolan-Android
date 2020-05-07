@@ -48,18 +48,29 @@ class PhotoEditViewModel @Inject constructor(
         update(fileUri, null)
     }
 
+    fun changeFilter(filter: CameraFilter) {
+        val imageUri = lastImageUri ?: return
+        updateInternal(imageUri, filter)
+    }
+
     fun update(imageUri: Uri, cropRect: Rect?) {
         lastImageUri = imageUri
         lastCropRect = cropRect
+        updateInternal(imageUri, getSelectedCameraFilter())
+    }
+
+    private fun updateInternal(imageUri: Uri, filter: CameraFilter) {
         val bitmap = imageFactory.getBitmap(imageUri)
-        _bitmap.value = bitmap
+        if (_bitmap.value == null) {
+            _bitmap.value = bitmap
+        }
 
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val start = System.currentTimeMillis()
                 val styleBitmap = withContext(Dispatchers.IO) {
-                    styleTransfer.transform(bitmap, CameraFilter.all().first { it.id == appSettings.lastFilterId }.input)
+                    styleTransfer.transform(bitmap, filter.input)
                 }
                 val duration = System.currentTimeMillis() - start
                 Timber.d("success: $duration ms")
@@ -91,5 +102,11 @@ class PhotoEditViewModel @Inject constructor(
         _bitmap.value?.let {
             _uiEvent.event = PhotoEditUiEvent.ShowShare(it)
         }
+    }
+
+    private fun getSelectedCameraFilter(): CameraFilter {
+        return CameraFilter.all()
+            .firstOrNull { it.id == appSettings.lastFilterId }
+            ?: CameraFilter.A25
     }
 }
