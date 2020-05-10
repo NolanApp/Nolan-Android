@@ -3,7 +3,7 @@ package soup.nolan.ui.splash
 import android.animation.Animator
 import android.os.Bundle
 import android.view.View
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.navigation.fragment.findNavController
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
@@ -22,8 +22,8 @@ class SplashFragment : BaseFragment(R.layout.splash) {
                     .alpha(1f)
                     .scaleX(1f)
                     .scaleY(1f)
-                    .setDuration(600)
-                    .setInterpolator(FastOutSlowInInterpolator())
+                    .setDuration(250)
+                    .setInterpolator(OvershootInterpolator())
                     .setListener(object : Animator.AnimatorListener {
 
                         override fun onAnimationCancel(animation: Animator) {}
