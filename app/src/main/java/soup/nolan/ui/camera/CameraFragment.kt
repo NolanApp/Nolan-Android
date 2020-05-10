@@ -37,7 +37,7 @@ import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
-class CameraFragment : BaseFragment(R.layout.camera) {
+class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
 
     @Inject
     lateinit var adManager: AdManager
@@ -158,6 +158,11 @@ class CameraFragment : BaseFragment(R.layout.camera) {
 
             val listAdapter = CameraFilterListAdapter {
                 filterViewModel.onFilterSelect(it)
+                binding.cameraFilterDescription.run {
+                    text = it.id
+                    animateCameraFilterDescription()
+                }
+                binding.cameraFilterDim.animateCameraFilterDim(target = binding.cameraFilterDescription)
             }
             binding.filterListView.adapter = listAdapter
             filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
