@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Nolan</string>
 
+    <string name="photo_edit_loading_hint">Filter is being applied.\nPlease wait.🐢</string>
+
     <string name="share">Share</string>
     <string name="share_target_instagram">Instagram</string>
     <string name="share_target_instagram_story">Instagram\nStory</string>

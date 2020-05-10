@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">놀란</string>
 
+    <string name="photo_edit_loading_hint">필터가 적용되고 있습니다.\n조금만 기다려주세요.🐢</string>
+
     <string name="share">공유하기</string>
     <string name="share_target_instagram">인스타그램</string>
     <string name="share_target_instagram_story">인스타그램\n스토리</string>

@@ -31,6 +31,10 @@ class PhotoEditViewModel @Inject constructor(
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
+    private val _buttonPanelIsShown = MutableLiveData(false)
+    val buttonPanelIsShown: LiveData<Boolean>
+        get() = _buttonPanelIsShown
+
     private val _bitmap = MutableLiveData<Bitmap>()
     val bitmap: LiveData<Bitmap>
         get() = _bitmap
@@ -69,11 +73,13 @@ class PhotoEditViewModel @Inject constructor(
         val input = filter.input
         if (input !is LegacyStyleInput) {
             Timber.d("updateInternal: input($input) is invalid!")
+            _buttonPanelIsShown.value = true
             return
         }
 
         viewModelScope.launch {
             _isLoading.value = true
+            _buttonPanelIsShown.value = false
             try {
                 val start = System.currentTimeMillis()
                 val styleBitmap = withContext(Dispatchers.IO) {
@@ -85,6 +91,7 @@ class PhotoEditViewModel @Inject constructor(
                     _uiEvent.event = PhotoEditUiEvent.ShowToast("Success! ($duration ms)")
                 }
                 _bitmap.value = styleBitmap
+                _buttonPanelIsShown.value = true
             } catch (e: Exception) {
                 Timber.w("failure: $e")
             } finally {

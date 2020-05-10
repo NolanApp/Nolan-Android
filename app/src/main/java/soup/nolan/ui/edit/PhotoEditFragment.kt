@@ -32,7 +32,7 @@ import soup.nolan.ui.utils.scrollToPositionInCenter
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
 
-class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
+class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimation {
 
     private val args: PhotoEditFragmentArgs by navArgs()
     private val viewModel: PhotoEditViewModel by viewModel()
@@ -106,9 +106,15 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit) {
             viewModel.isLoading.observe(viewLifecycleOwner, Observer {
                 if (it) {
                     loadingView.show()
+                    loadingHint.animateIn()
                 } else {
-                    loadingView.hide()
+                    loadingHint.animateOut {
+                        loadingView.hide()
+                    }
                 }
+            })
+            viewModel.buttonPanelIsShown.observe(viewLifecycleOwner, Observer {
+                buttonPanel.animateVisible(it)
             })
             viewModel.bitmap.observe(viewLifecycleOwner, Observer {
                 editableImage.setImageBitmap(it)
