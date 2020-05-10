@@ -1,6 +1,8 @@
 package soup.nolan.filter.stylize
 
-data class StyleInput(
+import soup.nolan.stylize.common.StyleInput
+
+data class LegacyStyleInput(
     private val style01: Float = 0f,
     private val style02: Float = 0f,
     private val style03: Float = 0f,
@@ -27,7 +29,7 @@ data class StyleInput(
     private val style24: Float = 0f,
     private val style25: Float = 0f,
     private val style26: Float = 0f
-) {
+) : StyleInput() {
 
     val count = 26
 

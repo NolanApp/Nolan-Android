@@ -8,7 +8,7 @@ internal class Stylize(context: Context) {
 
     private val inference = TensorFlowInferenceInterface(context.assets, MODEL_FILE)
 
-    fun stylize(bitmap: Bitmap, style: StyleInput): Bitmap {
+    fun stylize(bitmap: Bitmap, style: LegacyStyleInput): Bitmap {
         val pixelCount = bitmap.width * bitmap.height
         val intValues = IntArray(pixelCount)
         val floatValues = FloatArray(pixelCount * 3)

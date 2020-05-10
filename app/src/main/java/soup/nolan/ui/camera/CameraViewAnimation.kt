@@ -12,11 +12,11 @@ interface CameraViewAnimation {
     fun View.animateCameraFilterDescription() {
         animate().cancel()
         alpha = 0f
-        translationY = -40f
+        translationY = 40f
         animate()
             .alpha(1f)
             .translationY(0f)
-            .setDuration(600)
+            .setDuration(700)
             .setInterpolator(Interpolators.EASE_OUT_QUINT)
             .withLayer()
             .withEndAction {
@@ -34,8 +34,8 @@ interface CameraViewAnimation {
         visibility = View.VISIBLE
         alpha = 1f
         createCircularRevealOf(target) {
-            duration = 350
-            interpolator = Interpolators.DECELERATE
+            duration = 300
+            interpolator = Interpolators.FAST_OUT_LINEAR_IN
             doOnEnd {
                 animate()
                     .alpha(0f)

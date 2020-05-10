@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import soup.nolan.BuildConfig
+import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
@@ -65,12 +66,18 @@ class PhotoEditViewModel @Inject constructor(
             _bitmap.value = bitmap
         }
 
+        val input = filter.input
+        if (input !is LegacyStyleInput) {
+            Timber.d("updateInternal: input($input) is invalid!")
+            return
+        }
+
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val start = System.currentTimeMillis()
                 val styleBitmap = withContext(Dispatchers.IO) {
-                    styleTransfer.transform(bitmap, filter.input)
+                    styleTransfer.transform(bitmap, input)
                 }
                 val duration = System.currentTimeMillis() - start
                 Timber.d("success: $duration ms")

@@ -1,12 +1,12 @@
 package soup.nolan.ui.utils
 
-import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 import androidx.core.view.animation.PathInterpolatorCompat
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 
 object Interpolators {
 
-    val DECELERATE by lazy { DecelerateInterpolator() }
+    val FAST_OUT_LINEAR_IN by lazy { FastOutLinearInInterpolator() }
 
     val EASE_IN_SINE by cubicBezier(0.47f, 0f, 0.745f, 0.715f)
     val EASE_OUT_SINE by cubicBezier(0.39f, 0.575f, 0.565f, 1f)
