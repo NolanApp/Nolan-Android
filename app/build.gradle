@@ -105,6 +105,7 @@ dependencies {
     implementation 'com.anjlab.android.iab.v3:library:1.1.0'
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.robinhood.ticker:ticker:2.0.2'
 
     testImplementation deps.test.junit
     androidTestImplementation deps.test.android

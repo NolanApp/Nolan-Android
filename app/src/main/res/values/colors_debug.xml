@@ -2,5 +2,4 @@
 <resources>
     <color name="debug_foreground">#660000FF</color>
     <color name="debug_background">#66FF0000</color>
-    <color name="off_white">#f5f5f5</color>
 </resources>

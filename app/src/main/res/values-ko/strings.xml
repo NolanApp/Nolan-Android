@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">놀란</string>
 
+    <string name="camera_error_permission">권한이 허용되지 않았습니다.</string>
+    <string name="camera_error_network">네트워크 오류가 발생했습니다. 👾</string>
+
     <string name="photo_edit_loading_hint">필터가 적용되고 있습니다.\n조금만 기다려주세요.🐢</string>
 
     <string name="share">공유하기</string>

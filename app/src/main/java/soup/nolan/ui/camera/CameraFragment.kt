@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
@@ -16,16 +15,15 @@ import androidx.camera.core.ImageCaptureException
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
-import kotlinx.coroutines.launch
-import soup.nolan.BuildConfig
 import soup.nolan.R
-import soup.nolan.ads.AdManager
 import soup.nolan.databinding.CameraBinding
+import soup.nolan.ui.EventObserver
+import soup.nolan.ui.ResultContract
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
@@ -33,14 +31,11 @@ import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.scrollToPositionInCenter
 import soup.nolan.ui.utils.setOnDebounceClickListener
+import soup.nolan.ui.utils.toast
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
 class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
-
-    @Inject
-    lateinit var adManager: AdManager
 
     private val viewModel: CameraViewModel by viewModel()
     private val filterViewModel: CameraFilterViewModel by activityViewModel()
@@ -59,6 +54,16 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener(ResultContract.CAMERA) { _, bundle ->
+            val showAds = bundle.getBoolean(ResultContract.CAMERA_EXTRA_SHOW_ADS, false)
+            if (showAds) {
+                viewModel.onShowAdClick()
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,37 +104,47 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
         }
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
-                if (BuildConfig.DEBUG) {
-                    lifecycleScope.launch {
-                        adManager.loadRewardedAd()?.let {
-                            if (it.isLoaded) {
-                                val adCallback = object : RewardedAdCallback() {
-                                    override fun onRewardedAdOpened() {
-                                        Timber.d("onRewardedAdOpened:")
-                                    }
-
-                                    override fun onRewardedAdClosed() {
-                                        Timber.d("onRewardedAdClosed:")
-                                        Gallery.takePicture(this@CameraFragment)
-                                        //TODO: reload rewarded ad
-                                    }
-
-                                    override fun onUserEarnedReward(reward: RewardItem) {
-                                        Timber.i("onUserEarnedReward: amount=${reward.amount}")
-                                    }
-
-                                    override fun onRewardedAdFailedToShow(errorCode: Int) {
-                                        Timber.w("onRewardedAdFailedToShow: errorCode=$errorCode")
-                                    }
-                                }
-                                it.show(activity, adCallback)
-                            }
-                        }
-                    }
-                } else {
-                    Gallery.takePicture(this@CameraFragment)
-                }
+                viewModel.onGalleryButtonClick()
             }
+            viewModel.gallerySelectableCount.observe(viewLifecycleOwner, Observer {
+                currentCount.text = it.toString()
+            })
+            viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
+                when (it) {
+                    is CameraUiEvent.ShowAdDialog -> {
+                        findNavController().navigate(CameraFragmentDirections.actionToAds())
+                    }
+                    is CameraUiEvent.ShowAd -> {
+                        it.rewardedAd.show(activity, object : RewardedAdCallback() {
+                            override fun onRewardedAdOpened() {
+                                Timber.d("onRewardedAdOpened:")
+                            }
+
+                            override fun onRewardedAdClosed() {
+                                Timber.d("onRewardedAdClosed:")
+                                viewModel.onRewardedAdClosed()
+                            }
+
+                            override fun onUserEarnedReward(reward: RewardItem) {
+                                Timber.i("onUserEarnedReward: amount=${reward.amount}")
+                                viewModel.onUserEarnedReward(reward.amount)
+                            }
+
+                            override fun onRewardedAdFailedToShow(errorCode: Int) {
+                                Timber.w("onRewardedAdFailedToShow: errorCode=$errorCode")
+                                toast(R.string.camera_error_network)
+                                viewModel.onRewardedAdFailedToShow()
+                            }
+                        })
+                    }
+                    is CameraUiEvent.ShowErrorToast -> {
+                        toast(R.string.camera_error_network)
+                    }
+                    is CameraUiEvent.GoToGallery -> {
+                        Gallery.takePicture(this@CameraFragment)
+                    }
+                }
+            })
             captureButton.setOnDebounceClickListener {
                 val saveFile = File(it.context.cacheDir, "capture")
                 binding.cameraPreview.takePicture(
@@ -175,6 +190,11 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refresh()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Gallery.onPictureTaken(requestCode, resultCode, data) {
@@ -198,8 +218,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
             if (allPermissionsGranted(context)) {
                 startCameraWith(binding)
             } else {
-                Toast.makeText(context, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
-                    .show()
+                toast(R.string.camera_error_permission)
                 findNavController().popBackStack()
             }
         }

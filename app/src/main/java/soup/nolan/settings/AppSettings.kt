@@ -6,6 +6,7 @@ import soup.nolan.model.CameraFilter
 interface AppSettings {
     var lensFacingFront: Boolean
     var lastFilterId: String
+    var gallerySelectableCount: Int
 
     //TODO:
     var noAds: Boolean
@@ -22,6 +23,7 @@ class AppSettingsImpl(context: Context) : AppSettings {
 
     override var lensFacingFront: Boolean by BooleanPreference(prefs, "lens_facing_front", true)
     override var lastFilterId: String by StringPreference(prefs, "last_filter_id", CameraFilter.A25.id)
+    override var gallerySelectableCount: Int by IntPreference(prefs, "gallery_selectable_count", 10)
 
     override var noAds: Boolean by BooleanPreference(prefs, "no_ads", false)
     override var buyCoffee01: Boolean by BooleanPreference(prefs, "buy_coffee_01", false)

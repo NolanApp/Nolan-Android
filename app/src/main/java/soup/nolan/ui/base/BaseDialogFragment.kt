@@ -1,6 +1,5 @@
 package soup.nolan.ui.base
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,18 +12,19 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.DaggerAppCompatDialogFragment
 import soup.nolan.R
 import javax.inject.Inject
 
-abstract class BaseDialogFragment : BottomSheetDialogFragment, HasAndroidInjector {
+abstract class BaseDialogFragment : DaggerAppCompatDialogFragment {
 
     override fun getTheme(): Int {
         return R.style.Theme_Nolan_Dialog
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, theme)
     }
 
     @LayoutRes
@@ -46,18 +46,6 @@ abstract class BaseDialogFragment : BottomSheetDialogFragment, HasAndroidInjecto
             return inflater.inflate(contentLayoutId, container, false)
         }
         return null
-    }
-
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
-
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
-
-    override fun androidInjector(): AndroidInjector<Any> {
-        return androidInjector
     }
 
     @Inject

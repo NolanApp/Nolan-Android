@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Nolan</string>
 
+    <string name="camera_error_permission">Permissions are not granted.</string>
+    <string name="camera_error_network">A network error has occurred. 👾</string>
+
     <string name="photo_edit_loading_hint">Filter is being applied.\nPlease wait.🐢</string>
 
     <string name="share">Share</string>
