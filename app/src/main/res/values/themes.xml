@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Platform.V23.Theme.Nolan" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Platform.V23.Theme.Nolan" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:statusBarColor">@color/status_bar_scrim</item>
         <item name="android:windowLightStatusBar">@bool/use_light_status_bar</item>
 
@@ -31,7 +31,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="Theme.Nolan.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+    <style name="Theme.Nolan.Dialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
