@@ -33,7 +33,7 @@ data class CameraFilterItemUiModel(
         CameraFilter.A14.id -> R.drawable.a14
         CameraFilter.A15.id -> R.drawable.a15
         CameraFilter.A16.id -> R.drawable.a16
-        CameraFilter.A17.id -> R.drawable.a16
+        CameraFilter.A17.id -> R.drawable.a17
         CameraFilter.A18.id -> R.drawable.a18
         CameraFilter.A19.id -> R.drawable.a19
         CameraFilter.A20.id -> R.drawable.a20
