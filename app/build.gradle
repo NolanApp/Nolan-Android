@@ -70,6 +70,7 @@ dependencies {
     implementation deps.kotlin.coroutines_core
     implementation deps.kotlin.coroutines_android
 
+    implementation "androidx.window:window:1.0.0-alpha01"
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation deps.androidx.appcompat
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'

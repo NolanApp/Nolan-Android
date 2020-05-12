@@ -6,9 +6,13 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +31,7 @@ import soup.nolan.ui.edit.crop.PhotoEditCropFragment.Companion.KEY_REQUEST
 import soup.nolan.ui.share.ShareImageFactory
 import soup.nolan.ui.share.ShareListAdapter
 import soup.nolan.ui.share.ShareViewModel
+import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.scrollToPositionInCenter
 import soup.nolan.ui.utils.setOnDebounceClickListener
@@ -38,6 +43,7 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
     private val viewModel: PhotoEditViewModel by viewModel()
     private val filterViewModel: CameraFilterViewModel by activityViewModel()
     private val shareViewModel: ShareViewModel by viewModel()
+    private val systemViewModel: SystemViewModel by activityViewModels()
 
     private var binding: PhotoEditBinding by autoCleared()
 
@@ -158,6 +164,21 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
             shareListView.adapter = listAdapter
             shareViewModel.shareList.observe(viewLifecycleOwner, Observer {
                 listAdapter.submitList(it)
+            })
+
+            systemViewModel.isHalfOpened.observe(viewLifecycleOwner, Observer { isHalfOpened ->
+                (root as? ConstraintLayout)?.let {
+                    val constraintSet = ConstraintSet().apply {
+                        clone(it)
+                        if (isHalfOpened) {
+                            setVerticalBias(R.id.editable_image, 0f)
+                        } else {
+                            setVerticalBias(R.id.editable_image, .5f)
+                        }
+                    }
+                    TransitionManager.beginDelayedTransition(it)
+                    constraintSet.applyTo(it)
+                }
             })
         }
     }

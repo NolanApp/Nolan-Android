@@ -2,15 +2,31 @@ package soup.nolan.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import androidx.core.util.Consumer
+import androidx.window.DeviceState
+import androidx.window.WindowManager
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import soup.nolan.R
 import soup.nolan.ui.base.BaseActivity
 import soup.nolan.ui.purchase.PurchaseItem
 import soup.nolan.ui.purchase.PurchaseViewModel
+import soup.nolan.ui.system.SystemViewModel
 import timber.log.Timber
+import java.util.concurrent.Executor
 
 class NolanActivity : BaseActivity(R.layout.nolan_activity) {
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val mainThreadExecutor = Executor { r: Runnable -> handler.post(r) }
+    private lateinit var windowManager: WindowManager
+    private val deviceStateChangeCallback = Consumer<DeviceState> { newDeviceState ->
+        systemViewModel.onDeviceStateChanged(newDeviceState)
+    }
+
+    private val systemViewModel: SystemViewModel by viewModel()
 
     private val purchaseViewModel: PurchaseViewModel by viewModel()
 
@@ -61,10 +77,18 @@ class NolanActivity : BaseActivity(R.layout.nolan_activity) {
         purchaseViewModel.purchaseItemEvent.observe(this, EventObserver {
             billingProcessor.purchase(this, it.skuId)
         })
+
+        windowManager = WindowManager(this, null)
+        windowManager.registerDeviceStateChangeCallback(
+            mainThreadExecutor,
+            deviceStateChangeCallback
+        )
+        systemViewModel.onDeviceStateChanged(windowManager.deviceState)
     }
 
     override fun onDestroy() {
         billingProcessor.release()
+        windowManager.unregisterDeviceStateChangeCallback(deviceStateChangeCallback)
         super.onDestroy()
     }
 

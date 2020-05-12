@@ -6,15 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -28,6 +32,7 @@ import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.edit.Gallery
+import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.scrollToPositionInCenter
 import soup.nolan.ui.utils.setOnDebounceClickListener
@@ -35,10 +40,12 @@ import soup.nolan.ui.utils.toast
 import timber.log.Timber
 import java.io.File
 
+
 class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
 
     private val viewModel: CameraViewModel by viewModel()
     private val filterViewModel: CameraFilterViewModel by activityViewModel()
+    private val systemViewModel: SystemViewModel by activityViewModels()
 
     private var binding: CameraBinding by autoCleared()
 
@@ -69,13 +76,13 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(CameraBinding.bind(view)) {
-            initViewState(this)
+            initViewState(this, view.context)
             binding = this
         }
     }
 
-    private fun initViewState(binding: CameraBinding) {
-        if (allPermissionsGranted(binding.root.context)) {
+    private fun initViewState(binding: CameraBinding, context: Context) {
+        if (allPermissionsGranted(context)) {
             binding.cameraPreview.post {
                 startCameraWith(binding)
             }
@@ -188,6 +195,20 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                 binding.filterListView.scrollToPositionInCenter(it)
             })
         }
+        systemViewModel.isHalfOpened.observe(viewLifecycleOwner, Observer { isHalfOpened ->
+            (binding.root as? ConstraintLayout)?.let {
+                val constraintSet = ConstraintSet().apply {
+                    clone(it)
+                    if (isHalfOpened) {
+                        setVerticalBias(R.id.camera_preview, 0f)
+                    } else {
+                        setVerticalBias(R.id.camera_preview, .5f)
+                    }
+                }
+                TransitionManager.beginDelayedTransition(it)
+                constraintSet.applyTo(it)
+            }
+        })
     }
 
     override fun onResume() {

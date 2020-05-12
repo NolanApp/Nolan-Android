@@ -19,7 +19,8 @@ abstract class UiModule {
             PhotoEditCropUiModule::class,
             ShareUiModule::class,
             SettingsUiModule::class,
-            PurchaseUiModule::class
+            PurchaseUiModule::class,
+            SystemUiModule::class
         ]
     )
     abstract fun bindNolanActivity(): NolanActivity
