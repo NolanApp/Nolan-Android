@@ -1,5 +1,6 @@
 package soup.nolan.ui.edit.crop
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -8,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.theartofdev.edmodo.cropper.CropImageView
 import soup.nolan.R
+import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.PhotoEditCropBinding
 import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.Gallery
@@ -17,7 +19,14 @@ import timber.log.Timber
 
 class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
 
+    private lateinit var appEvent: AppEvent
+
     private val args: PhotoEditCropFragmentArgs by navArgs()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appEvent = AppEvent(context, "PhotoCrop")
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,10 +49,16 @@ class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
             cropImageView.setImageUriAsync(args.fileUri)
 
             submitButton.setOnDebounceClickListener {
+                appEvent.sendButtonClick("crop_submit")
                 val saveFileUri = Gallery.createCacheFileUri(it.context, "cropped.png")
                 cropImageView.saveCroppedImageAsync(saveFileUri)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        appEvent.sendScreenEvent(this)
     }
 
     private fun saveResult(result: CropImageView.CropResult) {

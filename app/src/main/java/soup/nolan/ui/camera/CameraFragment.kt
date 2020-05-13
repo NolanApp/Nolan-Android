@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import soup.nolan.R
+import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.ResultContract
@@ -40,8 +41,9 @@ import soup.nolan.ui.utils.toast
 import timber.log.Timber
 import java.io.File
 
-
 class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
+
+    private lateinit var appEvent: AppEvent
 
     private val viewModel: CameraViewModel by viewModel()
     private val filterViewModel: CameraFilterViewModel by activityViewModel()
@@ -60,6 +62,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        appEvent = AppEvent(context, "Camera")
         requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
@@ -69,6 +72,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
             val showAds = bundle.getBoolean(ResultContract.CAMERA_EXTRA_SHOW_ADS, false)
             if (showAds) {
                 viewModel.onShowAdClick()
+                appEvent.sendButtonClick("show_ad")
             }
         }
     }
@@ -96,9 +100,11 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
         binding.header.run {
             moreButton.setOnDebounceClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToSettings())
+                appEvent.sendButtonClick("more")
             }
             facingButton.setOnClickListener {
                 viewModel.onLensFacingClick(facingButton.isLensFacingFront())
+                appEvent.sendButtonClick("lens_facing")
             }
             viewModel.lensFacingFront.observe(viewLifecycleOwner, Observer { lensFacingFront ->
                 if (lensFacingFront) {
@@ -112,6 +118,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
                 viewModel.onGalleryButtonClick()
+                appEvent.sendButtonClick("gallery")
             }
             viewModel.gallerySelectableCount.observe(viewLifecycleOwner, Observer {
                 currentCount.text = it.toString()
@@ -135,6 +142,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                             override fun onUserEarnedReward(reward: RewardItem) {
                                 Timber.i("onUserEarnedReward: amount=${reward.amount}")
                                 viewModel.onUserEarnedReward(reward.amount)
+                                appEvent.sendPromotionEvent("earned_reward")
                             }
 
                             override fun onRewardedAdFailedToShow(errorCode: Int) {
@@ -172,10 +180,12 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                             Timber.w(exception)
                         }
                     })
+                appEvent.sendButtonClick("capture")
             }
             filterButton.setOnDebounceClickListener {
                 binding.filterListView.isVisible = true
                 backPressedCallback.isEnabled = true
+                appEvent.sendButtonClick("filter")
             }
 
             val listAdapter = CameraFilterListAdapter {
@@ -185,6 +195,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                     animateCameraFilterDescription()
                 }
                 binding.cameraFilterDim.animateCameraFilterDim(target = binding.cameraFilterDescription)
+                appEvent.sendFilterSelect(it.filter)
             }
             binding.filterListView.adapter = listAdapter
             filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
@@ -213,6 +224,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
 
     override fun onResume() {
         super.onResume()
+        appEvent.sendScreenEvent(this)
         viewModel.refresh()
     }
 
