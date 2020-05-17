@@ -11,7 +11,7 @@ interface PhotoEditViewAnimation {
         translationY = 40f
         visibility = View.VISIBLE
         animate()
-            .setStartDelay(1000)
+            .setStartDelay(500)
             .alpha(1f)
             .translationY(0f)
             .setDuration(700)
@@ -24,7 +24,7 @@ interface PhotoEditViewAnimation {
         animate().cancel()
         animate()
             .alpha(0f)
-            .setDuration(200)
+            .setDuration(300)
             .setInterpolator(Interpolators.EASE_OUT_CUBIC)
             .withLayer()
             .withEndAction {
