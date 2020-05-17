@@ -183,27 +183,32 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                 appEvent.sendButtonClick("capture")
             }
             filterButton.setOnDebounceClickListener {
-                binding.filterListView.isVisible = true
                 backPressedCallback.isEnabled = true
+                binding.filterPanel.isVisible = true
                 appEvent.sendButtonClick("filter")
+            }
+        }
+        binding.run {
+            filterPanelCloseButton.setOnClickListener {
+                filterPanel.isVisible = false
             }
 
             val listAdapter = CameraFilterListAdapter {
                 filterViewModel.onFilterSelect(it)
-                binding.cameraFilterDescription.run {
+                cameraFilterDescription.run {
                     text = it.id
                     animateCameraFilterDescription()
                 }
-                binding.cameraFilterDim.animateCameraFilterDim(target = binding.cameraFilterDescription)
+                cameraFilterDim.animateCameraFilterDim(target = cameraFilterDescription)
                 appEvent.sendFilterSelect(it.filter)
             }
-            binding.filterListView.adapter = listAdapter
+            filterListView.adapter = listAdapter
             filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
                 listAdapter.submitList(it.list)
             })
             filterViewModel.selectedPosition.observe(viewLifecycleOwner, Observer {
                 listAdapter.setSelectedPosition(it)
-                binding.filterListView.scrollToPositionInCenter(it)
+                filterListView.scrollToPositionInCenter(it)
             })
         }
         systemViewModel.isHalfOpened.observe(viewLifecycleOwner, Observer { isHalfOpened ->
