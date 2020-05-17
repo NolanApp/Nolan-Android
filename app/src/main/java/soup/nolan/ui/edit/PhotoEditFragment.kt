@@ -50,11 +50,12 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
 
     private var binding: PhotoEditBinding by autoCleared()
 
-    private val backPressedCallback = object : OnBackPressedCallback(false) {
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (binding.filterGroup.isVisible) {
                 binding.filterGroup.isVisible = false
-                isEnabled = false
+            } else {
+                findNavController().navigateUp()
             }
         }
     }
@@ -94,12 +95,10 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
             }
             filterButton.setOnDebounceClickListener {
                 filterGroup.isVisible = true
-                backPressedCallback.isEnabled = true
                 appEvent.sendButtonClick("filter")
             }
             filterDim.setOnClickListener {
                 filterGroup.isVisible = false
-                backPressedCallback.isEnabled = false
             }
             saveButton.setOnDebounceClickListener {
                 viewModel.onSaveClick()
@@ -158,7 +157,6 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
                 viewModel.changeFilter(it.filter)
 
                 filterGroup.isVisible = false
-                backPressedCallback.isEnabled = false
                 appEvent.sendFilterSelect(it.filter)
             }
             filterListView.adapter = filterListAdapter

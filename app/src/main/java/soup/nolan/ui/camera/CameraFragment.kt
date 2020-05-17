@@ -51,11 +51,12 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
 
     private var binding: CameraBinding by autoCleared()
 
-    private val backPressedCallback = object : OnBackPressedCallback(false) {
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (binding.filterListView.isVisible) {
-                binding.filterListView.isVisible = false
-                isEnabled = false
+            if (binding.filterPanel.isVisible) {
+                binding.filterPanel.isVisible = false
+            } else {
+                activity?.finish()
             }
         }
     }
@@ -183,7 +184,6 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                 appEvent.sendButtonClick("capture")
             }
             filterButton.setOnDebounceClickListener {
-                backPressedCallback.isEnabled = true
                 binding.filterPanel.isVisible = true
                 appEvent.sendButtonClick("filter")
             }
