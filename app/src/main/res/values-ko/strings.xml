@@ -6,6 +6,7 @@
     <string name="camera_error_network">네트워크 오류가 발생했습니다. 👾</string>
 
     <string name="photo_edit_loading_hint">필터가 적용되고 있습니다.\n조금만 기다려주세요.🐢</string>
+    <string name="photo_edit_error_unknown">알 수 없는 오류가 발생했습니다. 👾</string>
 
     <string name="share">공유하기</string>
     <string name="share_target_instagram">인스타그램</string>

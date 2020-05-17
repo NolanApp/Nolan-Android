@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import soup.nolan.BuildConfig
+import soup.nolan.R
 import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.model.CameraFilter
@@ -91,10 +92,11 @@ class PhotoEditViewModel @Inject constructor(
                     _uiEvent.event = PhotoEditUiEvent.ShowToast("Success! ($duration ms)")
                 }
                 _bitmap.value = styleBitmap
-                _buttonPanelIsShown.value = true
             } catch (e: Exception) {
                 Timber.w("failure: $e")
+                _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
             } finally {
+                _buttonPanelIsShown.value = true
                 _isLoading.value = false
             }
         }

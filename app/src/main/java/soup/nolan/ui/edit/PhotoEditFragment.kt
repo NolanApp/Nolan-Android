@@ -147,6 +147,9 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
                     is PhotoEditUiEvent.ShowToast -> {
                         toast(it.message)
                     }
+                    is PhotoEditUiEvent.ShowErrorToast -> {
+                        toast(it.message)
+                    }
                 }
             })
 
