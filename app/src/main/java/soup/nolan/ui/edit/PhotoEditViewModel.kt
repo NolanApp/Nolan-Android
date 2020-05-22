@@ -46,29 +46,28 @@ class PhotoEditViewModel @Inject constructor(
     private var lastImageUri: Uri? = null
     private var lastCropRect: Rect? = null
 
-    fun init(fileUri: Uri) {
+    fun init(imageUri: Uri) {
         if (originImageUri != null) return
-        originImageUri = fileUri
-        update(fileUri, null)
+        originImageUri = imageUri
+        update(imageUri, null)
     }
 
     fun changeFilter(filter: CameraFilter) {
         val imageUri = lastImageUri ?: return
-        updateInternal(imageUri, filter)
+        updateInternal(imageFactory.getBitmap(imageUri), filter)
     }
 
     fun update(imageUri: Uri, cropRect: Rect?) {
         lastImageUri = imageUri
         lastCropRect = cropRect
-        updateInternal(imageUri, getSelectedCameraFilter())
+
+        imageFactory.getBitmap(imageUri).let {
+            _bitmap.value = it
+            updateInternal(it, getSelectedCameraFilter())
+        }
     }
 
-    private fun updateInternal(imageUri: Uri, filter: CameraFilter) {
-        val bitmap = imageFactory.getBitmap(imageUri)
-        if (_bitmap.value == null) {
-            _bitmap.value = bitmap
-        }
-
+    private fun updateInternal(bitmap: Bitmap, filter: CameraFilter) {
         val input = filter.input
         if (input !is LegacyStyleInput) {
             Timber.d("updateInternal: input($input) is invalid!")
