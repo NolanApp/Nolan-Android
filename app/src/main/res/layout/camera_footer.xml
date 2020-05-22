@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/off_white">
+    tools:background="@color/surface">
 
     <ImageView
         android:id="@+id/gallery_button"
@@ -20,13 +20,13 @@
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/current_count"
-        android:layout_width="20dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="2dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="end"
         android:text="0"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="@id/gallery_button"
         app:layout_constraintEnd_toStartOf="@id/max_count"
@@ -34,6 +34,7 @@
         app:layout_constraintStart_toStartOf="@id/gallery_button"
         app:ticker_defaultCharacterList="number"
         app:ticker_defaultPreferredScrollingDirection="up"
+        app:ticker_animateMeasurementChange="true"
         tools:ignore="HardcodedText,SpUsage"
         tools:text="10" />
 
@@ -52,45 +53,12 @@
         tools:ignore="HardcodedText,SpUsage" />
 
     <ImageView
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:background="@drawable/shadow_white"
-        android:scaleType="centerInside"
-        android:translationX="-5dp"
-        android:translationY="-5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:background="@drawable/shadow_black"
-        android:scaleType="centerInside"
-        android:translationX="5dp"
-        android:translationY="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/shadow_off_white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
         android:id="@+id/capture_button"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:background="?selectableItemBackgroundBorderless"
         android:scaleType="centerInside"
+        android:src="@drawable/ic_shutter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

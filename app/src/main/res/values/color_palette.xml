@@ -2,8 +2,8 @@
 <resources>
     <color name="bi">#FEE934</color>
 
-    <color name="transparent">@android:color/transparent</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-    <color name="off_white">#f5f5f5</color>
+    <color name="transparent_light">#00FFFFFF</color>
+    <color name="transparent_dark">#00000000</color>
 </resources>

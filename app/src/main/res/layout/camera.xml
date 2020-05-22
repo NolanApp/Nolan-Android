@@ -69,7 +69,7 @@
         android:id="@+id/filter_panel"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:background="@color/off_white"
+        android:background="@color/surface"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,6 +85,7 @@
             android:background="?colorSurface"
             android:clipToPadding="false"
             android:orientation="horizontal"
+            android:overScrollMode="never"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -98,7 +99,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:text="@string/camera_filter_description"
-            android:textColor="@color/black"
+            android:textColor="?colorOnSurface"
             android:textSize="16sp" />
 
         <ImageView

@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:minWidth="200dp"
-    tools:background="@color/off_white"
+    tools:background="?colorSurface"
     tools:context=".ui.camera.ads.CameraAdsDialogFragment">
 
     <TextView
@@ -45,7 +45,7 @@
         android:fontFamily="sans-serif-thin"
         android:includeFontPadding="false"
         android:text="+"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/reward_count"
@@ -62,7 +62,7 @@
         android:fontFamily="sans-serif-thin"
         android:includeFontPadding="false"
         android:text="10"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         android:textSize="32dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/confirm_button"
