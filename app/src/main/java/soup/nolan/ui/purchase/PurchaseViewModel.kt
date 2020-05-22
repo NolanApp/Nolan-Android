@@ -3,6 +3,9 @@ package soup.nolan.ui.purchase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
@@ -12,7 +15,7 @@ class PurchaseViewModel @Inject constructor(
     private val appSettings: AppSettings
 ) : ViewModel() {
 
-    private val _noAdsPurchased = MutableLiveData(appSettings.noAds)
+    private val _noAdsPurchased = MutableLiveData<Boolean>()
     val noAdsPurchased: LiveData<Boolean>
         get() = _noAdsPurchased
 
@@ -23,6 +26,12 @@ class PurchaseViewModel @Inject constructor(
     private val _purchaseItemEvent = MutableEventLiveData<PurchaseItem>()
     val purchaseItemEvent: EventLiveData<PurchaseItem>
         get() = _purchaseItemEvent
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            _noAdsPurchased.postValue(appSettings.noAds)
+        }
+    }
 
     fun onPurchaseUpdate() {
         _purchaseUpdateEvent.event = Unit

@@ -12,7 +12,7 @@ class LegacyStyleTransfer(context: Context) {
     private val stylize: Stylize = Stylize(context.applicationContext)
 
     suspend fun transform(bitmap: Bitmap, style: LegacyStyleInput): Bitmap {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.Default) {
             getStylizedImageFrom(bitmap, style)
         }
     }

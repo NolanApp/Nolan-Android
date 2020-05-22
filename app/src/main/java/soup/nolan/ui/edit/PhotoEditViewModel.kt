@@ -6,9 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.filter.stylize.LegacyStyleInput
@@ -83,9 +81,7 @@ class PhotoEditViewModel @Inject constructor(
             _buttonPanelIsShown.value = false
             try {
                 val start = System.currentTimeMillis()
-                val styleBitmap = withContext(Dispatchers.IO) {
-                    styleTransfer.transform(bitmap, input)
-                }
+                val styleBitmap = styleTransfer.transform(bitmap, input)
                 val duration = System.currentTimeMillis() - start
                 Timber.d("success: $duration ms")
                 if (BuildConfig.DEBUG) {

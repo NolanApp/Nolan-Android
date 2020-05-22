@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.core.util.Consumer
+import androidx.lifecycle.lifecycleScope
 import androidx.window.DeviceState
 import androidx.window.WindowManager
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.ui.base.BaseActivity
 import soup.nolan.ui.purchase.PurchaseItem
@@ -73,7 +76,9 @@ class NolanActivity : BaseActivity(R.layout.nolan_activity) {
         setTheme(R.style.Theme_Nolan_Main)
         super.onCreate(savedInstanceState)
 
-        billingProcessor.initialize()
+        lifecycleScope.launch(Dispatchers.IO) {
+            billingProcessor.initialize()
+        }
         purchaseViewModel.purchaseItemEvent.observe(this, EventObserver {
             billingProcessor.purchase(this, it.skuId)
         })
