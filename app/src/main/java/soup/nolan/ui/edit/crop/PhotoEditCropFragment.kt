@@ -19,9 +19,9 @@ import timber.log.Timber
 
 class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
 
-    private lateinit var appEvent: AppEvent
-
     private val args: PhotoEditCropFragmentArgs by navArgs()
+
+    private var appEvent: AppEvent? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -49,7 +49,7 @@ class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
             cropImageView.setImageUriAsync(args.fileUri)
 
             submitButton.setOnDebounceClickListener {
-                appEvent.sendButtonClick("crop_submit")
+                appEvent?.sendButtonClick("crop_submit")
                 val saveFileUri = Gallery.createCacheFileUri(it.context, "cropped.png")
                 cropImageView.saveCroppedImageAsync(saveFileUri)
             }
@@ -58,7 +58,7 @@ class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
 
     override fun onResume() {
         super.onResume()
-        appEvent.sendScreenEvent(this)
+        appEvent?.sendScreenEvent(this)
     }
 
     private fun saveResult(result: CropImageView.CropResult) {

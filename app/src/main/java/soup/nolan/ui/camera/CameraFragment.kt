@@ -43,12 +43,11 @@ import java.io.File
 
 class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
 
-    private lateinit var appEvent: AppEvent
-
     private val viewModel: CameraViewModel by viewModel()
     private val filterViewModel: CameraFilterViewModel by activityViewModel()
     private val systemViewModel: SystemViewModel by activityViewModels()
 
+    private var appEvent: AppEvent? = null
     private var binding: CameraBinding by autoCleared()
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
@@ -73,7 +72,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
             val showAds = bundle.getBoolean(ResultContract.CAMERA_EXTRA_SHOW_ADS, false)
             if (showAds) {
                 viewModel.onShowAdClick()
-                appEvent.sendButtonClick("show_ad")
+                appEvent?.sendButtonClick("show_ad")
             }
         }
     }
@@ -101,11 +100,11 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
         binding.header.run {
             moreButton.setOnDebounceClickListener {
                 findNavController().navigate(CameraFragmentDirections.actionToSettings())
-                appEvent.sendButtonClick("more")
+                appEvent?.sendButtonClick("more")
             }
             facingButton.setOnClickListener {
                 viewModel.onLensFacingClick(facingButton.isLensFacingFront())
-                appEvent.sendButtonClick("lens_facing")
+                appEvent?.sendButtonClick("lens_facing")
             }
             viewModel.lensFacingFront.observe(viewLifecycleOwner, Observer { lensFacingFront ->
                 if (lensFacingFront) {
@@ -119,7 +118,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
         binding.footer.run {
             galleryButton.setOnDebounceClickListener {
                 viewModel.onGalleryButtonClick()
-                appEvent.sendButtonClick("gallery")
+                appEvent?.sendButtonClick("gallery")
             }
             viewModel.gallerySelectableCount.observe(viewLifecycleOwner, Observer {
                 currentCount.text = it.toString()
@@ -143,7 +142,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                             override fun onUserEarnedReward(reward: RewardItem) {
                                 Timber.i("onUserEarnedReward: amount=${reward.amount}")
                                 viewModel.onUserEarnedReward(reward.amount)
-                                appEvent.sendPromotionEvent("earned_reward")
+                                appEvent?.sendPromotionEvent("earned_reward")
                             }
 
                             override fun onRewardedAdFailedToShow(errorCode: Int) {
@@ -181,11 +180,11 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                             Timber.w(exception)
                         }
                     })
-                appEvent.sendButtonClick("capture")
+                appEvent?.sendButtonClick("capture")
             }
             filterButton.setOnDebounceClickListener {
                 binding.filterPanel.isVisible = true
-                appEvent.sendButtonClick("filter")
+                appEvent?.sendButtonClick("filter")
             }
         }
         binding.run {
@@ -200,7 +199,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
                     animateCameraFilterDescription()
                 }
                 cameraFilterDim.animateCameraFilterDim(target = cameraFilterDescription)
-                appEvent.sendFilterSelect(it.filter)
+                appEvent?.sendFilterSelect(it.filter)
             }
             filterListView.adapter = listAdapter
             filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
@@ -229,7 +228,7 @@ class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
 
     override fun onResume() {
         super.onResume()
-        appEvent.sendScreenEvent(this)
+        appEvent?.sendScreenEvent(this)
         viewModel.refresh()
     }
 

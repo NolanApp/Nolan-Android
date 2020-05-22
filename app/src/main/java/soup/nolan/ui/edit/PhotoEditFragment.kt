@@ -40,14 +40,13 @@ import soup.nolan.ui.utils.toast
 
 class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimation {
 
-    private lateinit var appEvent: AppEvent
-
     private val args: PhotoEditFragmentArgs by navArgs()
     private val viewModel: PhotoEditViewModel by viewModel()
     private val filterViewModel: CameraFilterViewModel by activityViewModel()
     private val shareViewModel: ShareViewModel by viewModel()
     private val systemViewModel: SystemViewModel by activityViewModels()
 
+    private var appEvent: AppEvent? = null
     private var binding: PhotoEditBinding by autoCleared()
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
@@ -91,18 +90,18 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
             cropButton.isVisible = args.fromGallery
             cropButton.setOnDebounceClickListener {
                 viewModel.onCropClick()
-                appEvent.sendButtonClick("crop")
+                appEvent?.sendButtonClick("crop")
             }
             filterButton.setOnDebounceClickListener {
                 filterGroup.isVisible = true
-                appEvent.sendButtonClick("filter")
+                appEvent?.sendButtonClick("filter")
             }
             filterDim.setOnClickListener {
                 filterGroup.isVisible = false
             }
             saveButton.setOnDebounceClickListener {
                 viewModel.onSaveClick()
-                appEvent.sendButtonClick("save")
+                appEvent?.sendButtonClick("save")
             }
             shareButton.setOnDebounceClickListener {
                 //TODO:
@@ -110,7 +109,7 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
                 editableImage.drawable?.let {
                     onShare(context, it)
                 }
-                appEvent.sendButtonClick("share")
+                appEvent?.sendButtonClick("share")
             }
             shareDim.setOnClickListener {
                 shareGroup.isVisible = false
@@ -157,7 +156,7 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
                 viewModel.changeFilter(it.filter)
 
                 filterGroup.isVisible = false
-                appEvent.sendFilterSelect(it.filter)
+                appEvent?.sendFilterSelect(it.filter)
             }
             filterListView.adapter = filterListAdapter
             filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
@@ -195,7 +194,7 @@ class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimat
 
     override fun onResume() {
         super.onResume()
-        appEvent.sendScreenEvent(this)
+        appEvent?.sendScreenEvent(this)
     }
 
     private fun onShare(context: Context, drawable: Drawable) {

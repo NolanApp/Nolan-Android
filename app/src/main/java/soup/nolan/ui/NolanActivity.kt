@@ -22,9 +22,9 @@ import java.util.concurrent.Executor
 
 class NolanActivity : BaseActivity(R.layout.nolan_activity) {
 
+    private var windowManager: WindowManager? = null
     private val handler = Handler(Looper.getMainLooper())
     private val mainThreadExecutor = Executor { r: Runnable -> handler.post(r) }
-    private lateinit var windowManager: WindowManager
     private val deviceStateChangeCallback = Consumer<DeviceState> { newDeviceState ->
         systemViewModel.onDeviceStateChanged(newDeviceState)
     }
@@ -83,17 +83,18 @@ class NolanActivity : BaseActivity(R.layout.nolan_activity) {
             billingProcessor.purchase(this, it.skuId)
         })
 
-        windowManager = WindowManager(this, null)
-        windowManager.registerDeviceStateChangeCallback(
-            mainThreadExecutor,
-            deviceStateChangeCallback
-        )
-        systemViewModel.onDeviceStateChanged(windowManager.deviceState)
+        windowManager = WindowManager(this, null).apply {
+            registerDeviceStateChangeCallback(
+                mainThreadExecutor,
+                deviceStateChangeCallback
+            )
+            systemViewModel.onDeviceStateChanged(deviceState)
+        }
     }
 
     override fun onDestroy() {
         billingProcessor.release()
-        windowManager.unregisterDeviceStateChangeCallback(deviceStateChangeCallback)
+        windowManager?.unregisterDeviceStateChangeCallback(deviceStateChangeCallback)
         super.onDestroy()
     }
 
