@@ -5,6 +5,8 @@ import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
+import soup.nolan.ui.utils.CrashlyticsTree
+import timber.log.Timber
 
 class NolanApplication : Application(), CameraXConfig.Provider {
 
@@ -28,7 +30,11 @@ class NolanApplication : Application(), CameraXConfig.Provider {
             )
         }
         super.onCreate()
-        LogTracker.install(this)
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        } else {
+            Timber.plant(CrashlyticsTree())
+        }
         NotificationChannels.createAll(this)
         dependency = Dependency(this)
     }
