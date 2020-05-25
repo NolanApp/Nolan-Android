@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:minLines="2"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         tools:text="Facebook" />
 
 </LinearLayout>

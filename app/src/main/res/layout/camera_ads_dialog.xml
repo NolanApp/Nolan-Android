@@ -72,7 +72,7 @@
 
     <Button
         android:id="@+id/confirm_button"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

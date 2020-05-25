@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr format="color" name="colorSurface"/>
+    <attr format="color" name="colorOnSurface"/>
+
     <declare-styleable name="CheckedImageView">
         <attr name="checked" format="boolean" />
     </declare-styleable>
