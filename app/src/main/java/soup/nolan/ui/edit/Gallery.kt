@@ -2,7 +2,6 @@ package soup.nolan.ui.edit
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.Activity.RESULT_OK
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -20,7 +19,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.contentValuesOf
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import soup.nolan.NotificationChannels
@@ -33,24 +31,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Gallery {
-
-    private const val REQUEST_GET_SINGLE_FILE = 1
-
-    fun takePicture(fragment: Fragment) {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "image/*"
-        fragment.startActivityForResult(
-            Intent.createChooser(intent, "Select Picture"),
-            REQUEST_GET_SINGLE_FILE
-        )
-    }
-
-    fun onPictureTaken(requestCode: Int, resultCode: Int, data: Intent?, callback: (Uri) -> Unit) {
-        if (requestCode == REQUEST_GET_SINGLE_FILE && resultCode == RESULT_OK) {
-            data?.data?.run(callback)
-        }
-    }
 
     private const val DIR_NAME = "Nolan"
     private const val FILE_NAME_TEMPLATE = "Nolan_%s.png"

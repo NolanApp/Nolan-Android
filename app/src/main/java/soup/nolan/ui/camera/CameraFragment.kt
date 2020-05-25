@@ -3,12 +3,12 @@ package soup.nolan.ui.camera
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.transition.TransitionManager
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
 import androidx.camera.core.ImageCapture
@@ -33,7 +33,6 @@ import soup.nolan.ui.EventObserver
 import soup.nolan.ui.ResultContract
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
-import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.scrollToPositionInCenter
@@ -60,6 +59,22 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
             }
         }
     }
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            findNavController().navigate(CameraFragmentDirections.actionToEdit(it, true))
+        }
+
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            val context: Context = binding.root.context
+            if (allPermissionsGranted(context)) {
+                startCameraWith(binding)
+            } else {
+                toast(R.string.camera_error_permission)
+                findNavController().popBackStack()
+            }
+        }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -92,10 +107,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                 startCameraWith(binding)
             }
         } else {
-            requestPermissions(
-                REQUIRED_PERMISSIONS,
-                REQUEST_CODE_PERMISSIONS
-            )
+            permissionLauncher.launch(REQUIRED_PERMISSIONS)
         }
 
         binding.header.run {
@@ -157,7 +169,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                         toast(R.string.camera_error_network)
                     }
                     is CameraUiEvent.GoToGallery -> {
-                        Gallery.takePicture(this@CameraFragment)
+                        galleryLauncher.launch("image/*")
                     }
                 }
             })
@@ -233,33 +245,10 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
         viewModel.refresh()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Gallery.onPictureTaken(requestCode, resultCode, data) {
-            findNavController().navigate(CameraFragmentDirections.actionToEdit(it, true))
-        }
-    }
-
     @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraBinding) {
         //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            val context: Context = binding.root.context
-            if (allPermissionsGranted(context)) {
-                startCameraWith(binding)
-            } else {
-                toast(R.string.camera_error_permission)
-                findNavController().popBackStack()
-            }
-        }
     }
 
     private fun allPermissionsGranted(context: Context): Boolean {
@@ -269,8 +258,6 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     }
 
     companion object {
-
-        private const val REQUEST_CODE_PERMISSIONS = 10
 
         private val REQUIRED_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
