@@ -50,7 +50,9 @@ class CameraViewModel @Inject constructor(
     fun onGalleryButtonClick() {
         val currentCount = appSettings.gallerySelectableCount
         if (currentCount < 5) {
-            adManager.loadNextRewardedAd()
+            viewModelScope.launch {
+                adManager.loadNextRewardedAd()
+            }
         }
         if (currentCount > 0) {
             appSettings.gallerySelectableCount = currentCount - 1
@@ -98,7 +100,9 @@ class CameraViewModel @Inject constructor(
 
     private fun refreshRewardedAdIfNeeded() {
         if (appSettings.gallerySelectableCount == 0) {
-            adManager.loadNextRewardedAd()
+            viewModelScope.launch {
+                adManager.loadNextRewardedAd()
+            }
         }
     }
 }

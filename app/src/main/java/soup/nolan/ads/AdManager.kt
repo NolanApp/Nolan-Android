@@ -6,7 +6,7 @@ interface AdManager {
 
     fun getLoadedRewardedAd(): RewardedAd?
 
-    fun loadNextRewardedAd()
+    suspend fun loadNextRewardedAd()
 
     fun onRewardedAdConsumed()
 }

@@ -5,6 +5,10 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import soup.nolan.R
 import timber.log.Timber
 
@@ -15,12 +19,15 @@ class AdManagerImpl(private val context: Context) : AdManager {
     enum class State {
         LOADED, CONSUMED
     }
+
     private var state: State = State.CONSUMED
 
     private var lastRewardedAd: RewardedAd? = null
 
     init {
-        MobileAds.initialize(context)
+        GlobalScope.launch(Dispatchers.IO) {
+            MobileAds.initialize(context)
+        }
     }
 
     override fun getLoadedRewardedAd(): RewardedAd? {
@@ -28,17 +35,20 @@ class AdManagerImpl(private val context: Context) : AdManager {
         return lastRewardedAd?.takeIf { it.isLoaded }
     }
 
-    override fun loadNextRewardedAd() {
+    override suspend fun loadNextRewardedAd() {
         if (lastRewardedAd?.isLoaded == true && state == State.LOADED) {
             return
         }
-        val rewardedAd = RewardedAd(context, adUnitId)
-        val adLoadCallback = object: RewardedAdLoadCallback() {
+        val rewardedAd = withContext(Dispatchers.IO) {
+            RewardedAd(context, adUnitId)
+        }
+        val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 lastRewardedAd = rewardedAd
                 state = State.LOADED
                 Timber.d("onRewardedAdLoaded: State.LOADED")
             }
+
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 Timber.w("onAdFailedToLoad: errorCode=$errorCode")
             }
