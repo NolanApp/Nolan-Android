@@ -6,21 +6,22 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.gms.ads.AdRequest
 import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.SettingsBinding
 import soup.nolan.ui.EventObserver
-import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.utils.*
 
-class SettingsFragment : BaseFragment(R.layout.settings) {
+class SettingsFragment : Fragment(R.layout.settings) {
 
     private var binding: SettingsBinding by autoCleared { adView.destroy() }
-    private val viewModel: SettingsViewModel by viewModel()
+    private val viewModel: SettingsViewModel by viewModels()
     private val purchaseViewModel: PurchaseViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

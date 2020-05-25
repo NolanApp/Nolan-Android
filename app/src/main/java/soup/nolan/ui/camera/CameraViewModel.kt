@@ -2,21 +2,21 @@ package soup.nolan.ui.camera
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import soup.nolan.Dependency
 import soup.nolan.ads.AdManager
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
-import soup.nolan.ui.base.BaseViewModel
-import javax.inject.Inject
 
-class CameraViewModel @Inject constructor(
-    private val appSettings: AppSettings,
-    private val adManager: AdManager
-) : BaseViewModel() {
+class CameraViewModel(
+    private val appSettings: AppSettings = Dependency.appSettings,
+    private val adManager: AdManager = Dependency.adManager
+) : ViewModel() {
 
     private val _lensFacingFront = MutableLiveData(appSettings.lensFacingFront)
     val lensFacingFront: LiveData<Boolean>

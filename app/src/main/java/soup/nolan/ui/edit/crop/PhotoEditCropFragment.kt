@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -11,13 +12,12 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import soup.nolan.R
 import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.PhotoEditCropBinding
-import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
 import timber.log.Timber
 
-class PhotoEditCropFragment : BaseFragment(R.layout.photo_edit_crop) {
+class PhotoEditCropFragment : Fragment(R.layout.photo_edit_crop) {
 
     private val args: PhotoEditCropFragmentArgs by navArgs()
 

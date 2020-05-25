@@ -4,12 +4,12 @@ import android.animation.Animator
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
-import soup.nolan.ui.base.BaseFragment
 
-class SplashFragment : BaseFragment(R.layout.splash) {
+class SplashFragment : Fragment(R.layout.splash) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.window.DeviceState
 import timber.log.Timber
-import javax.inject.Inject
 
-class SystemViewModel @Inject constructor() : ViewModel() {
+class SystemViewModel : ViewModel() {
 
     private val _isHalfOpened = MutableLiveData<Boolean>()
     val isHalfOpened: LiveData<Boolean>

@@ -1,14 +1,12 @@
 package soup.nolan
 
+import android.app.Application
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
-import dagger.android.AndroidInjector
-import dagger.android.support.DaggerApplication
-import soup.nolan.di.DaggerApplicationComponent
 
-class NolanApplication : DaggerApplication(), CameraXConfig.Provider {
+class NolanApplication : Application(), CameraXConfig.Provider {
 
     override fun onCreate() {
         if (BuildConfig.DEBUG) {
@@ -32,13 +30,15 @@ class NolanApplication : DaggerApplication(), CameraXConfig.Provider {
         super.onCreate()
         LogTracker.install(this)
         NotificationChannels.createAll(this)
-    }
-
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerApplicationComponent.factory().create(this)
+        dependency = Dependency(this)
     }
 
     override fun getCameraXConfig(): CameraXConfig {
         return Camera2Config.defaultConfig()
+    }
+
+    companion object {
+
+        internal lateinit var dependency: Dependency
     }
 }

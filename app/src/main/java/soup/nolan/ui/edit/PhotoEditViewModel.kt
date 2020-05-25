@@ -5,9 +5,11 @@ import android.graphics.Rect
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import soup.nolan.BuildConfig
+import soup.nolan.Dependency
 import soup.nolan.R
 import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.filter.stylize.LegacyStyleTransfer
@@ -15,16 +17,14 @@ import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
-import soup.nolan.ui.base.BaseViewModel
 import soup.nolan.ui.utils.ImageFactory
 import timber.log.Timber
-import javax.inject.Inject
 
-class PhotoEditViewModel @Inject constructor(
-    private val imageFactory: ImageFactory,
-    private val styleTransfer: LegacyStyleTransfer,
-    private val appSettings: AppSettings
-) : BaseViewModel() {
+class PhotoEditViewModel(
+    private val imageFactory: ImageFactory = Dependency.imageFactory,
+    private val styleTransfer: LegacyStyleTransfer = Dependency.styleTransfer,
+    private val appSettings: AppSettings = Dependency.appSettings
+) : ViewModel() {
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean>

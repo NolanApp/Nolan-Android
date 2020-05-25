@@ -2,19 +2,19 @@ package soup.nolan.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import soup.nolan.Dependency
 import soup.nolan.data.PlayRepository
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
-import soup.nolan.ui.base.BaseViewModel
 import soup.nolan.ui.purchase.PurchaseItem
-import javax.inject.Inject
 
-class SettingsViewModel @Inject constructor(
-    private val repository: PlayRepository,
-    private val appSettings: AppSettings
-) : BaseViewModel() {
+class SettingsViewModel(
+    private val repository: PlayRepository = Dependency.playRepository,
+    private val appSettings: AppSettings = Dependency.appSettings
+) : ViewModel() {
 
     val latestVersionCode: LiveData<Int> = liveData {
         emit(repository.getAvailableVersionCode())

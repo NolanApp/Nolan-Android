@@ -1,14 +1,14 @@
 package soup.nolan.ui.share
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import soup.nolan.Dependency
 import soup.nolan.data.ShareRepository
 import soup.nolan.model.ThirdPartyApp
-import soup.nolan.ui.base.BaseViewModel
-import javax.inject.Inject
 
-class ShareViewModel @Inject constructor(
-    private val repository: ShareRepository
-) : BaseViewModel() {
+class ShareViewModel(
+    private val repository: ShareRepository = Dependency.shareRepository
+) : ViewModel() {
 
     val shareList = liveData {
         val appList = repository.getInstalledAppSet()

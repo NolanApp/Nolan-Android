@@ -12,8 +12,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,7 +25,6 @@ import soup.nolan.R
 import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.PhotoEditBinding
 import soup.nolan.ui.EventObserver
-import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToCrop
@@ -38,12 +39,12 @@ import soup.nolan.ui.utils.scrollToPositionInCenter
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
 
-class PhotoEditFragment : BaseFragment(R.layout.photo_edit), PhotoEditViewAnimation {
+class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation {
 
     private val args: PhotoEditFragmentArgs by navArgs()
-    private val viewModel: PhotoEditViewModel by viewModel()
-    private val filterViewModel: CameraFilterViewModel by activityViewModel()
-    private val shareViewModel: ShareViewModel by viewModel()
+    private val viewModel: PhotoEditViewModel by viewModels()
+    private val filterViewModel: CameraFilterViewModel by activityViewModels()
+    private val shareViewModel: ShareViewModel by viewModels()
     private val systemViewModel: SystemViewModel by activityViewModels()
 
     private var appEvent: AppEvent? = null

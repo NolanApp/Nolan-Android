@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import soup.nolan.Dependency
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
-import javax.inject.Inject
 
-class PurchaseViewModel @Inject constructor(
-    private val appSettings: AppSettings
+class PurchaseViewModel(
+    private val appSettings: AppSettings = Dependency.appSettings
 ) : ViewModel() {
 
     private val _noAdsPurchased = MutableLiveData<Boolean>()

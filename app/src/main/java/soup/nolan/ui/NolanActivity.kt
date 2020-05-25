@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
 import androidx.lifecycle.lifecycleScope
 import androidx.window.DeviceState
@@ -13,14 +15,13 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import soup.nolan.R
-import soup.nolan.ui.base.BaseActivity
 import soup.nolan.ui.purchase.PurchaseItem
 import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.system.SystemViewModel
 import timber.log.Timber
 import java.util.concurrent.Executor
 
-class NolanActivity : BaseActivity(R.layout.nolan_activity) {
+class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
 
     private var windowManager: WindowManager? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -29,9 +30,9 @@ class NolanActivity : BaseActivity(R.layout.nolan_activity) {
         systemViewModel.onDeviceStateChanged(newDeviceState)
     }
 
-    private val systemViewModel: SystemViewModel by viewModel()
+    private val systemViewModel: SystemViewModel by viewModels()
 
-    private val purchaseViewModel: PurchaseViewModel by viewModel()
+    private val purchaseViewModel: PurchaseViewModel by viewModels()
 
     private val billingProcessor: BillingProcessor by lazy {
         BillingProcessor(

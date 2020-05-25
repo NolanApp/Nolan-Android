@@ -18,8 +18,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
@@ -29,7 +31,6 @@ import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.ResultContract
-import soup.nolan.ui.base.BaseFragment
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.edit.Gallery
@@ -41,10 +42,10 @@ import soup.nolan.ui.utils.toast
 import timber.log.Timber
 import java.io.File
 
-class CameraFragment : BaseFragment(R.layout.camera), CameraViewAnimation {
+class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
-    private val viewModel: CameraViewModel by viewModel()
-    private val filterViewModel: CameraFilterViewModel by activityViewModel()
+    private val viewModel: CameraViewModel by viewModels()
+    private val filterViewModel: CameraFilterViewModel by activityViewModels()
     private val systemViewModel: SystemViewModel by activityViewModels()
 
     private var appEvent: AppEvent? = null
