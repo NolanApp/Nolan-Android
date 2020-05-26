@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import soup.nolan.BuildConfig
 import soup.nolan.Dependency
 import soup.nolan.ads.AdManager
 import soup.nolan.settings.AppSettings
@@ -48,6 +49,10 @@ class CameraViewModel(
     }
 
     fun onGalleryButtonClick() {
+        if (BuildConfig.DEBUG) {
+            _uiEvent.event = CameraUiEvent.GoToGallery
+            return
+        }
         val currentCount = appSettings.gallerySelectableCount
         if (currentCount < 5) {
             viewModelScope.launch {
