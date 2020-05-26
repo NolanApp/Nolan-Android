@@ -15,6 +15,7 @@ import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
+import soup.nolan.stylize.common.NoStyleInput
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.utils.ImageFactory
@@ -69,6 +70,11 @@ class PhotoEditViewModel(
 
     private fun updateInternal(bitmap: Bitmap, filter: CameraFilter) {
         val input = filter.input
+        if (input is NoStyleInput) {
+            _bitmap.value = bitmap
+            _buttonPanelIsShown.value = true
+            return
+        }
         if (input !is LegacyStyleInput) {
             Timber.d("updateInternal: input($input) is invalid!")
             _buttonPanelIsShown.value = true
