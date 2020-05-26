@@ -12,30 +12,43 @@ import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
 
 class SplashFragment : Fragment(R.layout.splash) {
 
+    private var isAnimating = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(SplashBinding.bind(view)) {
-            logo.run {
-                alpha = 0f
-                scaleX = 0f
-                scaleY = 0f
-                animate()
-                    .alpha(1f)
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(250)
-                    .setInterpolator(OvershootInterpolator())
-                    .setListener(object : Animator.AnimatorListener {
-
-                        override fun onAnimationCancel(animation: Animator) {}
-                        override fun onAnimationRepeat(animation: Animator) {}
-                        override fun onAnimationStart(animation: Animator) {}
-
-                        override fun onAnimationEnd(animation: Animator) {
-                            findNavController().navigate(actionToCamera())
-                        }
-                    })
-            }
+            logo.animateBounce()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isAnimating) {
+            isAnimating = false
+            findNavController().navigate(actionToCamera())
+        }
+    }
+
+    private fun View.animateBounce() {
+        alpha = 0f
+        scaleX = 0f
+        scaleY = 0f
+        animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(250)
+            .setInterpolator(OvershootInterpolator())
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+                override fun onAnimationStart(animation: Animator) {
+                    isAnimating = true
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    findNavController().navigate(actionToCamera())
+                }
+            })
     }
 }
