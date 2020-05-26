@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:src="@drawable/style0" />
+        tools:src="@drawable/a01" />
 
     <ImageView
         android:id="@+id/filter_pick"
