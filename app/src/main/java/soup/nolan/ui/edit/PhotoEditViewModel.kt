@@ -3,6 +3,7 @@ package soup.nolan.ui.edit
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
+import androidx.collection.LruCache
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -43,9 +44,25 @@ class PhotoEditViewModel(
     val uiEvent: EventLiveData<PhotoEditUiEvent>
         get() = _uiEvent
 
+    private val memoryCache: LruCache<String, Bitmap>
     private var originImageUri: Uri? = null
     private var lastImageUri: Uri? = null
     private var lastCropRect: Rect? = null
+
+    init {
+        val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
+        val cacheSize = maxMemory / 8
+        memoryCache = object : LruCache<String, Bitmap>(cacheSize) {
+            override fun sizeOf(key: String, bitmap: Bitmap): Int {
+                return bitmap.byteCount / 1024
+            }
+        }
+    }
+
+    override fun onCleared() {
+        memoryCache.evictAll()
+        super.onCleared()
+    }
 
     fun init(imageUri: Uri) {
         if (originImageUri != null) return
@@ -59,6 +76,7 @@ class PhotoEditViewModel(
     }
 
     fun update(imageUri: Uri, cropRect: Rect?) {
+        memoryCache.evictAll()
         lastImageUri = imageUri
         lastCropRect = cropRect
 
@@ -81,6 +99,13 @@ class PhotoEditViewModel(
             return
         }
 
+        val cacheBitmap = memoryCache.get(filter.id)
+        if (cacheBitmap != null) {
+            _bitmap.value = cacheBitmap
+            _buttonPanelIsShown.value = true
+            return
+        }
+
         viewModelScope.launch {
             _isLoading.value = true
             _buttonPanelIsShown.value = false
@@ -89,10 +114,11 @@ class PhotoEditViewModel(
                 val styleBitmap = styleTransfer.transform(bitmap, input)
                 val duration = System.currentTimeMillis() - start
                 Timber.d("success: $duration ms")
+                memoryCache.put(filter.id, styleBitmap)
+                _bitmap.value = styleBitmap
                 if (BuildConfig.DEBUG) {
                     _uiEvent.event = PhotoEditUiEvent.ShowToast("Success! ($duration ms)")
                 }
-                _bitmap.value = styleBitmap
             } catch (e: Exception) {
                 Timber.w("failure: $e")
                 _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
