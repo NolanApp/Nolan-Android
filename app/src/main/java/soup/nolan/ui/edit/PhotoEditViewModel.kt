@@ -21,6 +21,7 @@ import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.utils.ImageFactory
 import timber.log.Timber
+import kotlin.system.measureTimeMillis
 
 class PhotoEditViewModel(
     private val imageFactory: ImageFactory = Dependency.imageFactory,
@@ -72,7 +73,9 @@ class PhotoEditViewModel(
 
     fun changeFilter(filter: CameraFilter) {
         val imageUri = lastImageUri ?: return
-        updateInternal(imageFactory.getBitmap(imageUri), filter)
+        viewModelScope.launch {
+            updateInternal(imageFactory.getBitmap(imageUri), filter)
+        }
     }
 
     fun update(imageUri: Uri, cropRect: Rect?) {
@@ -80,25 +83,15 @@ class PhotoEditViewModel(
         lastImageUri = imageUri
         lastCropRect = cropRect
 
-        imageFactory.getBitmap(imageUri).let {
-            _bitmap.value = it
-            updateInternal(it, getSelectedCameraFilter())
+        viewModelScope.launch {
+            imageFactory.getBitmap(imageUri).let {
+                _bitmap.value = it
+                updateInternal(it, getSelectedCameraFilter())
+            }
         }
     }
 
-    private fun updateInternal(bitmap: Bitmap, filter: CameraFilter) {
-        val input = filter.input
-        if (input is NoStyleInput) {
-            _bitmap.value = bitmap
-            _buttonPanelIsShown.value = true
-            return
-        }
-        if (input !is LegacyStyleInput) {
-            Timber.d("updateInternal: input($input) is invalid!")
-            _buttonPanelIsShown.value = true
-            return
-        }
-
+    private suspend fun updateInternal(bitmap: Bitmap, filter: CameraFilter) {
         val cacheBitmap = memoryCache.get(filter.id)
         if (cacheBitmap != null) {
             _bitmap.value = cacheBitmap
@@ -106,26 +99,22 @@ class PhotoEditViewModel(
             return
         }
 
-        viewModelScope.launch {
-            _isLoading.value = true
-            _buttonPanelIsShown.value = false
-            try {
-                val start = System.currentTimeMillis()
-                val styleBitmap = styleTransfer.transform(bitmap, input)
-                val duration = System.currentTimeMillis() - start
-                Timber.d("success: $duration ms")
-                memoryCache.put(filter.id, styleBitmap)
-                _bitmap.value = styleBitmap
-                if (BuildConfig.DEBUG) {
-                    _uiEvent.event = PhotoEditUiEvent.ShowToast("Success! ($duration ms)")
-                }
-            } catch (e: Exception) {
-                Timber.w("failure: $e")
-                _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
-            } finally {
-                _buttonPanelIsShown.value = true
-                _isLoading.value = false
+        _isLoading.value = true
+        _buttonPanelIsShown.value = false
+        try {
+            val duration = measureTimeMillis {
+                _bitmap.value = bitmap.stylized(filter)
             }
+            Timber.d("success: $duration ms")
+            if (BuildConfig.DEBUG) {
+                _uiEvent.event = PhotoEditUiEvent.ShowToast("Success! ($duration ms)")
+            }
+        } catch (e: Exception) {
+            Timber.w("failure: $e")
+            _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
+        } finally {
+            _buttonPanelIsShown.value = true
+            _isLoading.value = false
         }
     }
 
@@ -151,5 +140,17 @@ class PhotoEditViewModel(
         return CameraFilter.all()
             .firstOrNull { it.id == appSettings.lastFilterId }
             ?: CameraFilter.A25
+    }
+
+    private suspend fun Bitmap.stylized(filter: CameraFilter): Bitmap {
+        if (filter.input is NoStyleInput) {
+            return this
+        }
+        if (filter.input !is LegacyStyleInput) {
+            throw IllegalStateException("Invalid input(id=${filter.id})!")
+        }
+        return styleTransfer.transform(this, filter.input).also {
+            memoryCache.put(filter.id, it)
+        }
     }
 }
