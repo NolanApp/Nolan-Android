@@ -31,6 +31,9 @@ import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.ResultContract
+import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToAds
+import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToEdit
+import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.system.SystemViewModel
@@ -61,8 +64,10 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     }
 
     private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.GetContent()) {
-            findNavController().navigate(CameraFragmentDirections.actionToEdit(it, true))
+        registerForActivityResult(ActivityResultContracts.GetContent()) {uri ->
+            if (uri != null) {
+                findNavController().navigate(actionToEdit(uri, true))
+            }
         }
 
     private val permissionLauncher =
@@ -112,7 +117,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
         binding.header.run {
             moreButton.setOnDebounceClickListener {
-                findNavController().navigate(CameraFragmentDirections.actionToSettings())
+                findNavController().navigate(actionToSettings())
                 appEvent?.sendButtonClick("more")
             }
             facingButton.setOnClickListener {
@@ -139,7 +144,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
                     is CameraUiEvent.ShowAdDialog -> {
-                        findNavController().navigate(CameraFragmentDirections.actionToAds())
+                        findNavController().navigate(actionToAds())
                     }
                     is CameraUiEvent.ShowAd -> {
                         it.rewardedAd.show(activity, object : RewardedAdCallback() {
@@ -181,12 +186,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                     object : ImageCapture.OnImageSavedCallback {
 
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                            findNavController().navigate(
-                                CameraFragmentDirections.actionToEdit(
-                                    saveFile.toUri(),
-                                    false
-                                )
-                            )
+                            findNavController().navigate(actionToEdit(saveFile.toUri(), false))
                         }
 
                         override fun onError(exception: ImageCaptureException) {

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
+import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
 
 class SplashFragment : Fragment(R.layout.splash) {
 
@@ -31,7 +32,7 @@ class SplashFragment : Fragment(R.layout.splash) {
                         override fun onAnimationStart(animation: Animator) {}
 
                         override fun onAnimationEnd(animation: Animator) {
-                            findNavController().navigate(SplashFragmentDirections.actionToCamera())
+                            findNavController().navigate(actionToCamera())
                         }
                     })
             }
