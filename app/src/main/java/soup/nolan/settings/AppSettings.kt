@@ -7,14 +7,6 @@ interface AppSettings {
     var lensFacingFront: Boolean
     var lastFilterId: String
     var gallerySelectableCount: Int
-
-    //TODO:
-    var noAds: Boolean
-    var buyCoffee01: Boolean
-    var buyCoffee02: Boolean
-    var buyCoffee03: Boolean
-    var buyCoffee04: Boolean
-    var buyCoffee05: Boolean
 }
 
 class AppSettingsImpl(context: Context) : AppSettings {
@@ -24,11 +16,4 @@ class AppSettingsImpl(context: Context) : AppSettings {
     override var lensFacingFront: Boolean by BooleanPreference(prefs, "lens_facing_front", true)
     override var lastFilterId: String by StringPreference(prefs, "last_filter_id", CameraFilter.A25.id)
     override var gallerySelectableCount: Int by IntPreference(prefs, "gallery_selectable_count", 10)
-
-    override var noAds: Boolean by BooleanPreference(prefs, "no_ads", false)
-    override var buyCoffee01: Boolean by BooleanPreference(prefs, "buy_coffee_01", false)
-    override var buyCoffee02: Boolean by BooleanPreference(prefs, "buy_coffee_02", false)
-    override var buyCoffee03: Boolean by BooleanPreference(prefs, "buy_coffee_03", false)
-    override var buyCoffee04: Boolean by BooleanPreference(prefs, "buy_coffee_04", false)
-    override var buyCoffee05: Boolean by BooleanPreference(prefs, "buy_coffee_05", false)
 }

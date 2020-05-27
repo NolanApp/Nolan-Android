@@ -7,14 +7,13 @@
     tools:background="@color/surface">
 
     <ImageView
-        android:id="@+id/more_button"
+        android:id="@+id/settings_button"
         android:layout_width="60dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:background="?selectableItemBackgroundBorderless"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_more"
-        android:visibility="gone"
+        android:src="@drawable/ic_settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

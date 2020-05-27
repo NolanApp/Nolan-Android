@@ -116,7 +116,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
         }
 
         binding.header.run {
-            moreButton.setOnDebounceClickListener {
+            settingsButton.setOnDebounceClickListener {
                 findNavController().navigate(actionToSettings())
                 appEvent?.sendButtonClick("more")
             }

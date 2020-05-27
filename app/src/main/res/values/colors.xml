@@ -6,7 +6,4 @@
 
     <color name="system_ui_scrim_light">#B3FFFFFF</color> <!-- 70% white -->
     <color name="system_ui_scrim_dark">#40000000</color> <!-- 25% black -->
-
-    <color name="coffee_power_on">#8D6E63</color>
-    <color name="coffee_power_off">#D0D0D0</color>
 </resources>
