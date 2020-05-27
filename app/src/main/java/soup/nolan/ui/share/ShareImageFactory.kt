@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import soup.nolan.Dependency
 import soup.nolan.R
 import timber.log.Timber
 import java.io.File
@@ -19,10 +20,14 @@ object ShareImageFactory {
     private const val SHARE_DIR = "share"
     private const val FILE_NAME = "share_image.jpg"
 
-    fun createShareImageUri(context: Context, image: Drawable): Uri? {
+    fun createShareImageUri(
+        context: Context,
+        image: Drawable,
+        withWatermark: Boolean = Dependency.appSettings.showWatermark
+    ): Uri? {
         return try {
             val file = File(context.getShareDirectory(), FILE_NAME)
-            image.withWatermark(context)
+            image.toBitmap(context, withWatermark)
                 .compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(file))
             file.toContentUri(context)
         } catch (e: FileNotFoundException) {
@@ -31,19 +36,21 @@ object ShareImageFactory {
         }
     }
 
-    private fun Drawable.withWatermark(context: Context): Bitmap {
+    private fun Drawable.toBitmap(context: Context, withWatermark: Boolean): Bitmap {
         val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         draw(canvas)
 
-        ContextCompat.getDrawable(context, R.drawable.share_watermark)?.let {
-            val margin = context.resources.getDimensionPixelSize(R.dimen.share_watermark_margin)
-            val left = canvas.width - it.intrinsicWidth - margin
-            val top = canvas.height - it.intrinsicHeight - margin
-            val right = left + it.intrinsicWidth
-            val bottom = top + it.intrinsicHeight
-            it.setBounds(left, top, right, bottom)
-            it.draw(canvas)
+        if (withWatermark) {
+            ContextCompat.getDrawable(context, R.drawable.share_watermark)?.let {
+                val margin = context.resources.getDimensionPixelSize(R.dimen.share_watermark_margin)
+                val left = canvas.width - it.intrinsicWidth - margin
+                val top = canvas.height - it.intrinsicHeight - margin
+                val right = left + it.intrinsicWidth
+                val bottom = top + it.intrinsicHeight
+                it.setBounds(left, top, right, bottom)
+                it.draw(canvas)
+            }
         }
         return bitmap
     }

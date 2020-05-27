@@ -15,7 +15,7 @@
     <style name="Theme.Nolan" parent="Base.Theme.Nolan">
         <item name="colorPrimary">@color/bi</item>
         <item name="colorPrimaryDark">@color/bi</item>
-        <item name="colorAccent">@color/bi</item>
+        <item name="colorAccent">@color/on_surface</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/on_surface</item>
     </style>

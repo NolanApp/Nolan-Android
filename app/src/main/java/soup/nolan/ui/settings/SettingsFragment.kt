@@ -28,6 +28,12 @@ class SettingsFragment : Fragment(R.layout.settings) {
             toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
+            watermarkSwitch.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.onShowWatermarkChecked(isChecked)
+            }
+            reviewButton.setOnDebounceClickListener {
+                it.context.executePlayStoreForApp(BuildConfig.APPLICATION_ID)
+            }
             bugReportButton.setOnDebounceClickListener {
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
@@ -43,6 +49,9 @@ class SettingsFragment : Fragment(R.layout.settings) {
                 it.context.executePlayStoreForApp(BuildConfig.APPLICATION_ID)
             }
 
+            viewModel.showWatermark.observe(viewLifecycleOwner, Observer {
+                watermarkSwitch.isChecked = it
+            })
             viewModel.latestVersionCode.observe(viewLifecycleOwner, Observer {
                 currentVersion.text = if (BuildConfig.VERSION_CODE >= it) {
                     getString(R.string.settings_item_version_latest, BuildConfig.VERSION_NAME)
