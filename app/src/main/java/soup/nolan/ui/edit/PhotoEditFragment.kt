@@ -81,12 +81,12 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
         super.onViewCreated(view, savedInstanceState)
         with(PhotoEditBinding.bind(view)) {
             binding = this
-            if (savedInstanceState == null) {
-                editableImage.setImageURI(args.fileUri)
-            }
             initViewState(this, view.context)
         }
         viewModel.init(args.fileUri)
+        if (savedInstanceState == null) {
+            binding.editableImage.setImageURI(args.fileUri)
+        }
     }
 
     private fun initViewState(binding: PhotoEditBinding, context: Context) {
