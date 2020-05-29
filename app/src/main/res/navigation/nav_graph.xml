@@ -82,6 +82,16 @@
     <fragment
         android:id="@+id/settings"
         android:name="soup.nolan.ui.settings.SettingsFragment"
-        tools:layout="@layout/settings" />
+        tools:layout="@layout/settings">
+
+        <action
+            android:id="@+id/action_to_appearance"
+            app:destination="@id/appearance" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/appearance"
+        android:name="soup.nolan.ui.settings.appearance.AppearanceDialogFragment"
+        tools:layout="@layout/appearance_dialog" />
 
 </navigation>

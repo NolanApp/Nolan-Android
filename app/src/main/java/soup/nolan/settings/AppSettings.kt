@@ -1,6 +1,7 @@
 package soup.nolan.settings
 
 import android.content.Context
+import soup.nolan.model.Appearance
 import soup.nolan.model.CameraFilter
 
 interface AppSettings {
@@ -8,6 +9,7 @@ interface AppSettings {
     var lastFilterId: String
     var gallerySelectableCount: Int
     var showWatermark: Boolean
+    var currentAppearance: Int
 }
 
 class AppSettingsImpl(context: Context) : AppSettings {
@@ -18,4 +20,5 @@ class AppSettingsImpl(context: Context) : AppSettings {
     override var lastFilterId: String by StringPreference(prefs, "last_filter_id", CameraFilter.A25.id)
     override var gallerySelectableCount: Int by IntPreference(prefs, "gallery_selectable_count", 10)
     override var showWatermark: Boolean by BooleanPreference(prefs, "show_watermark", true)
+    override var currentAppearance: Int by IntPreference(prefs, "current_appearance", Appearance.System.value)
 }

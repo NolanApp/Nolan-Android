@@ -21,10 +21,16 @@
     <string name="share_target_more">More</string>
 
     <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 
     <string name="settings">Settings</string>
-    <string name="settings_category_camera">Camera Settings</string>
-    <string name="settings_item_watermark">Nolan mark</string>
+    <string name="settings_category_general">General</string>
+    <string name="settings_item_appearance">Appearance</string>
+    <string name="settings_item_appearance_system">Use device theme</string>
+    <string name="settings_item_appearance_light">Light theme</string>
+    <string name="settings_item_appearance_dark">Dark theme</string>
+    <string name="settings_category_camera">Camera</string>
+    <string name="settings_item_watermark">Watermark</string>
     <string name="settings_category_etc">Etc</string>
     <string name="settings_item_review">Write a review</string>
     <string name="settings_item_bug_report">Report or Contact</string>

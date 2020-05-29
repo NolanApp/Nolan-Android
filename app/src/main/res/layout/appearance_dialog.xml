@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="240dp"
+    tools:background="?colorSurface"
+    tools:context=".ui.camera.ads.CameraAdsDialogFragment">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_item_appearance"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toTopOf="@id/options_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/options_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@id/cancel_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        tools:checkedButton="@id/option_system">
+
+        <RadioButton
+            android:id="@+id/option_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="?colorOnSurface"
+            android:padding="8dp"
+            android:text="@string/settings_item_appearance_system"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/option_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="?colorOnSurface"
+            android:padding="8dp"
+            android:text="@string/settings_item_appearance_light"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/option_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="?colorOnSurface"
+            android:padding="8dp"
+            android:text="@string/settings_item_appearance_dark"
+            android:textSize="16sp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/cancel_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="4dp"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/options_group" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

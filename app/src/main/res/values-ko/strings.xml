@@ -21,10 +21,16 @@
     <string name="share_target_more">공유</string>
 
     <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
 
     <string name="settings">설정</string>
-    <string name="settings_category_camera">카메라 설정</string>
-    <string name="settings_item_watermark">Nolan 마크</string>
+    <string name="settings_category_general">일반</string>
+    <string name="settings_item_appearance">디자인</string>
+    <string name="settings_item_appearance_system">기기 테마 사용</string>
+    <string name="settings_item_appearance_light">밝은 테마</string>
+    <string name="settings_item_appearance_dark">어두운 테마</string>
+    <string name="settings_category_camera">카메라</string>
+    <string name="settings_item_watermark">워터마크</string>
     <string name="settings_category_etc">추가 정보</string>
     <string name="settings_item_review">리뷰 및 별점주기</string>
     <string name="settings_item_bug_report">버그 신고 및 문의</string>

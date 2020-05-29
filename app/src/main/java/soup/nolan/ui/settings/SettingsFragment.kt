@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -12,6 +13,9 @@ import com.google.android.gms.ads.AdRequest
 import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.SettingsBinding
+import soup.nolan.model.Appearance
+import soup.nolan.ui.settings.SettingsFragmentDirections.Companion.actionToAppearance
+import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.executePlayStoreForApp
 import soup.nolan.ui.utils.setOnDebounceClickListener
@@ -21,12 +25,16 @@ class SettingsFragment : Fragment(R.layout.settings) {
 
     private var binding: SettingsBinding by autoCleared { adView.destroy() }
     private val viewModel: SettingsViewModel by viewModels()
+    private val systemViewModel: SystemViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(SettingsBinding.bind(view)) {
             toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
+            }
+            appearanceButton.setOnDebounceClickListener {
+                findNavController().navigate(actionToAppearance())
             }
             watermarkSwitch.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.onShowWatermarkChecked(isChecked)
@@ -58,6 +66,14 @@ class SettingsFragment : Fragment(R.layout.settings) {
                 } else {
                     getString(R.string.settings_item_version_update, BuildConfig.VERSION_NAME)
                 }
+            })
+            systemViewModel.currentAppearance.observe(viewLifecycleOwner, Observer {
+                val currentOptionId = when (it) {
+                    Appearance.System -> R.string.settings_item_appearance_system
+                    Appearance.Light -> R.string.settings_item_appearance_light
+                    Appearance.Dark -> R.string.settings_item_appearance_dark
+                }
+                currentAppearance.setText(currentOptionId)
             })
 
             adView.loadAd(AdRequest.Builder().build())
