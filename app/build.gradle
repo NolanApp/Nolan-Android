@@ -15,6 +15,9 @@ android {
         versionName build_versions.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    buildFeatures {
+        viewBinding = true
+    }
     signingConfigs {
         release {
             storeFile rootProject.file("signing/app-release.jks")
@@ -49,9 +52,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-    viewBinding {
-        enabled = true
     }
 }
 
