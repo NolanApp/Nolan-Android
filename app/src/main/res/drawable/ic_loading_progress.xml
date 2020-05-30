@@ -1,9 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item>
-        <rotate android:drawable="@drawable/ic_loading_outer" />
-    </item>
-    <item android:drawable="@drawable/ic_loading_inner" />
-
-</layer-list>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_loading_outer" />

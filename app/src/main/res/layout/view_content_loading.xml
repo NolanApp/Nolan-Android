@@ -5,6 +5,7 @@
     android:background="#66000000">
 
     <ProgressBar
+        android:id="@+id/outer"
         style="?android:attr/progressBarStyle"
         android:layout_width="120dp"
         android:layout_height="120dp"
@@ -12,5 +13,11 @@
         android:indeterminateDrawable="@drawable/ic_loading_progress"
         android:indeterminateDuration="500"
         android:indeterminateOnly="true" />
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_loading_inner" />
 
 </FrameLayout>

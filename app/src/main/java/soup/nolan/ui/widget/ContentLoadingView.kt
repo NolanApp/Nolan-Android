@@ -1,5 +1,8 @@
 package soup.nolan.ui.widget
 
+import android.animation.ValueAnimator
+import android.animation.ValueAnimator.INFINITE
+import android.animation.ValueAnimator.RESTART
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -7,23 +10,13 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import soup.nolan.R
+import soup.nolan.ui.utils.Interpolators
 
 class ContentLoadingView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : FrameLayout(context, attrs, defStyle) {
-
-    init {
-        inflate(getContext(), R.layout.view_content_loading, this)
-    }
-
-    /* The following codes are copied from ContentLoadingProgressBar */
-
-    companion object {
-        private const val MIN_SHOW_TIME = 500 // ms
-        private const val MIN_DELAY = 0 // ms
-    }
 
     private var mStartTime: Long = -1
     private var mPostedHide = false
@@ -33,14 +26,35 @@ class ContentLoadingView @JvmOverloads constructor(
     private val mDelayedHide = Runnable {
         mPostedHide = false
         mStartTime = -1
-        visibility = View.GONE
+        animateVisible(false)
+        outerAnimator.cancel()
     }
 
     private val mDelayedShow = Runnable {
         mPostedShow = false
         if (!mDismissed) {
             mStartTime = System.currentTimeMillis()
-            visibility = View.VISIBLE
+            animateVisible(true)
+            outerAnimator.start()
+        }
+    }
+
+    private val outerView: View
+    private val outerAnimator: ValueAnimator
+
+    init {
+        inflate(getContext(), R.layout.view_content_loading, this)
+        outerView = findViewById(R.id.outer)
+        outerAnimator = ValueAnimator.ofFloat(1f, 1.05f, 1f, 0.95f, 1f).apply {
+            duration = 1000
+            interpolator = Interpolators.LINEAR
+            repeatMode = RESTART
+            repeatCount = INFINITE
+
+            addUpdateListener {
+                outerView.scaleX = it.animatedValue as Float
+                outerView.scaleY = it.animatedValue as Float
+            }
         }
     }
 
@@ -83,7 +97,7 @@ class ContentLoadingView @JvmOverloads constructor(
             // The progress spinner has been shown long enough
             // OR was not shown yet. If it wasn't shown yet,
             // it will just never be shown.
-            visibility = View.GONE
+            animateVisible(false)
         } else {
             // The progress spinner is shown, but not long enough,
             // so put a delayed message in to hide it when its been
@@ -110,5 +124,33 @@ class ContentLoadingView @JvmOverloads constructor(
             post(mDelayedShow)
             mPostedShow = true
         }
+    }
+
+    private fun View.animateVisible(visible: Boolean) {
+        animate().cancel()
+        if (visible) {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(1f)
+                .setDuration(200)
+                .setInterpolator(Interpolators.LINEAR)
+                .withLayer()
+                .withEndAction(null)
+        } else {
+            animate()
+                .alpha(0f)
+                .setDuration(200)
+                .setInterpolator(Interpolators.LINEAR)
+                .withLayer()
+                .withEndAction {
+                    visibility = View.GONE
+                }
+        }
+    }
+
+    companion object {
+        private const val MIN_SHOW_TIME = 500 // ms
+        private const val MIN_DELAY = 0 // ms
     }
 }

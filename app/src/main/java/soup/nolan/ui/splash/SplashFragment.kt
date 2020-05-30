@@ -43,7 +43,7 @@ class SplashFragment : Fragment(R.layout.splash) {
             .scaleX(1f)
             .scaleY(1f)
             .setDuration(250)
-            .setInterpolator(OvershootInterpolator())
+            .setInterpolator(OvershootInterpolator(2.5f))
             .withLayer()
             .setListener(object : Animator.AnimatorListener {
                 override fun onAnimationCancel(animation: Animator) {}
