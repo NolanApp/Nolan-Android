@@ -6,11 +6,13 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.transition.TransitionManager
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.transition.doOnEnd
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,10 +36,7 @@ import soup.nolan.ui.share.ShareImageFactory
 import soup.nolan.ui.share.ShareListAdapter
 import soup.nolan.ui.share.ShareViewModel
 import soup.nolan.ui.system.SystemViewModel
-import soup.nolan.ui.utils.autoCleared
-import soup.nolan.ui.utils.scrollToPositionInCenter
-import soup.nolan.ui.utils.setOnDebounceClickListener
-import soup.nolan.ui.utils.toast
+import soup.nolan.ui.utils.*
 
 class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation {
 
@@ -55,6 +54,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
             if (binding.filterGroup.isVisible) {
                 binding.filterGroup.isVisible = false
             } else {
+                binding.shutterStub.isVisible = true
                 findNavController().navigateUp()
             }
         }
@@ -68,6 +68,14 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(android.R.transition.move).apply {
+                interpolator = Interpolators.EASE_IN_OUT_CUBIC
+                duration = 500
+                doOnEnd {
+                    viewModel.onEnterAnimationDone()
+                }
+            }
         setFragmentResultListener(KEY_REQUEST) { _, bundle ->
             val fileUri: Uri? = bundle.getParcelable(PhotoEditCropFragment.EXTRA_FILE_URI)
             if (fileUri != null) {
@@ -82,10 +90,12 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
         with(PhotoEditBinding.bind(view)) {
             binding = this
             initViewState(this, view.context)
-        }
-        viewModel.init(args.fileUri)
-        if (savedInstanceState == null) {
-            binding.editableImage.setImageURI(args.fileUri)
+
+            viewModel.init(args.fileUri)
+
+            if (savedInstanceState == null) {
+                editableImage.setImageURI(args.fileUri)
+            }
         }
     }
 
@@ -128,6 +138,9 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                         loadingView.hide()
                     }
                 }
+            })
+            viewModel.isShutterVisible.observe(viewLifecycleOwner, Observer {
+                shutterStub.isVisible = it
             })
             viewModel.buttonPanelIsShown.observe(viewLifecycleOwner, Observer {
                 buttonPanel.animateVisible(it)

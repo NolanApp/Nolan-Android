@@ -20,6 +20,7 @@ import soup.nolan.stylize.common.NoStyleInput
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.utils.ImageFactory
+import soup.nolan.ui.utils.setValueIfNew
 import timber.log.Timber
 import kotlin.system.measureTimeMillis
 
@@ -29,9 +30,16 @@ class PhotoEditViewModel(
     private val appSettings: AppSettings = Dependency.appSettings
 ) : ViewModel() {
 
-    private val _isLoading = MutableLiveData(false)
+    private var isEnterAnimationDone: Boolean = false
+    private var wasLoading: Boolean = false
+
+    private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean>
         get() = _isLoading
+
+    private val _isShutterVisible = MutableLiveData(true)
+    val isShutterVisible: LiveData<Boolean>
+        get() = _isShutterVisible
 
     private val _buttonPanelIsShown = MutableLiveData(false)
     val buttonPanelIsShown: LiveData<Boolean>
@@ -99,9 +107,10 @@ class PhotoEditViewModel(
             return
         }
 
-        _isLoading.value = true
-        _buttonPanelIsShown.value = false
         try {
+            _buttonPanelIsShown.value = false
+            onInProcessing()
+
             val duration = measureTimeMillis {
                 _bitmap.value = bitmap.stylized(filter)
             }
@@ -114,7 +123,7 @@ class PhotoEditViewModel(
             _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
         } finally {
             _buttonPanelIsShown.value = true
-            _isLoading.value = false
+            onProcessDone()
         }
     }
 
@@ -151,6 +160,29 @@ class PhotoEditViewModel(
         }
         return styleTransfer.transform(this, filter.input).also {
             memoryCache.put(filter.id, it)
+        }
+    }
+
+    fun onEnterAnimationDone() {
+        Timber.d("onEnterAnimationDone: wasLoading=$wasLoading")
+        isEnterAnimationDone = true
+        _isLoading.setValueIfNew(wasLoading)
+        _isShutterVisible.value = false
+    }
+
+    private fun onInProcessing() {
+        Timber.d("onInProcessing: ")
+        wasLoading = true
+        if (isEnterAnimationDone) {
+            _isLoading.value = true
+        }
+    }
+
+    private fun onProcessDone() {
+        Timber.d("onProcessDone: ")
+        wasLoading = false
+        if (isEnterAnimationDone) {
+            _isLoading.value = false
         }
     }
 }

@@ -118,6 +118,23 @@
         app:layout_constraintTop_toTopOf="@id/editable_image"
         tools:visibility="visible" />
 
+    <FrameLayout
+        android:id="@+id/shutter_stub"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="@id/loading_view"
+        app:layout_constraintEnd_toEndOf="@id/loading_view"
+        app:layout_constraintStart_toStartOf="@id/loading_view"
+        app:layout_constraintTop_toTopOf="@id/loading_view">
+
+        <ImageView
+            android:id="@+id/shutter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_shutter_stub"
+            android:transitionName="@string/transition_shutter" />
+    </FrameLayout>
+
     <TextView
         android:id="@+id/loading_hint"
         android:layout_width="wrap_content"

@@ -24,6 +24,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
@@ -88,7 +89,11 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(requireContext())
-            .inflateTransition(R.transition.splash_to_camera).apply {
+            .inflateTransition(android.R.transition.move).apply {
+                interpolator = Interpolators.EASE_OUT_CUBIC
+            }
+        sharedElementReturnTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(android.R.transition.move).apply {
                 interpolator = Interpolators.EASE_OUT_CUBIC
             }
         setFragmentResultListener(ResultContract.CAMERA) { _, bundle ->
@@ -188,7 +193,10 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                     object : ImageCapture.OnImageSavedCallback {
 
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                            findNavController().navigate(actionToEdit(saveFile.toUri(), false))
+                            findNavController().navigate(
+                                actionToEdit(saveFile.toUri(), false),
+                                FragmentNavigatorExtras(captureButton to captureButton.transitionName)
+                            )
                         }
 
                         override fun onError(exception: ImageCaptureException) {
