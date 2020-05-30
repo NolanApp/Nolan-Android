@@ -95,6 +95,8 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
 
             if (savedInstanceState == null) {
                 editableImage.setImageURI(args.fileUri)
+            } else {
+                viewModel.onEnterAnimationDone()
             }
         }
     }
