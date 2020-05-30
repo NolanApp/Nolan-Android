@@ -13,10 +13,6 @@
         <action
             android:id="@+id/action_to_camera"
             app:destination="@id/camera"
-            app:enterAnim="@anim/fade_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out"
             app:popUpTo="@id/splash"
             app:popUpToInclusive="true" />
     </fragment>

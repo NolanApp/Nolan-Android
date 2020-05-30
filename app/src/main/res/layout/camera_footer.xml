@@ -32,9 +32,9 @@
         app:layout_constraintEnd_toStartOf="@id/max_count"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@id/gallery_button"
+        app:ticker_animateMeasurementChange="true"
         app:ticker_defaultCharacterList="number"
         app:ticker_defaultPreferredScrollingDirection="up"
-        app:ticker_animateMeasurementChange="true"
         tools:ignore="HardcodedText,SpUsage"
         tools:text="10" />
 
@@ -59,6 +59,7 @@
         android:background="?selectableItemBackgroundBorderless"
         android:scaleType="centerInside"
         android:src="@drawable/ic_shutter"
+        android:transitionName="@string/transition_shutter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

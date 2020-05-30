@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.transition.TransitionManager
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -37,10 +38,7 @@ import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.system.SystemViewModel
-import soup.nolan.ui.utils.autoCleared
-import soup.nolan.ui.utils.scrollToPositionInCenter
-import soup.nolan.ui.utils.setOnDebounceClickListener
-import soup.nolan.ui.utils.toast
+import soup.nolan.ui.utils.*
 import timber.log.Timber
 import java.io.File
 
@@ -89,6 +87,10 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.splash_to_camera).apply {
+                interpolator = Interpolators.EASE_OUT_CUBIC
+            }
         setFragmentResultListener(ResultContract.CAMERA) { _, bundle ->
             val showAds = bundle.getBoolean(ResultContract.CAMERA_EXTRA_SHOW_ADS, false)
             if (showAds) {

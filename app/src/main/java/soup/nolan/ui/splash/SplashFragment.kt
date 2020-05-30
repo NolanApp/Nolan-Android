@@ -5,19 +5,23 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
+import soup.nolan.ui.utils.autoCleared
 
 class SplashFragment : Fragment(R.layout.splash) {
 
+    private var binding: SplashBinding by autoCleared()
     private var isAnimating = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(SplashBinding.bind(view)) {
-            logo.animateBounce()
+            logoInner.animateBounce()
+            binding = this
         }
     }
 
@@ -25,7 +29,7 @@ class SplashFragment : Fragment(R.layout.splash) {
         super.onResume()
         if (isAnimating) {
             isAnimating = false
-            findNavController().navigate(actionToCamera())
+            navigateToCamera()
         }
     }
 
@@ -34,11 +38,13 @@ class SplashFragment : Fragment(R.layout.splash) {
         scaleX = 0f
         scaleY = 0f
         animate()
+            .setStartDelay(100)
             .alpha(1f)
             .scaleX(1f)
             .scaleY(1f)
             .setDuration(250)
             .setInterpolator(OvershootInterpolator())
+            .withLayer()
             .setListener(object : Animator.AnimatorListener {
                 override fun onAnimationCancel(animation: Animator) {}
                 override fun onAnimationRepeat(animation: Animator) {}
@@ -47,8 +53,13 @@ class SplashFragment : Fragment(R.layout.splash) {
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
-                    findNavController().navigate(actionToCamera())
+                    navigateToCamera()
                 }
             })
+    }
+
+    private fun navigateToCamera() {
+        val extras = FragmentNavigatorExtras(binding.logoOuter.let { it to it.transitionName })
+        findNavController().navigate(actionToCamera(), extras)
     }
 }
