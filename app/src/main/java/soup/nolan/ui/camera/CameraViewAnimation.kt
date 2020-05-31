@@ -9,6 +9,20 @@ import kotlin.math.hypot
 
 interface CameraViewAnimation {
 
+    fun View.animateShutterFlash() {
+        animate().cancel()
+        alpha = 0f
+        visibility = View.VISIBLE
+        animate()
+            .alpha(1f)
+            .setInterpolator(Interpolators.EASE_OUT_QUINT)
+            .setDuration(250)
+            .withLayer()
+            .withEndAction {
+                visibility = View.GONE
+            }
+    }
+
     fun View.animateCameraFilterDescription() {
         animate().cancel()
         alpha = 0f

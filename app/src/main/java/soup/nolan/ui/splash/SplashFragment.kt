@@ -38,11 +38,11 @@ class SplashFragment : Fragment(R.layout.splash) {
         scaleX = 0f
         scaleY = 0f
         animate()
-            .setStartDelay(100)
+            .setStartDelay(200)
             .alpha(1f)
             .scaleX(1f)
             .scaleY(1f)
-            .setDuration(250)
+            .setDuration(350)
             .setInterpolator(OvershootInterpolator(2.5f))
             .withLayer()
             .setListener(object : Animator.AnimatorListener {

@@ -3,7 +3,10 @@
     <color name="bi">#FEE934</color>
 
     <color name="white">#ffffff</color>
+    <color name="grey1">#efeeee</color>
+    <color name="grey9">#19191e</color>
     <color name="black">#000000</color>
-    <color name="transparent_light">#00FFFFFF</color>
-    <color name="transparent_dark">#00000000</color>
+
+    <color name="dim_light">#66ffffff</color>
+    <color name="dim_dark">#66000000</color>
 </resources>

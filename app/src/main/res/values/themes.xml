@@ -27,10 +27,10 @@
     </style>
 
     <style name="Theme.Nolan.Splash">
-        <item name="android:windowBackground">@color/splash</item>
+        <item name="android:windowBackground">@color/grey9</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:statusBarColor">@color/splash</item>
-        <item name="android:navigationBarColor">@color/splash</item>
+        <item name="android:statusBarColor">@color/grey9</item>
+        <item name="android:navigationBarColor">@color/grey9</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
     </style>
 

@@ -23,14 +23,25 @@
         tools:background="@color/debug_background" />
 
     <View
+        android:id="@+id/camera_shutter_flash"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/dim_light"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/camera_preview"
+        app:layout_constraintEnd_toEndOf="@id/camera_preview"
+        app:layout_constraintStart_toStartOf="@id/camera_preview"
+        app:layout_constraintTop_toTopOf="@id/camera_preview" />
+
+    <View
         android:id="@+id/camera_filter_dim"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#33000000"
+        android:background="@color/dim_dark"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/camera_preview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/camera_preview"
+        app:layout_constraintStart_toStartOf="@id/camera_preview"
         app:layout_constraintTop_toTopOf="@id/camera_preview" />
 
     <TextView

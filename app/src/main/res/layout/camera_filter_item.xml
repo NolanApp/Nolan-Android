@@ -21,7 +21,7 @@
         android:id="@+id/filter_pick"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#99000000"
+        android:background="@color/dim_dark"
         android:scaleType="centerInside"
         android:src="@drawable/ic_check"
         android:visibility="gone"

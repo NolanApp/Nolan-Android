@@ -203,6 +203,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                             Timber.w(exception)
                         }
                     })
+                binding.cameraShutterFlash.animateShutterFlash()
                 appEvent?.sendButtonClick("capture")
             }
             filterButton.setOnDebounceClickListener {
