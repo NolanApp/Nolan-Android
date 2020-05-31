@@ -49,11 +49,6 @@ class SystemViewModel(
         if (_currentAppearance.value == appearance) return
         _currentAppearance.value = appearance
         appSettings.currentAppearance = appearance.value
-        val nightMode = when (appearance) {
-            Appearance.System -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            Appearance.Light -> AppCompatDelegate.MODE_NIGHT_NO
-            Appearance.Dark -> AppCompatDelegate.MODE_NIGHT_YES
-        }
-        AppCompatDelegate.setDefaultNightMode(nightMode)
+        AppCompatDelegate.setDefaultNightMode(appearance.nightMode)
     }
 }
