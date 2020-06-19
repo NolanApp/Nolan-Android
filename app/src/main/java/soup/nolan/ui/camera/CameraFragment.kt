@@ -58,9 +58,12 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     }
 
     private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.GetContent()) {uri ->
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                findNavController().navigate(actionToEdit(uri, true))
+                findNavController().navigate(
+                    actionToEdit(uri, true),
+                    FragmentNavigatorExtras(binding.footer.captureButton.let { it to it.transitionName })
+                )
             }
         }
 
