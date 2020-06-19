@@ -201,6 +201,43 @@
                 tools:text="1.0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/remove_ad_button"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="?selectableItemBackground">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:drawableStart="@drawable/ic_remove_ad"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="@string/settings_item_remove_ads"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/remove_ad_purchased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="@string/settings_item_remove_ads_purchased"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="?android:textColorSecondary"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
     <com.google.android.gms.ads.AdView

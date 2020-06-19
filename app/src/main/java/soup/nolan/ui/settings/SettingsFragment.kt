@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,18 +16,18 @@ import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.SettingsBinding
 import soup.nolan.model.Appearance
+import soup.nolan.ui.EventObserver
+import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.settings.SettingsFragmentDirections.Companion.actionToAppearance
 import soup.nolan.ui.system.SystemViewModel
-import soup.nolan.ui.utils.autoCleared
-import soup.nolan.ui.utils.executePlayStoreForApp
-import soup.nolan.ui.utils.setOnDebounceClickListener
-import soup.nolan.ui.utils.startActivitySafely
+import soup.nolan.ui.utils.*
 
 class SettingsFragment : Fragment(R.layout.settings) {
 
     private var binding: SettingsBinding by autoCleared { adView.destroy() }
     private val viewModel: SettingsViewModel by viewModels()
     private val systemViewModel: SystemViewModel by activityViewModels()
+    private val purchaseViewModel: PurchaseViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,6 +58,9 @@ class SettingsFragment : Fragment(R.layout.settings) {
             versionButton.setOnDebounceClickListener {
                 it.context.executePlayStoreForApp(BuildConfig.APPLICATION_ID)
             }
+            removeAdButton.setOnDebounceClickListener {
+                viewModel.onRemoveAdsClick()
+            }
 
             viewModel.showWatermark.observe(viewLifecycleOwner, Observer {
                 watermarkSwitch.isChecked = it
@@ -75,8 +80,24 @@ class SettingsFragment : Fragment(R.layout.settings) {
                 }
                 currentAppearance.setText(currentOptionId)
             })
-
-            adView.loadAd(AdRequest.Builder().build())
+            viewModel.removeAdsUiModel.observe(viewLifecycleOwner, Observer {
+                removeAdPurchased.isVisible = it.isPurchased
+            })
+            viewModel.purchaseItemEvent.observe(viewLifecycleOwner, EventObserver {
+                purchaseViewModel.purchase(it)
+            })
+            viewModel.toastEvent.observe(viewLifecycleOwner, EventObserver {
+                view.context.toast(it.msg)
+            })
+            purchaseViewModel.noAdsPurchased.observe(viewLifecycleOwner, Observer {
+                adView.isGone = it
+                if (it.not()) {
+                    adView.loadAd(AdRequest.Builder().build())
+                }
+            })
+            purchaseViewModel.purchaseUpdateEvent.observe(viewLifecycleOwner, EventObserver {
+                viewModel.onPurchaseUpdated()
+            })
 
             binding = this
         }

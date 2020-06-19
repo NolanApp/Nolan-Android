@@ -36,6 +36,9 @@
     <string name="settings_item_version">App Version</string>
     <string name="settings_item_version_latest">%s / Latest</string>
     <string name="settings_item_version_update">%s / Update</string>
+    <string name="settings_item_remove_ads">Remove AD</string>
+    <string name="settings_item_remove_ads_purchased">Purchased</string>
     <string name="email_subject">Report or contact (Nolan ver. %s)</string>
     <string name="toast_activity_not_found">Can\'t find the app to launch.</string>
+    <string name="toast_already_no_ads_purchased">This item has already been purchased.\nThank you very much.❤️️</string>
 </resources>

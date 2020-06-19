@@ -36,6 +36,9 @@
     <string name="settings_item_version">버전 정보</string>
     <string name="settings_item_version_latest">%s / 최신</string>
     <string name="settings_item_version_update">%s / 업데이트 필요</string>
+    <string name="settings_item_remove_ads">광고 제거하기</string>
+    <string name="settings_item_remove_ads_purchased">구매함</string>
     <string name="email_subject">버그 신고 및 문의 (놀란 %s버전)</string>
     <string name="toast_activity_not_found">실행할 앱을 찾을 수 없습니다.</string>
+    <string name="toast_already_no_ads_purchased">이미 구입한 항목이에요.\n정말 감사합니다.❤️️</string>
 </resources>
