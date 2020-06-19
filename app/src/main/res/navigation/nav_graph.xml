@@ -33,16 +33,7 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
-
-        <action
-            android:id="@+id/action_to_ads"
-            app:destination="@id/camera_ads" />
     </fragment>
-
-    <dialog
-        android:id="@+id/camera_ads"
-        android:name="soup.nolan.ui.camera.ads.CameraAdsDialogFragment"
-        tools:layout="@layout/camera_ads_dialog" />
 
     <fragment
         android:id="@+id/edit"

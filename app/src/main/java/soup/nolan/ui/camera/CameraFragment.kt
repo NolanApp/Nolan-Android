@@ -21,19 +21,14 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.ads.rewarded.RewardItem
-import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import soup.nolan.R
 import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.ui.EventObserver
-import soup.nolan.ui.ResultContract
-import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToAds
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToEdit
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
@@ -96,13 +91,6 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
             .inflateTransition(android.R.transition.move).apply {
                 interpolator = Interpolators.EASE_OUT_CUBIC
             }
-        setFragmentResultListener(ResultContract.CAMERA) { _, bundle ->
-            val showAds = bundle.getBoolean(ResultContract.CAMERA_EXTRA_SHOW_ADS, false)
-            if (showAds) {
-                viewModel.onShowAdClick()
-                appEvent?.sendButtonClick("show_ad")
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -145,41 +133,8 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                 viewModel.onGalleryButtonClick()
                 appEvent?.sendButtonClick("gallery")
             }
-            viewModel.gallerySelectableCount.observe(viewLifecycleOwner, Observer {
-                currentCount.text = it.toString()
-            })
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
-                    is CameraUiEvent.ShowAdDialog -> {
-                        findNavController().navigate(actionToAds())
-                    }
-                    is CameraUiEvent.ShowAd -> {
-                        it.rewardedAd.show(activity, object : RewardedAdCallback() {
-                            override fun onRewardedAdOpened() {
-                                Timber.d("onRewardedAdOpened:")
-                            }
-
-                            override fun onRewardedAdClosed() {
-                                Timber.d("onRewardedAdClosed:")
-                                viewModel.onRewardedAdClosed()
-                            }
-
-                            override fun onUserEarnedReward(reward: RewardItem) {
-                                Timber.i("onUserEarnedReward: amount=${reward.amount}")
-                                viewModel.onUserEarnedReward(reward.amount)
-                                appEvent?.sendPromotionEvent("earned_reward")
-                            }
-
-                            override fun onRewardedAdFailedToShow(errorCode: Int) {
-                                Timber.w("onRewardedAdFailedToShow: errorCode=$errorCode")
-                                toast(R.string.camera_error_network)
-                                viewModel.onRewardedAdFailedToShow()
-                            }
-                        })
-                    }
-                    is CameraUiEvent.ShowErrorToast -> {
-                        toast(R.string.camera_error_network)
-                    }
                     is CameraUiEvent.GoToGallery -> {
                         galleryLauncher.launch("image/*")
                     }
@@ -253,12 +208,10 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     override fun onResume() {
         super.onResume()
         appEvent?.sendScreenEvent(this)
-        viewModel.refresh()
     }
 
     @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraBinding) {
-        //binding.cameraPreview.setAnalyzer(faceImageAnalyzer)
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
     }
 

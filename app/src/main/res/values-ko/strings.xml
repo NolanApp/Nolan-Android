@@ -3,11 +3,7 @@
     <string name="app_name">놀란</string>
 
     <string name="camera_error_permission">권한이 허용되지 않았습니다.</string>
-    <string name="camera_error_network">네트워크 오류가 발생했습니다. 👾</string>
     <string name="camera_filter_description">필터를 선택하고 뒤로 돌아가세요</string>
-
-    <string name="camera_ads_title">보상</string>
-    <string name="camera_ads_button">광고보기</string>
 
     <string name="photo_edit_loading_hint">필터가 적용되고 있습니다.\n조금만 기다려주세요.🐢</string>
     <string name="photo_edit_error_unknown">알 수 없는 오류가 발생했습니다. 👾</string>

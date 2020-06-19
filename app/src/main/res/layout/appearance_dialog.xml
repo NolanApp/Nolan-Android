@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:minWidth="240dp"
     tools:background="?colorSurface"
-    tools:context=".ui.camera.ads.CameraAdsDialogFragment">
+    tools:context=".ui.settings.appearance.AppearanceDialogFragment">
 
     <TextView
         android:id="@+id/title"

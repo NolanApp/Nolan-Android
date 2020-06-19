@@ -18,40 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.robinhood.ticker.TickerView
-        android:id="@+id/current_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="2dp"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="end"
-        android:text="0"
-        android:textColor="?colorOnSurface"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/gallery_button"
-        app:layout_constraintEnd_toStartOf="@id/max_count"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/gallery_button"
-        app:ticker_animateMeasurementChange="true"
-        app:ticker_defaultCharacterList="number"
-        app:ticker_defaultPreferredScrollingDirection="up"
-        tools:ignore="HardcodedText,SpUsage"
-        tools:text="10" />
-
-    <TextView
-        android:id="@+id/max_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-thin"
-        android:text="/10"
-        android:textColor="?android:textColorSecondary"
-        android:textSize="13dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/gallery_button"
-        app:layout_constraintEnd_toEndOf="@id/gallery_button"
-        app:layout_constraintStart_toEndOf="@id/current_count"
-        tools:ignore="HardcodedText,SpUsage" />
-
     <ImageView
         android:id="@+id/capture_button"
         android:layout_width="96dp"

@@ -120,12 +120,7 @@
             android:layout_gravity="bottom|end"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_close"
-            app:layout_constraintBottom_toBottomOf="@id/reward_count"
-            app:layout_constraintEnd_toStartOf="@id/reward_count_sign"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/reward_count" />
+            android:src="@drawable/ic_close" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

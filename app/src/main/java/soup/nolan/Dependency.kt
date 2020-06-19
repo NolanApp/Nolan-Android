@@ -1,8 +1,6 @@
 package soup.nolan
 
 import android.app.Application
-import soup.nolan.ads.AdManager
-import soup.nolan.ads.AdManagerImpl
 import soup.nolan.data.PlayRepository
 import soup.nolan.data.PlayRepositoryImpl
 import soup.nolan.data.ShareRepository
@@ -14,7 +12,6 @@ import soup.nolan.ui.utils.ImageFactory
 
 class Dependency(application: Application) {
 
-    private val adManager: AdManager
     private val appSettings: AppSettings
     private val imageFactory: ImageFactory
     private val styleTransfer: LegacyStyleTransfer
@@ -23,7 +20,6 @@ class Dependency(application: Application) {
 
     init {
         val appContext = application.applicationContext
-        adManager = AdManagerImpl(appContext)
         appSettings = AppSettingsImpl(appContext)
         imageFactory = ImageFactory(appContext)
         styleTransfer = LegacyStyleTransfer(appContext)
@@ -32,9 +28,6 @@ class Dependency(application: Application) {
     }
 
     companion object {
-
-        val adManager: AdManager
-            get() = NolanApplication.dependency.adManager
 
         val appSettings: AppSettings
             get() = NolanApplication.dependency.appSettings
