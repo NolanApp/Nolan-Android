@@ -49,6 +49,11 @@
             android:defaultValue="false"
             app:argType="boolean" />
 
+        <argument
+            android:name="withSharedElements"
+            android:defaultValue="true"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/action_to_crop"
             app:destination="@id/edit_crop" />
@@ -84,5 +89,10 @@
         android:id="@+id/appearance"
         android:name="soup.nolan.ui.settings.appearance.AppearanceDialogFragment"
         tools:layout="@layout/appearance_dialog" />
+
+    <action
+        android:id="@+id/action_to_edit"
+        app:destination="@id/edit"
+        app:launchSingleTop="true" />
 
 </navigation>

@@ -56,7 +56,9 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
             if (binding.filterGroup.isVisible) {
                 binding.filterGroup.isVisible = false
             } else {
-                binding.shutterStub.isVisible = true
+                if (args.withSharedElements) {
+                    binding.shutterStub.isVisible = true
+                }
                 findNavController().navigateUp()
             }
         }
@@ -95,7 +97,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
 
             viewModel.init(args.fileUri)
 
-            if (savedInstanceState != null) {
+            if (savedInstanceState != null || args.withSharedElements.not()) {
                 viewModel.onEnterAnimationDone()
             }
         }

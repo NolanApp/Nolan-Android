@@ -1,9 +1,11 @@
 package soup.nolan.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
@@ -15,9 +17,11 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import soup.nolan.R
+import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToEdit
 import soup.nolan.ui.purchase.PurchaseItem
 import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.system.SystemViewModel
+import soup.nolan.ui.utils.findNavHostFragment
 import timber.log.Timber
 import java.util.concurrent.Executor
 
@@ -91,6 +95,12 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
             )
             systemViewModel.onDeviceStateChanged(deviceState)
         }
+        intent?.handleDeepLink()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.handleDeepLink()
     }
 
     override fun onDestroy() {
@@ -102,6 +112,21 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (billingProcessor.handleActivityResult(requestCode, resultCode, data).not()) {
             super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun Intent.handleDeepLink() {
+        if (action == Intent.ACTION_SEND) {
+            if (type?.startsWith("image/") == true) {
+                handleSendImage(this)
+            }
+        }
+    }
+
+    private fun handleSendImage(intent: Intent) {
+        (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
+            val navHostFragment = findNavHostFragment(R.id.nav_host_fragment)
+            navHostFragment.navController.navigate(actionToEdit(it, true, false))
         }
     }
 }
