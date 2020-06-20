@@ -146,7 +146,11 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
             captureButton.setOnDebounceClickListener {
                 val saveFile = File(it.context.cacheDir, "capture")
                 binding.cameraPreview.takePicture(
-                    saveFile,
+                    ImageCapture.OutputFileOptions.Builder(saveFile)
+                        .setMetadata(ImageCapture.Metadata().apply {
+                            isReversedHorizontal = binding.header.facingButton.isLensFacingFront()
+                        })
+                        .build(),
                     ContextCompat.getMainExecutor(it.context),
                     object : ImageCapture.OnImageSavedCallback {
 
