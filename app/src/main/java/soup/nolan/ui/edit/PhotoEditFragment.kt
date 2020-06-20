@@ -2,6 +2,8 @@ package soup.nolan.ui.edit
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -101,6 +103,10 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
 
     private fun initViewState(binding: PhotoEditBinding, context: Context) {
         binding.run {
+            editableImage.setOnScaleChangeListener { _, _, _ ->
+                viewModel.onZoomChanged(zoomIn = editableImage.scale > 1f)
+            }
+
             cropButton.isVisible = args.fromGallery
             cropButton.setOnDebounceClickListener {
                 viewModel.onCropClick()
@@ -138,6 +144,21 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                         loadingView.hide()
                     }
                 }
+            })
+            viewModel.isZoomIn.observe(viewLifecycleOwner, Observer { isZoomIn ->
+                zoomScrim.animateVisible(isZoomIn)
+
+                val tintColor = if (isZoomIn) {
+                    Color.WHITE
+                } else {
+                    context.getColorAttr(R.attr.colorOnSurface)
+                }
+                val tint = ColorStateList.valueOf(tintColor)
+                cropButton.imageTintList = tint
+                faceBlurButton.imageTintList = tint
+                filterButton.imageTintList = tint
+                saveButton.imageTintList = tint
+                shareButton.imageTintList = tint
             })
             viewModel.isShutterVisible.observe(viewLifecycleOwner, Observer {
                 shutterStub.isVisible = it

@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.TypedValue
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import soup.nolan.R
 
 fun Context.startActivitySafely(intent: Intent) {
@@ -40,4 +43,11 @@ fun Context.executePlayStoreForApp(pkgName: String) {
     }
 
     toast(getString(R.string.toast_activity_not_found))
+}
+
+@ColorInt
+fun Context.getColorAttr(@AttrRes attrResId: Int): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(attrResId, typedValue, true)
+    return typedValue.data
 }

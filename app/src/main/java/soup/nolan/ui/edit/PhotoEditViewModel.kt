@@ -37,6 +37,10 @@ class PhotoEditViewModel(
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
+    private val _isZoomIn = MutableLiveData<Boolean>(false)
+    val isZoomIn: LiveData<Boolean>
+        get() = _isZoomIn
+
     private val _isShutterVisible = MutableLiveData(true)
     val isShutterVisible: LiveData<Boolean>
         get() = _isShutterVisible
@@ -168,6 +172,10 @@ class PhotoEditViewModel(
         isEnterAnimationDone = true
         _isLoading.setValueIfNew(wasLoading)
         _isShutterVisible.value = false
+    }
+
+    fun onZoomChanged(zoomIn: Boolean) {
+        _isZoomIn.setValueIfNew(zoomIn)
     }
 
     private fun onInProcessing() {

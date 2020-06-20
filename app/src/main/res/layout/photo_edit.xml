@@ -4,17 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:background="@color/surface"
     tools:context=".ui.edit.PhotoEditFragment">
 
-    <ImageView
+    <View
+        android:id="@+id/zoom_scrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/editable_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="60dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,6 +43,13 @@
         app:layout_constraintEnd_toEndOf="@id/editable_image"
         tools:visibility="visible" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/button_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="200dp" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/button_panel"
         android:layout_width="0dp"
@@ -41,7 +58,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editable_image"
+        app:layout_constraintTop_toTopOf="@id/button_guideline"
         tools:visibility="visible">
 
         <ImageView
@@ -139,15 +156,16 @@
         android:id="@+id/loading_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="100dp"
         android:alpha="0"
         android:gravity="center"
         android:text="@string/photo_edit_loading_hint"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@id/editable_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shutter_stub"
+        tools:alpha="1" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/filter_group"
