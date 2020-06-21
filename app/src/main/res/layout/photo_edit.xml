@@ -54,6 +54,7 @@
         android:id="@+id/button_panel"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:alpha="0"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -167,28 +168,27 @@
         app:layout_constraintTop_toBottomOf="@+id/shutter_stub"
         tools:alpha="1" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/filter_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="share_dim,filter"
-        tools:visibility="gone" />
-
     <Space
-        android:id="@+id/filter_dim"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <FrameLayout
-        android:id="@+id/filter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?colorSurface"
+        android:id="@+id/dim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editable_image">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/filter_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_guideline"
+        tools:visibility="visible">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/filter_list_view"
@@ -208,27 +208,16 @@
             tools:listitem="@layout/camera_filter_item" />
     </FrameLayout>
 
-    <androidx.constraintlayout.widget.Group
+    <FrameLayout
         android:id="@+id/share_group"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="share_dim,share" />
-
-    <Space
-        android:id="@+id/share_dim"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <FrameLayout
-        android:id="@+id/share"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?colorSurface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editable_image">
+        app:layout_constraintTop_toBottomOf="@id/button_guideline"
+        tools:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/share_list_view"

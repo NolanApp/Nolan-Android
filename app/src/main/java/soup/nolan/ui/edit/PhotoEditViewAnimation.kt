@@ -36,7 +36,6 @@ interface PhotoEditViewAnimation {
     fun View.animateVisible(visible: Boolean) {
         animate().cancel()
         if (visible) {
-            alpha = 0f
             visibility = View.VISIBLE
             animate()
                 .alpha(1f)

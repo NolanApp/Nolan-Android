@@ -54,7 +54,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (binding.filterGroup.isVisible) {
-                binding.filterGroup.isVisible = false
+                binding.renderUi(buttonIsVisible = true)
             } else {
                 if (args.withSharedElements) {
                     binding.shutterStub.isVisible = true
@@ -115,11 +115,8 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                 appEvent?.sendButtonClick("crop")
             }
             filterButton.setOnDebounceClickListener {
-                filterGroup.isVisible = true
+                renderUi(filterIsVisible = true)
                 appEvent?.sendButtonClick("filter")
-            }
-            filterDim.setOnClickListener {
-                filterGroup.isVisible = false
             }
             saveButton.setOnDebounceClickListener {
                 viewModel.onSaveClick()
@@ -133,8 +130,8 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                 }
                 appEvent?.sendButtonClick("share")
             }
-            shareDim.setOnClickListener {
-                shareGroup.isVisible = false
+            dim.setOnClickListener {
+                renderUi(buttonIsVisible = true)
             }
 
             viewModel.isLoading.observe(viewLifecycleOwner, Observer {
@@ -166,7 +163,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                 shutterStub.isVisible = it
             })
             viewModel.buttonPanelIsShown.observe(viewLifecycleOwner, Observer {
-                buttonPanel.animateVisible(it)
+                renderUi(buttonIsVisible = it)
             })
             viewModel.bitmap.observe(viewLifecycleOwner, Observer {
                 editableImage.setImageBitmap(it)
@@ -180,7 +177,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                         findNavController().navigate(actionToCrop(it.fileUri, it.cropRect))
                     }
                     is PhotoEditUiEvent.ShowShare -> {
-                        shareGroup.isVisible = true
+                        renderUi(shareIsVisible = true)
                     }
                     is PhotoEditUiEvent.ShowToast -> {
                         toast(it.message)
@@ -195,7 +192,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                 filterViewModel.onFilterSelect(it)
                 viewModel.changeFilter(it.filter)
 
-                filterGroup.isVisible = false
+                renderUi(buttonIsVisible = true)
                 appEvent?.sendFilterSelect(it.filter)
             }
             filterListView.adapter = filterListAdapter
@@ -245,5 +242,16 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
             type = "image/jpeg"
         }
         startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.share)))
+    }
+
+    private fun PhotoEditBinding.renderUi(
+        buttonIsVisible: Boolean = false,
+        filterIsVisible: Boolean = false,
+        shareIsVisible: Boolean = false
+    ) {
+        buttonPanel.animateVisible(buttonIsVisible)
+        filterGroup.isVisible = filterIsVisible
+        shareGroup.isVisible = shareIsVisible
+        dim.isVisible = filterIsVisible || shareIsVisible
     }
 }
