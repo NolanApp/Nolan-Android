@@ -106,7 +106,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
     private fun initViewState(binding: PhotoEditBinding, context: Context) {
         binding.run {
             editableImage.setOnScaleChangeListener { _, _, _ ->
-                viewModel.onZoomChanged(zoomIn = editableImage.scale > 1f)
+                viewModel.onZoomChanged(zoomIn = editableImage.scale > 1.05f)
             }
 
             cropButton.isVisible = args.fromGallery

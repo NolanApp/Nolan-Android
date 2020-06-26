@@ -39,15 +39,13 @@ interface PhotoEditViewAnimation {
             visibility = View.VISIBLE
             animate()
                 .alpha(1f)
-                .setDuration(500)
-                .setInterpolator(Interpolators.EASE_OUT_QUINT)
+                .setDuration(200)
                 .withLayer()
                 .withEndAction(null)
         } else {
             animate()
                 .alpha(0f)
                 .setDuration(200)
-                .setInterpolator(Interpolators.EASE_OUT_CUBIC)
                 .withLayer()
                 .withEndAction {
                     visibility = View.GONE
