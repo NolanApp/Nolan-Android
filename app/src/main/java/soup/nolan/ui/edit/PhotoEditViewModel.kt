@@ -116,7 +116,11 @@ class PhotoEditViewModel(
             onInProcessing()
 
             val duration = measureTimeMillis {
-                _bitmap.value = bitmap.stylized(filter)
+                _bitmap.value = if (appSettings.showWatermark) {
+                    imageFactory.withWatermark(bitmap.stylized(filter))
+                } else {
+                    bitmap.stylized(filter)
+                }
             }
             Timber.d("success: $duration ms")
             if (BuildConfig.DEBUG) {

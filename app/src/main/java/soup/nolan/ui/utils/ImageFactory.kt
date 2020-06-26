@@ -4,14 +4,17 @@ import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.util.Size
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.rotationMatrix
 import androidx.core.graphics.scaleMatrix
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import soup.nolan.R
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -22,6 +25,25 @@ class ImageFactory(private val context: Context) {
             val sampleMaxSize = 1024.toDouble()
             context.contentResolver.toSamplingImage(fileUri, sampleMaxSize)
                 ?: throw IllegalStateException("Can't decode bitmap from Uri($fileUri)")
+        }
+    }
+
+    suspend fun withWatermark(src: Bitmap): Bitmap {
+        return withContext(Dispatchers.Default) {
+            Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888).apply {
+                val canvas = Canvas(this)
+                canvas.drawBitmap(src, 0f, 0f, null)
+
+                ContextCompat.getDrawable(context, R.drawable.share_watermark)?.let {
+                    val margin = context.resources.getDimensionPixelSize(R.dimen.share_watermark_margin)
+                    val left = canvas.width - it.intrinsicWidth - margin
+                    val top = canvas.height - it.intrinsicHeight - margin
+                    val right = left + it.intrinsicWidth
+                    val bottom = top + it.intrinsicHeight
+                    it.setBounds(left, top, right, bottom)
+                    it.draw(canvas)
+                }
+            }
         }
     }
 
