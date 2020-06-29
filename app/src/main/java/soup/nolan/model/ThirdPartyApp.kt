@@ -5,8 +5,8 @@ import android.content.pm.PackageManager
 
 sealed class ThirdPartyApp(vararg val packageNames: String) {
     object Instagram : ThirdPartyApp("com.instagram.android")
-    object Facebook : ThirdPartyApp("com.facebook.katana", "com.facebook.lite")
-    object Twitter : ThirdPartyApp("com.twitter.android", "com.twitter.android.lite")
+    object Facebook : ThirdPartyApp("com.facebook.katana")//, "com.facebook.lite")
+    object Twitter : ThirdPartyApp("com.twitter.android")//, "com.twitter.android.lite")
     object Line : ThirdPartyApp("jp.naver.line.android")
     object KakaoTalk : ThirdPartyApp("com.kakao.talk")
     object WhatsApp : ThirdPartyApp("com.whatsapp")

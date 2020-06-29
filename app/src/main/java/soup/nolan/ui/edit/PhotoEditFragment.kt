@@ -1,7 +1,6 @@
 package soup.nolan.ui.edit
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Rect
@@ -121,13 +120,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                 appEvent?.sendButtonClick("save")
             }
             shareButton.setOnDebounceClickListener {
-                //TODO:
-                viewModel.onShareClick(editableImage.drawable)
-//                editableImage.drawable?.let {
-//                    viewLifecycleOwner.lifecycleScope.launch {
-//                        onShare(it)
-//                    }
-//                }
+                viewModel.onShareClick()
                 appEvent?.sendButtonClick("share")
             }
             dim.setOnClickListener {
@@ -173,8 +166,8 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                     is PhotoEditUiEvent.Save -> lifecycleScope.launch {
                         Gallery.saveBitmap(context, it.bitmap)
                     }
-                    is PhotoEditUiEvent.Share -> {
-                        onShare(it.shareImageUri)
+                    is PhotoEditUiEvent.Share -> activity?.let { activity ->
+                        it.uiModel.share(activity, it.shareImageUri)
                     }
                     is PhotoEditUiEvent.GoToCrop -> {
                         findNavController().navigate(actionToCrop(it.fileUri, it.cropRect))
@@ -208,7 +201,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
             })
 
             val listAdapter = ShareListAdapter {
-                //shareViewModel.onShareClick(it)
+                viewModel.onShareItemClick(it, editableImage.drawable)
             }
             shareListView.adapter = listAdapter
             shareViewModel.shareList.observe(viewLifecycleOwner, Observer {
@@ -235,15 +228,6 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
     override fun onResume() {
         super.onResume()
         appEvent?.sendScreenEvent(this)
-    }
-
-    private fun onShare(shareImageUri: Uri) {
-        val shareIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_STREAM, shareImageUri)
-            type = "image/jpeg"
-        }
-        startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.share)))
     }
 
     private fun PhotoEditBinding.renderUi(

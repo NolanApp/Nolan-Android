@@ -1,10 +1,8 @@
 package soup.nolan.ui.share
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import soup.nolan.R
 import soup.nolan.databinding.ShareItemBinding
 import soup.nolan.ui.utils.clipToOval
 import soup.nolan.ui.utils.setOnDebounceClickListener
@@ -17,8 +15,7 @@ class ShareListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.share_item, parent, false)
+            ShareItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         ).apply {
             itemView.setOnDebounceClickListener {
                 getItem(adapterPosition)?.run(clickListener)
@@ -44,9 +41,7 @@ class ShareListAdapter(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        private val binding = ShareItemBinding.bind(view)
+    class ViewHolder(private val binding: ShareItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.logo.clipToOval(true)

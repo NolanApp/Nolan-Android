@@ -20,6 +20,7 @@ import soup.nolan.settings.AppSettings
 import soup.nolan.stylize.common.NoStyleInput
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
+import soup.nolan.ui.share.ShareItemUiModel
 import soup.nolan.ui.share.ShareUriFactory
 import soup.nolan.ui.utils.ImageFactory
 import soup.nolan.ui.utils.setValueIfNew
@@ -150,7 +151,14 @@ class PhotoEditViewModel(
         }
     }
 
-    fun onShareClick(drawable: Drawable) {
+    fun onShareClick() {
+        _uiEvent.event = PhotoEditUiEvent.ShowShare
+    }
+
+    fun onShareItemClick(
+        uiModel: ShareItemUiModel,
+        drawable: Drawable
+    ) {
         viewModelScope.launch {
             val shareImageUri = shareUriFactory.createShareImageUri(
                 drawable,
@@ -159,7 +167,7 @@ class PhotoEditViewModel(
             if (shareImageUri == null) {
                 _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
             } else {
-                _uiEvent.event = PhotoEditUiEvent.Share(shareImageUri)
+                _uiEvent.event = PhotoEditUiEvent.Share(uiModel, shareImageUri)
             }
         }
     }

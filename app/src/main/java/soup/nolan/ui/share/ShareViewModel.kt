@@ -18,11 +18,9 @@ class ShareViewModel(
         }
         if (ThirdPartyApp.Instagram in appList) {
             shareList.add(ShareItemUiModel.Instagram)
-            shareList.add(ShareItemUiModel.InstagramStory)
         }
         if (ThirdPartyApp.Facebook in appList) {
             shareList.add(ShareItemUiModel.Facebook)
-            shareList.add(ShareItemUiModel.FacebookStory)
         }
         if (ThirdPartyApp.Line in appList) {
             shareList.add(ShareItemUiModel.Line)
@@ -35,19 +33,5 @@ class ShareViewModel(
         }
         shareList.add(ShareItemUiModel.More)
         emit(shareList)
-    }
-
-    fun onShareClick(item: ShareItemUiModel) {
-        when (item) {
-            ShareItemUiModel.Instagram -> TODO()
-            ShareItemUiModel.InstagramStory -> TODO()
-            ShareItemUiModel.Facebook -> TODO()
-            ShareItemUiModel.FacebookStory -> TODO()
-            ShareItemUiModel.Line -> TODO()
-            ShareItemUiModel.Twitter -> TODO()
-            ShareItemUiModel.KakaoTalk -> TODO()
-            ShareItemUiModel.WhatsApp -> TODO()
-            ShareItemUiModel.More -> TODO()
-        }
     }
 }
