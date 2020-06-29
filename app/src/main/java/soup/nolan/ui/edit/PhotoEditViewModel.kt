@@ -2,6 +2,7 @@ package soup.nolan.ui.edit
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.collection.LruCache
 import androidx.lifecycle.LiveData
@@ -19,6 +20,7 @@ import soup.nolan.settings.AppSettings
 import soup.nolan.stylize.common.NoStyleInput
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
+import soup.nolan.ui.share.ShareUriFactory
 import soup.nolan.ui.utils.ImageFactory
 import soup.nolan.ui.utils.setValueIfNew
 import timber.log.Timber
@@ -26,6 +28,7 @@ import kotlin.system.measureTimeMillis
 
 class PhotoEditViewModel(
     private val imageFactory: ImageFactory = Dependency.imageFactory,
+    private val shareUriFactory: ShareUriFactory = Dependency.shareUriFactory,
     private val styleTransfer: LegacyStyleTransfer = Dependency.styleTransfer,
     private val appSettings: AppSettings = Dependency.appSettings
 ) : ViewModel() {
@@ -147,9 +150,17 @@ class PhotoEditViewModel(
         }
     }
 
-    fun onShareClick() {
-        _bitmap.value?.let {
-            _uiEvent.event = PhotoEditUiEvent.ShowShare(it)
+    fun onShareClick(drawable: Drawable) {
+        viewModelScope.launch {
+            val shareImageUri = shareUriFactory.createShareImageUri(
+                drawable,
+                Dependency.appSettings.showWatermark
+            )
+            if (shareImageUri == null) {
+                _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
+            } else {
+                _uiEvent.event = PhotoEditUiEvent.Share(shareImageUri)
+            }
         }
     }
 

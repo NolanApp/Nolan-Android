@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Size
 import androidx.core.content.ContextCompat
@@ -28,22 +29,44 @@ class ImageFactory(private val context: Context) {
         }
     }
 
+    suspend fun getBitmap(drawable: Drawable): Bitmap {
+        return withContext(Dispatchers.Default) {
+            Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888).apply {
+                val canvas = Canvas(this)
+                drawable.draw(canvas)
+            }
+        }
+    }
+
     suspend fun withWatermark(src: Bitmap): Bitmap {
         return withContext(Dispatchers.Default) {
             Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888).apply {
                 val canvas = Canvas(this)
                 canvas.drawBitmap(src, 0f, 0f, null)
-
-                ContextCompat.getDrawable(context, R.drawable.share_watermark)?.let {
-                    val margin = context.resources.getDimensionPixelSize(R.dimen.share_watermark_margin)
-                    val left = canvas.width - it.intrinsicWidth - margin
-                    val top = canvas.height - it.intrinsicHeight - margin
-                    val right = left + it.intrinsicWidth
-                    val bottom = top + it.intrinsicHeight
-                    it.setBounds(left, top, right, bottom)
-                    it.draw(canvas)
-                }
+                canvas.drawWatermark()
             }
+        }
+    }
+
+    suspend fun withWatermark(src: Drawable): Bitmap {
+        return withContext(Dispatchers.Default) {
+            Bitmap.createBitmap(src.intrinsicWidth, src.intrinsicHeight, Bitmap.Config.ARGB_8888).apply {
+                val canvas = Canvas(this)
+                src.draw(canvas)
+                canvas.drawWatermark()
+            }
+        }
+    }
+
+    private fun Canvas.drawWatermark() {
+        ContextCompat.getDrawable(context, R.drawable.share_watermark)?.let {
+            val margin = context.resources.getDimensionPixelSize(R.dimen.share_watermark_margin)
+            val left = width - it.intrinsicWidth - margin
+            val top = height - it.intrinsicHeight - margin
+            val right = left + it.intrinsicWidth
+            val bottom = top + it.intrinsicHeight
+            it.setBounds(left, top, right, bottom)
+            it.draw(this)
         }
     }
 

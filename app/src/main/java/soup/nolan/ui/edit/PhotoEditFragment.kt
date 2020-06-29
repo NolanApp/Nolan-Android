@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.transition.TransitionInflater
@@ -34,7 +33,6 @@ import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToCrop
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment.Companion.KEY_REQUEST
-import soup.nolan.ui.share.ShareImageFactory
 import soup.nolan.ui.share.ShareListAdapter
 import soup.nolan.ui.share.ShareViewModel
 import soup.nolan.ui.system.SystemViewModel
@@ -124,10 +122,12 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
             }
             shareButton.setOnDebounceClickListener {
                 //TODO:
-                //viewModel.onShareClick()
-                editableImage.drawable?.let {
-                    onShare(context, it)
-                }
+                viewModel.onShareClick(editableImage.drawable)
+//                editableImage.drawable?.let {
+//                    viewLifecycleOwner.lifecycleScope.launch {
+//                        onShare(it)
+//                    }
+//                }
                 appEvent?.sendButtonClick("share")
             }
             dim.setOnClickListener {
@@ -172,6 +172,9 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
                 when (it) {
                     is PhotoEditUiEvent.Save -> lifecycleScope.launch {
                         Gallery.saveBitmap(context, it.bitmap)
+                    }
+                    is PhotoEditUiEvent.Share -> {
+                        onShare(it.shareImageUri)
                     }
                     is PhotoEditUiEvent.GoToCrop -> {
                         findNavController().navigate(actionToCrop(it.fileUri, it.cropRect))
@@ -234,11 +237,10 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
         appEvent?.sendScreenEvent(this)
     }
 
-    private fun onShare(context: Context, drawable: Drawable) {
-        val uriToImage = ShareImageFactory.createShareImageUri(context, drawable) ?: return
+    private fun onShare(shareImageUri: Uri) {
         val shareIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_STREAM, uriToImage)
+            putExtra(Intent.EXTRA_STREAM, shareImageUri)
             type = "image/jpeg"
         }
         startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.share)))

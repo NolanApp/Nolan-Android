@@ -7,6 +7,7 @@ import androidx.annotation.StringRes
 
 sealed class PhotoEditUiEvent {
     class Save(val bitmap: Bitmap) : PhotoEditUiEvent()
+    class Share(val shareImageUri: Uri) : PhotoEditUiEvent()
     class GoToCrop(val fileUri: Uri, val cropRect: Rect?) : PhotoEditUiEvent()
     class ShowShare(val bitmap: Bitmap) : PhotoEditUiEvent()
     class ShowToast(val message: String) : PhotoEditUiEvent()
