@@ -1,12 +1,17 @@
 package soup.nolan.ui.share
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
+import androidx.collection.arraySetOf
 import androidx.core.content.ContextCompat
+import soup.nolan.BuildConfig
 import soup.nolan.R
+import soup.nolan.model.ThirdPartyApp
 
 sealed class ShareItemUiModel {
     abstract fun getIcon(context: Context): Drawable?
@@ -28,7 +33,7 @@ sealed class ShareItemUiModel {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, shareImageUri)
                 type = "image/jpeg"
-                setPackage("com.instagram.android")
+                setPackage(ThirdPartyApp.Instagram.packageName)
             }
             activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share)))
         }
@@ -48,7 +53,7 @@ sealed class ShareItemUiModel {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, shareImageUri)
                 type = "image/jpeg"
-                setPackage("com.facebook.katana")
+                setPackage(ThirdPartyApp.Facebook.packageName)
             }
             activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share)))
         }
@@ -88,7 +93,7 @@ sealed class ShareItemUiModel {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, shareImageUri)
                 type = "image/jpeg"
-                setPackage("com.twitter.android")
+                setPackage(ThirdPartyApp.Twitter.packageName)
             }
             activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share)))
         }
@@ -108,7 +113,7 @@ sealed class ShareItemUiModel {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, shareImageUri)
                 type = "image/jpeg"
-                setPackage("com.kakao.talk")
+                setPackage(ThirdPartyApp.KakaoTalk.packageName)
             }
             activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share)))
         }
@@ -128,7 +133,7 @@ sealed class ShareItemUiModel {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, shareImageUri)
                 type = "image/jpeg"
-                setPackage("com.whatsapp")
+                setPackage(ThirdPartyApp.WhatsApp.packageName)
             }
             activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share)))
         }
@@ -149,7 +154,23 @@ sealed class ShareItemUiModel {
                 putExtra(Intent.EXTRA_STREAM, shareImageUri)
                 type = "image/jpeg"
             }
-            activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share)))
+            val chooserIntent = Intent.createChooser(intent, activity.getText(R.string.share))
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                val excludePackageNames = arraySetOf<String>()
+                excludePackageNames.addAll(ThirdPartyApp.list().map { it.packageName })
+                excludePackageNames.add(BuildConfig.APPLICATION_ID)
+
+                val excludeComponentNames = activity.packageManager
+                    .queryIntentActivities(intent, 0)
+                    .asSequence()
+                    .mapNotNull { it.activityInfo }
+                    .filter { it.packageName in excludePackageNames }
+                    .map { ComponentName(it.packageName, it.name) }
+                    .toList()
+                chooserIntent.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, excludeComponentNames.toTypedArray())
+            }
+            activity.startActivity(chooserIntent)
         }
     }
 }
