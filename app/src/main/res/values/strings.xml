@@ -5,6 +5,8 @@
     <string name="camera_error_permission">Permissions are not granted.</string>
     <string name="camera_filter_description">Select a filter and go back</string>
 
+    <string name="photo_picker">Select a image</string>
+
     <string name="photo_edit_loading_hint">Filter is being applied.\nPlease wait.🐢</string>
     <string name="photo_edit_error_unknown">Unknown error has occurred. 👾</string>
 

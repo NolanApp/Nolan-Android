@@ -1,10 +1,7 @@
 package soup.nolan
 
 import android.app.Application
-import soup.nolan.data.PlayRepository
-import soup.nolan.data.PlayRepositoryImpl
-import soup.nolan.data.ShareRepository
-import soup.nolan.data.ShareRepositoryImpl
+import soup.nolan.data.*
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.settings.AppSettings
 import soup.nolan.settings.AppSettingsImpl
@@ -19,6 +16,7 @@ class Dependency(application: Application) {
     private val styleTransfer: LegacyStyleTransfer
     private val playRepository: PlayRepository
     private val shareRepository: ShareRepository
+    private val galleryRepository: GalleryRepository
 
     init {
         val appContext = application.applicationContext
@@ -28,6 +26,7 @@ class Dependency(application: Application) {
         styleTransfer = LegacyStyleTransfer(appContext)
         playRepository = PlayRepositoryImpl(appContext)
         shareRepository = ShareRepositoryImpl(appContext)
+        galleryRepository = GalleryRepositoryImpl(appContext)
     }
 
     companion object {
@@ -49,5 +48,8 @@ class Dependency(application: Application) {
 
         val shareRepository: ShareRepository
             get() = NolanApplication.dependency.shareRepository
+
+        val galleryRepository: GalleryRepository
+            get() = NolanApplication.dependency.galleryRepository
     }
 }
