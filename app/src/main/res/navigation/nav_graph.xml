@@ -24,7 +24,11 @@
 
         <action
             android:id="@+id/action_to_picker"
-            app:destination="@id/picker" />
+            app:destination="@id/picker"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
 
         <action
             android:id="@+id/action_to_edit"

@@ -37,8 +37,15 @@ class PhotoPickerFragment : Fragment(R.layout.photo_picker) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = PhotoPickerBinding.bind(view).apply {
-            //TODO: connect to galleryLauncher
-            //galleryLauncher.launch("image/*")
+            toolbar.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_select_outside -> {
+                        galleryLauncher.launch("image/*")
+                        true
+                    }
+                    else -> false
+                }
+            }
 
             listView.layoutManager = GridLayoutManager(view.context, 3)
             listView.addItemDecoration(GridSpaceItemDecoration(3, 8))
