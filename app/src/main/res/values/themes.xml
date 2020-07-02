@@ -34,11 +34,15 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
     </style>
 
+    <style name="Theme.Nolan.Floating">
+        <item name="colorSurface">@color/surface_floating</item>
+    </style>
+
     <style name="Theme.Nolan.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="colorPrimary">@color/bi</item>
         <item name="colorPrimaryDark">@color/bi</item>
         <item name="colorAccent">@color/bi</item>
-        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurface">@color/surface_floating</item>
         <item name="dialogCornerRadius">8dp</item>
         <item name="android:backgroundDimAmount">0.75</item>
     </style>

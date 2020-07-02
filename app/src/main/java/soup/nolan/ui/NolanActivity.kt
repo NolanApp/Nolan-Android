@@ -126,7 +126,7 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
     private fun handleSendImage(intent: Intent) {
         (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
             val navHostFragment = findNavHostFragment(R.id.nav_host_fragment)
-            navHostFragment.navController.navigate(actionToEdit(it, true, false))
+            navHostFragment.navController.navigate(actionToEdit(it, true))
         }
     }
 }

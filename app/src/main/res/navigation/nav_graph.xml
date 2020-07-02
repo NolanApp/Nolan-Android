@@ -46,7 +46,14 @@
     <fragment
         android:id="@+id/picker"
         android:name="soup.nolan.ui.picker.PhotoPickerFragment"
-        tools:layout="@layout/photo_picker" />
+        tools:layout="@layout/photo_picker">
+
+        <action
+            android:id="@+id/action_to_edit"
+            app:destination="@id/edit"
+            app:popUpTo="@id/camera"
+            app:popUpToInclusive="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/edit"
@@ -64,7 +71,7 @@
 
         <argument
             android:name="withSharedElements"
-            android:defaultValue="true"
+            android:defaultValue="false"
             app:argType="boolean" />
 
         <action

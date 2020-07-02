@@ -2,6 +2,7 @@
 <resources>
     <color name="splash">@color/bi</color>
     <color name="surface">@color/grey1</color>
+    <color name="surface_floating">@color/grey1</color>
     <color name="on_surface">@color/black</color>
 
     <color name="system_ui_scrim_light">#B3FFFFFF</color> <!-- 70% white -->

@@ -4,11 +4,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -16,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.gms.ads.AdRequest
 import soup.nolan.R
 import soup.nolan.databinding.PhotoPickerBinding
+import soup.nolan.ui.picker.PhotoPickerFragmentDirections.Companion.actionToEdit
 import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.utils.GridSpaceItemDecoration
 import soup.nolan.ui.utils.autoCleared
@@ -80,12 +79,6 @@ class PhotoPickerFragment : Fragment(R.layout.photo_picker) {
     }
 
     private fun finishResult(uri: Uri) {
-        setFragmentResult(KEY_REQUEST, bundleOf(EXTRA_FILE_URI to uri))
-        findNavController().navigateUp()
-    }
-
-    companion object {
-        const val KEY_REQUEST = "request_photo_picker"
-        const val EXTRA_FILE_URI = "fileUri"
+        findNavController().navigate(actionToEdit(uri, fromGallery = true))
     }
 }

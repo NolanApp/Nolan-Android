@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.transition.TransitionManager
@@ -22,7 +21,6 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -32,12 +30,10 @@ import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToEdit
-import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPicker
+import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
-import soup.nolan.ui.edit.crop.PhotoEditCropFragment
-import soup.nolan.ui.picker.PhotoPickerFragment
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.*
 import timber.log.Timber
@@ -89,16 +85,6 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
             .inflateTransition(android.R.transition.move).apply {
                 interpolator = Interpolators.EASE_OUT_CUBIC
             }
-
-        setFragmentResultListener(PhotoPickerFragment.KEY_REQUEST) { _, bundle ->
-            val uri: Uri? = bundle.getParcelable(PhotoPickerFragment.EXTRA_FILE_URI)
-            if (uri != null) {
-                findNavController().navigate(
-                    actionToEdit(uri, true),
-                    FragmentNavigatorExtras(binding.footer.captureButton.let { it to it.transitionName })
-                )
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,10 +97,8 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
     private fun initViewState(binding: CameraBinding, context: Context) {
         if (allPermissionsGranted(context)) {
-            if (isResumed) {
-                binding.cameraPreview.post {
-                    startCameraWith(binding)
-                }
+            binding.cameraPreview.post {
+                startCameraWith(binding)
             }
         } else {
             permissionLauncher.launch(REQUIRED_PERMISSIONS)
@@ -163,7 +147,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                             findNavController().navigate(
-                                actionToEdit(saveFile.toUri(), false),
+                                actionToEdit(saveFile.toUri(), fromGallery = false, withSharedElements = true),
                                 FragmentNavigatorExtras(captureButton to captureButton.transitionName)
                             )
                         }

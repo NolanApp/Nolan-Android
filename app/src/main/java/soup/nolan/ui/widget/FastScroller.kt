@@ -8,7 +8,7 @@ import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import soup.nolan.databinding.PhotoPickerScrollerBinding
+import soup.nolan.databinding.FastScrollerBinding
 import kotlin.math.roundToInt
 
 class FastScroller @JvmOverloads constructor(
@@ -17,7 +17,7 @@ class FastScroller @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val binding = PhotoPickerScrollerBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = FastScrollerBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
 
@@ -72,16 +72,16 @@ class FastScroller @JvmOverloads constructor(
     }
 
     private fun setRecyclerViewPosition(positionY: Float) {
-        val recyclerView = recyclerView ?: return
-        recyclerView.adapter?.run {
-            val proportion: Float = when {
-                binding.viewScroller.y == 0f -> 0f
-                binding.viewScroller.y + binding.viewScroller.height >= viewHeight - SCROLLER_MAX_POSITION_GAP -> 1f
-                else -> positionY / viewHeight
-            }
-            val targetPos: Float = getValueInRange(proportion * itemCount, itemCount - 1)
-            (recyclerView.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(targetPos.roundToInt(), 0)
+        val adapter = recyclerView?.adapter ?: return
+        val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager ?: return
+        val scroller = binding.viewScroller
+        val proportion: Float = when {
+            scroller.y == 0f -> 0f
+            scroller.y + scroller.height >= viewHeight - SCROLLER_MAX_POSITION_GAP -> 1f
+            else -> positionY / viewHeight
         }
+        val target = getValueInRange(proportion * adapter.itemCount, adapter.itemCount - 1).roundToInt()
+        layoutManager.scrollToPositionWithOffset(target, 0)
     }
 
     private fun getValueInRange(value: Float, max: Int): Float {
