@@ -5,12 +5,7 @@
             <size
                 android:width="50dp"
                 android:height="50dp" />
-            <solid android:color="?colorSurface" />
+            <solid android:color="@color/black" />
         </shape>
     </item>
-    <item
-        android:width="24dp"
-        android:height="24dp"
-        android:drawable="@drawable/ic_scroller"
-        android:gravity="center_vertical|end" />
 </layer-list>
