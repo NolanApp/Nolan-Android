@@ -7,9 +7,11 @@ import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import soup.nolan.Dependency
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
+import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToPermission
 import soup.nolan.ui.utils.autoCleared
 
 class SplashFragment : Fragment(R.layout.splash) {
@@ -53,7 +55,11 @@ class SplashFragment : Fragment(R.layout.splash) {
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
-                    navigateToCamera()
+                    if (Dependency.appSettings.showPermission) {
+                        navigateToPermission()
+                    } else {
+                        navigateToCamera()
+                    }
                 }
             })
     }
@@ -61,5 +67,9 @@ class SplashFragment : Fragment(R.layout.splash) {
     private fun navigateToCamera() {
         val extras = FragmentNavigatorExtras(binding.logoOuter.let { it to it.transitionName })
         findNavController().navigate(actionToCamera(), extras)
+    }
+
+    private fun navigateToPermission() {
+        findNavController().navigate(actionToPermission())
     }
 }

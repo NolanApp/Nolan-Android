@@ -4,6 +4,12 @@
 
     <color name="white">#ffffff</color>
     <color name="grey1">#efeeee</color>
+    <color name="grey2">#cfcece</color>
+    <color name="grey3">#afaeae</color>
+    <color name="grey4">#9f9e9e</color>
+    <color name="grey5">#8c8c8c</color>
+    <color name="grey6">#79797E</color>
+    <color name="grey7">#59595E</color>
     <color name="grey8">#39393E</color>
     <color name="grey9">#19191e</color>
     <color name="black">#000000</color>
