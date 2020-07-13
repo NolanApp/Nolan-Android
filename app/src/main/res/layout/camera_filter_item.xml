@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="60dp"
-    android:layout_height="100dp">
+    android:layout_height="100dp"
+    tools:background="@color/surface">
 
-    <ImageView
+    <soup.nolan.ui.widget.CircularImageView
         android:id="@+id/filter_thumbnail"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -17,13 +18,11 @@
         app:layout_constraintVertical_chainStyle="packed"
         tools:src="@drawable/a01" />
 
-    <ImageView
+    <View
         android:id="@+id/filter_pick"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/dim_dark"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_check"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/ic_filter_selected"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/filter_thumbnail"
         app:layout_constraintEnd_toEndOf="@id/filter_thumbnail"
@@ -35,6 +34,7 @@
         android:id="@+id/filter_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
