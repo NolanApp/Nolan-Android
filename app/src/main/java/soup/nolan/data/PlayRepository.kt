@@ -1,9 +1,11 @@
 package soup.nolan.data
 
 import android.content.Context
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.ktx.requestAppUpdateInfo
 import soup.nolan.data.PlayRepository.Companion.UNKNOWN_VERSION_CODE
+import kotlin.coroutines.suspendCoroutine
 
 interface PlayRepository {
     suspend fun getAvailableVersionCode(): Int
@@ -23,6 +25,18 @@ class PlayRepositoryImpl(context: Context) : PlayRepository {
                 .availableVersionCode()
         } catch (e: Exception) {
             UNKNOWN_VERSION_CODE
+        }
+    }
+
+    private suspend fun AppUpdateManager.requestAppUpdateInfo(): AppUpdateInfo {
+        return suspendCoroutine { continuation ->
+            appUpdateInfo
+                .addOnSuccessListener {
+                    continuation.resumeWith(Result.success(it))
+                }
+                .addOnFailureListener {
+                    continuation.resumeWith(Result.failure(it))
+                }
         }
     }
 }
