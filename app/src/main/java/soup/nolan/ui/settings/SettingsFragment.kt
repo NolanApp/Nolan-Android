@@ -72,7 +72,7 @@ class SettingsFragment : Fragment(R.layout.settings) {
                     getString(R.string.settings_item_version_update, BuildConfig.VERSION_NAME)
                 }
             })
-            systemViewModel.currentAppearance.observe(viewLifecycleOwner, Observer {
+            systemViewModel.currentAppearance.observe(viewLifecycleOwner, NonNullObserver {
                 val currentOptionId = when (it) {
                     Appearance.System -> R.string.settings_item_appearance_system
                     Appearance.Light -> R.string.settings_item_appearance_light

@@ -9,6 +9,7 @@ import soup.nolan.databinding.AppearanceDialogBinding
 import soup.nolan.model.Appearance
 import soup.nolan.ui.base.BaseDialogFragment
 import soup.nolan.ui.system.SystemViewModel
+import soup.nolan.ui.utils.NonNullObserver
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
 class AppearanceDialogFragment : BaseDialogFragment(R.layout.appearance_dialog) {
@@ -33,7 +34,7 @@ class AppearanceDialogFragment : BaseDialogFragment(R.layout.appearance_dialog) 
             cancelButton.setOnClickListener {
                 dismiss()
             }
-            viewModel.currentAppearance.observe(viewLifecycleOwner, Observer {
+            viewModel.currentAppearance.observe(viewLifecycleOwner, NonNullObserver {
                 val currentOptionId = when (it) {
                     Appearance.System -> R.id.option_system
                     Appearance.Light -> R.id.option_light

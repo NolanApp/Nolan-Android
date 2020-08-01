@@ -86,8 +86,7 @@ object Gallery {
     private fun saveBitmapM(context: Context, bitmap: Bitmap): Uri? {
         val imageTime = System.currentTimeMillis()
         val imageFileName = fileNameOf(imageTime)
-        val directory = File(Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_PICTURES), DIR_NAME)
+        val directory = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), DIR_NAME)
         val imageFilePath = File(directory, imageFileName).absolutePath
 
         try {
