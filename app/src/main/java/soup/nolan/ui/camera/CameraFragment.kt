@@ -26,8 +26,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import soup.nolan.R
-import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.CameraBinding
+import soup.nolan.firebase.AppEvent
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToEdit
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPicker

@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">놀란</string>
 
+    <string name="notification_channel_notice">공지사항</string>
+    <string name="notification_channel_save">저장</string>
+
     <string name="permission">권한</string>
     <string name="permission_desc">사진을 불러오거나 저장할 때, \'저장소\' 권한이 필요합니다. 사진을 촬영하려면 \'카메라\' 권한도 허용해주세요.</string>
     <string name="permission_item_storage">저장소</string>

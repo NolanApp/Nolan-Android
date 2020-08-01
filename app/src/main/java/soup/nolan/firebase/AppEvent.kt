@@ -1,4 +1,4 @@
-package soup.nolan.analytics
+package soup.nolan.firebase
 
 import android.content.Context
 import androidx.core.os.bundleOf

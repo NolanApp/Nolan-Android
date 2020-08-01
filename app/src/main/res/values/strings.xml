@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Nolan</string>
 
+    <string name="notification_channel_notice">Notice</string>
+    <string name="notification_channel_save">Save</string>
+
     <string name="permission">Permission</string>
     <string name="permission_desc">When importing or saving photos, \'storage\' permission is required. And please grant \'camera\' permission if want to take a photo.</string>
     <string name="permission_item_storage">Storage</string>

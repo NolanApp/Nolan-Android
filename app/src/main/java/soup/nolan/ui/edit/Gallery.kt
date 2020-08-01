@@ -56,7 +56,7 @@ object Gallery {
             val now = System.currentTimeMillis()
 
             val notificationBuilder = NotificationCompat
-                .Builder(context, NotificationChannels.STYLIZES)
+                .Builder(context, NotificationChannels.SAVE)
                 .setContentTitle("Stylized image saved")
                 .setContentText("Tap to view your stylized image")
                 .setContentIntent(PendingIntent.getActivity(context, 0, launchIntent, 0))

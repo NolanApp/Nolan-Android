@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.theartofdev.edmodo.cropper.CropImageView
 import soup.nolan.R
-import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.PhotoEditCropBinding
+import soup.nolan.firebase.AppEvent
 import soup.nolan.ui.edit.Gallery
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast

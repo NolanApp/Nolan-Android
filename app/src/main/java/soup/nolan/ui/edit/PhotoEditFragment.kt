@@ -24,8 +24,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.coroutines.launch
 import soup.nolan.R
-import soup.nolan.analytics.AppEvent
 import soup.nolan.databinding.PhotoEditBinding
+import soup.nolan.firebase.AppEvent
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
