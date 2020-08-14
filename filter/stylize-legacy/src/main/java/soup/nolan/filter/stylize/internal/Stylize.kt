@@ -1,8 +1,9 @@
-package soup.nolan.filter.stylize
+package soup.nolan.filter.stylize.internal
 
 import android.content.Context
 import android.graphics.Bitmap
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface
+import soup.nolan.filter.stylize.LegacyStyleInput
 
 internal class Stylize(context: Context) {
 

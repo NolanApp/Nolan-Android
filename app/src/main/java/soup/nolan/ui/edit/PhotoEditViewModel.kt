@@ -18,6 +18,7 @@ import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import soup.nolan.stylize.common.NoStyleInput
+import soup.nolan.stylize.common.centerCropped
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.share.ShareItemUiModel
@@ -179,14 +180,18 @@ class PhotoEditViewModel(
     }
 
     private suspend fun Bitmap.stylized(filter: CameraFilter): Bitmap {
-        if (filter.input is NoStyleInput) {
-            return this
-        }
-        if (filter.input !is LegacyStyleInput) {
-            throw IllegalStateException("Invalid input(id=${filter.id})!")
-        }
-        return styleTransfer.transform(this, filter.input).also {
-            memoryCache.put(filter.id, it)
+        return when (filter.input) {
+            is NoStyleInput -> {
+                centerCropped(LegacyStyleTransfer.IMAGE_SIZE)
+            }
+            is LegacyStyleInput -> {
+                styleTransfer.transform(this, filter.input).also {
+                    memoryCache.put(filter.id, it)
+                }
+            }
+            else -> {
+                throw IllegalStateException("Invalid input(id=${filter.id})!")
+            }
         }
     }
 
