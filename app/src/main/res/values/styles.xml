@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.Nolan.Button" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/widget_btn_default</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+</resources>

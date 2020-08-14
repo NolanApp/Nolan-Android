@@ -5,6 +5,7 @@ import soup.nolan.model.Appearance
 import soup.nolan.model.CameraFilter
 
 interface AppSettings {
+    var showOnBoarding: Boolean
     var showPermission: Boolean
     var lensFacingFront: Boolean
     var lastFilterId: String
@@ -17,6 +18,7 @@ class AppSettingsImpl(context: Context) : AppSettings {
 
     private val prefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
 
+    override var showOnBoarding: Boolean by BooleanPreference(prefs, "show_onboarding", true)
     override var showPermission: Boolean by BooleanPreference(prefs, "show_permission", true)
     override var lensFacingFront: Boolean by BooleanPreference(prefs, "lens_facing_front", true)
     override var lastFilterId: String by StringPreference(prefs, "last_filter_id", CameraFilter.A25.id)

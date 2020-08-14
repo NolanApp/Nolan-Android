@@ -11,6 +11,7 @@ import soup.nolan.Dependency
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
+import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToOnBoarding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToPermission
 import soup.nolan.ui.utils.autoCleared
 
@@ -55,21 +56,25 @@ class SplashFragment : Fragment(R.layout.splash) {
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
-                    if (Dependency.appSettings.showPermission) {
-                        navigateToPermission()
-                    } else {
-                        navigateToCamera()
+                    when {
+                        Dependency.appSettings.showOnBoarding -> navigateToOnBoarding()
+                        Dependency.appSettings.showPermission -> navigateToPermission()
+                        else -> navigateToCamera()
                     }
                 }
             })
     }
 
-    private fun navigateToCamera() {
-        val extras = FragmentNavigatorExtras(binding.logoOuter.let { it to it.transitionName })
-        findNavController().navigate(actionToCamera(), extras)
+    private fun navigateToOnBoarding() {
+        findNavController().navigate(actionToOnBoarding())
     }
 
     private fun navigateToPermission() {
         findNavController().navigate(actionToPermission())
+    }
+
+    private fun navigateToCamera() {
+        val extras = FragmentNavigatorExtras(binding.logoOuter.let { it to it.transitionName })
+        findNavController().navigate(actionToCamera(), extras)
     }
 }
