@@ -31,7 +31,7 @@ class OnBoardingPage3Fragment : Fragment(R.layout.on_boarding_page3) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         OnBoardingPage3Binding.bind(view).apply {
-            viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
+            viewModel.allowEvent.observe(viewLifecycleOwner, EventObserver {
                 val permissionList = mutableListOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE

@@ -6,11 +6,11 @@ import soup.nolan.ui.MutableEventLiveData
 
 class OnBoardingViewModel : ViewModel() {
 
-    private val _startEvent = MutableEventLiveData<Unit>()
-    val uiEvent: EventLiveData<Unit>
-        get() = _startEvent
+    private val _allowEvent = MutableEventLiveData<Unit>()
+    val allowEvent: EventLiveData<Unit>
+        get() = _allowEvent
 
-    fun onClickStart() {
-        _startEvent.event = Unit
+    fun onClickAllow() {
+        _allowEvent.event = Unit
     }
 }

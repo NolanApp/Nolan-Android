@@ -8,6 +8,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import soup.nolan.R
 import soup.nolan.databinding.OnBoardingBinding
@@ -43,7 +44,18 @@ class OnBoardingFragment : Fragment(R.layout.on_boarding) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(OnBoardingBinding.bind(view)) {
-            initViewState(this)
+            viewPager.apply {
+                adapter = OnBoardingPagerAdapter(this@OnBoardingFragment)
+                (getChildAt(0) as? RecyclerView)?.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            }
+            nextButton.setOnClickListener {
+                viewPager.nextPage()
+            }
+            allowButton.setOnDebounceClickListener {
+                viewModel.onClickAllow()
+            }
+            onPageSelected(viewPager.currentItem)
+
             binding = this
         }
     }
@@ -56,18 +68,6 @@ class OnBoardingFragment : Fragment(R.layout.on_boarding) {
     override fun onPause() {
         super.onPause()
         binding.viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
-    }
-
-    private fun initViewState(binding: OnBoardingBinding) {
-        binding.viewPager.adapter = OnBoardingPagerAdapter(this)
-
-        binding.nextButton.setOnClickListener {
-            binding.viewPager.nextPage()
-        }
-        binding.startButton.setOnDebounceClickListener {
-            viewModel.onClickStart()
-        }
-        binding.onPageSelected(binding.viewPager.currentItem)
     }
 
     private fun OnBoardingBinding.onPageSelected(position: Int) {
@@ -83,7 +83,7 @@ class OnBoardingFragment : Fragment(R.layout.on_boarding) {
 
         val isLastPage = viewPager.currentItem == OnBoardingPagerAdapter.ITEM_COUNT - 1
         nextButton.isGone = isLastPage
-        startButton.isVisible = isLastPage
+        allowButton.isVisible = isLastPage
     }
 
     private fun ViewPager2.previousPage(): Boolean {

@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:lineSpacingExtra="7sp"
+        android:layout_marginBottom="24dp"
         android:textColor="?android:textColorPrimary"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/barrier"
@@ -53,12 +54,12 @@
         tools:text="@string/onboarding_page1_desc" />
 
     <Button
-        android:id="@+id/start_button"
+        android:id="@+id/allow_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/onboarding_button_start"
+        android:text="@string/onboarding_button_allow"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
