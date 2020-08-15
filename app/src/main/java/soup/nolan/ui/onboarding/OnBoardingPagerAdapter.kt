@@ -9,9 +9,9 @@ class OnBoardingPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> OnBoardingPageFragment()
-            1 -> OnBoardingPageFragment()
-            2 -> OnBoardingPageFragment()
+            0 -> OnBoardingPage1Fragment()
+            1 -> OnBoardingPage2Fragment()
+            2 -> OnBoardingPage3Fragment()
             else -> throw IllegalStateException("position is invalid($position)")
         }
     }

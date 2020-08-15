@@ -5,6 +5,15 @@
     <string name="notification_channel_notice">Notice</string>
     <string name="notification_channel_save">Save</string>
 
+    <string name="onboarding_button_skip">Skip</string>
+    <string name="onboarding_button_next">Next</string>
+    <string name="onboarding_button_start">Start</string>
+    <string name="onboarding_page1_desc">Welcome to Nolan!\nI\'ll turn your photos into works of art.</string>
+    <string name="onboarding_page2_desc">All processing is offline.\nPersonal information is not used.</string>
+    <string name="onboarding_page3_desc">To take and save pictures,\nplease allow permissions.</string>
+
+    <string name="filter_settings">An image that previews the filter effect.\nYou can also apply it to the picture you want.</string>
+
     <string name="permission">Permission</string>
     <string name="permission_desc">When importing or saving photos, \'storage\' permission is required. And please grant \'camera\' permission if want to take a photo.</string>
     <string name="permission_item_storage">Storage</string>

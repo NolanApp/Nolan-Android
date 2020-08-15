@@ -7,34 +7,30 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
-import soup.nolan.Dependency
 import soup.nolan.R
 import soup.nolan.databinding.OnBoardingBinding
-import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToPermission
+import soup.nolan.ui.utils.Interpolators
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
 class OnBoardingFragment : Fragment(R.layout.on_boarding) {
 
-    private var binding: OnBoardingBinding by autoCleared {
-        viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
-    }
+    private var binding: OnBoardingBinding by autoCleared()
+    private val viewModel: OnBoardingViewModel by activityViewModels()
 
     private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
 
         override fun onPageSelected(position: Int) {
-            val isLastPage = binding.viewPager.currentItem == OnBoardingPagerAdapter.ITEM_COUNT - 1
-            binding.nextButton.isGone = isLastPage
-            binding.startButton.isVisible = isLastPage
+            binding.onPageSelected(position)
         }
     }
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (binding.viewPager.nextPage().not()) {
-                navigateToNext()
+            if (binding.viewPager.previousPage().not()) {
+                activity?.finish()
             }
         }
     }
@@ -52,29 +48,66 @@ class OnBoardingFragment : Fragment(R.layout.on_boarding) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.viewPager.registerOnPageChangeCallback(pageChangeCallback)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
+    }
+
     private fun initViewState(binding: OnBoardingBinding) {
         binding.viewPager.adapter = OnBoardingPagerAdapter(this)
-        binding.viewPager.registerOnPageChangeCallback(pageChangeCallback)
 
-        binding.skipButton.setOnClickListener {
-            navigateToNext()
-        }
         binding.nextButton.setOnClickListener {
             binding.viewPager.nextPage()
         }
         binding.startButton.setOnDebounceClickListener {
-            navigateToNext()
+            viewModel.onClickStart()
         }
+        binding.onPageSelected(binding.viewPager.currentItem)
     }
 
-    private fun navigateToNext() {
-        Dependency.appSettings.showOnBoarding = false
-        findNavController().navigate(actionToPermission())
+    private fun OnBoardingBinding.onPageSelected(position: Int) {
+        pagerDescription.run {
+            when (position) {
+                0 -> setText(R.string.onboarding_page1_desc)
+                1 -> setText(R.string.onboarding_page2_desc)
+                2 -> setText(R.string.onboarding_page3_desc)
+                else -> Unit
+            }
+            animateSlideUp()
+        }
+
+        val isLastPage = viewPager.currentItem == OnBoardingPagerAdapter.ITEM_COUNT - 1
+        nextButton.isGone = isLastPage
+        startButton.isVisible = isLastPage
+    }
+
+    private fun ViewPager2.previousPage(): Boolean {
+        val last = currentItem
+        currentItem -= 1
+        return last != currentItem
     }
 
     private fun ViewPager2.nextPage(): Boolean {
         val last = currentItem
         currentItem += 1
         return last != currentItem
+    }
+
+    private fun View.animateSlideUp() {
+        animate().cancel()
+        alpha = 0f
+        translationY = 40f
+        animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(800)
+            .setInterpolator(Interpolators.EASE_OUT_QUINT)
+            .withLayer()
+            .withEndAction(null)
     }
 }
