@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/on_boarding_page1_origin" />
+    <item android:drawable="@drawable/default_filter_origin" />
     <item>
         <clip
             android:clipOrientation="horizontal"

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import soup.nolan.R
 import soup.nolan.databinding.CameraFilterItemBinding
+import soup.nolan.model.thumbnailResId
 import soup.nolan.ui.utils.IdBasedDiffCallback
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
@@ -52,7 +53,7 @@ class CameraFilterListAdapter(
 
         fun bind(item: CameraFilterItemUiModel, isSelected: Boolean) {
             itemView.isEnabled = isSelected.not()
-            binding.filterThumbnail.setImageResource(item.thumbnailResId)
+            binding.filterThumbnail.setImageResource(item.filter.thumbnailResId)
             binding.filterPick.isVisible = isSelected
             binding.filterLabel.text = item.id
         }
