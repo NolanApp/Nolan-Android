@@ -8,4 +8,8 @@
         <attr name="checked" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="AnimatedImageView">
+        <attr name="allowAnimation" format="boolean" />
+    </declare-styleable>
+
 </resources>

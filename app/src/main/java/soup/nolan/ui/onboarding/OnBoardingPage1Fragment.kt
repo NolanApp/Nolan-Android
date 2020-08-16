@@ -20,7 +20,7 @@ class OnBoardingPage1Fragment : Fragment(R.layout.on_boarding_page1) {
         with(OnBoardingPage1Binding.bind(view)) {
             animator.addUpdateListener {
                 val value = 10000 * it.animatedValue as Float
-                resultImage.setImageLevel(value.toInt().coerceIn(0, 10000))
+                image.setImageLevel(value.toInt().coerceIn(0, 10000))
             }
         }
         animator.start()
