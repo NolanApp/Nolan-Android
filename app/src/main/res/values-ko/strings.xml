@@ -5,12 +5,21 @@
     <string name="notification_channel_notice">공지사항</string>
     <string name="notification_channel_save">저장</string>
 
+    <string name="onboarding_button_skip">건너뛰기</string>
+    <string name="onboarding_button_next">다음</string>
+    <string name="onboarding_button_allow">허용하기</string>
+    <string name="onboarding_page1_desc">놀란에 오신 것을 환영합니다!\n사진을 예술 작품으로 바꿔드릴게요.</string>
+    <string name="onboarding_page2_desc">모든 처리는 오프라인에서 이뤄져요.\n개인정보는 사용하지 않아요.</string>
+    <string name="onboarding_page3_desc">사진을 촬영하고 저장할 수 있게\n권한을 허용해주세요.</string>
+
+    <string name="filter_settings">필터 효과를 미리보는 이미지입니다.\n원하는 사진으로 적용해볼 수도 있어요.</string>
+
     <string name="permission">권한</string>
     <string name="permission_desc">사진을 불러오거나 저장할 때, \'저장소\' 권한이 필요합니다. 사진을 촬영하려면 \'카메라\' 권한도 허용해주세요.</string>
     <string name="permission_item_storage">저장소</string>
     <string name="permission_item_camera">카메라</string>
     <string name="permission_required">필수</string>
-    <string name="permission_button_positive">허용</string>
+    <string name="permission_button_positive">시작하기</string>
 
     <string name="camera_error_permission">권한이 허용되지 않았습니다.</string>
     <string name="camera_filter_description">필터를 선택하고 뒤로 돌아가세요</string>
