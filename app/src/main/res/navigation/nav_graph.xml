@@ -35,9 +35,13 @@
         tools:layout="@layout/on_boarding">
 
         <action
-            android:id="@+id/action_to_permission"
-            app:destination="@id/permission"
-            app:popUpTo="@id/on_boarding"
+            android:id="@+id/action_to_camera"
+            app:destination="@id/camera"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/permission"
             app:popUpToInclusive="true" />
     </fragment>
 

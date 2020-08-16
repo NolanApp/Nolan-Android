@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import soup.nolan.Dependency
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
+import soup.nolan.ui.permission.PermissionFragment
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToOnBoarding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToPermission
@@ -58,7 +59,7 @@ class SplashFragment : Fragment(R.layout.splash) {
                 override fun onAnimationEnd(animation: Animator) {
                     when {
                         Dependency.appSettings.showOnBoarding -> navigateToOnBoarding()
-                        Dependency.appSettings.showPermission -> navigateToPermission()
+                        PermissionFragment.showPermission(context) -> navigateToPermission()
                         else -> navigateToCamera()
                     }
                 }
