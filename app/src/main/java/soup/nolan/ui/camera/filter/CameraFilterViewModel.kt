@@ -4,14 +4,14 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import soup.nolan.data.UriFactory
+import soup.nolan.factory.ImageUriFactory
 import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import timber.log.Timber
 
 class CameraFilterViewModel @ViewModelInject constructor(
     private val appSettings: AppSettings,
-    private val uriFactory: UriFactory
+    private val imageUriFactory: ImageUriFactory
 ) : ViewModel() {
 
     private val _filterList = MutableLiveData<CameraFilterUiModel>()
@@ -24,7 +24,7 @@ class CameraFilterViewModel @ViewModelInject constructor(
 
     init {
         _filterList.value = CameraFilter.all()
-            .map { CameraFilterItemUiModel(it, uriFactory.getFilterImageUri(it)) }
+            .map { CameraFilterItemUiModel(it, imageUriFactory.getFilterImageUri(it)) }
             .let { CameraFilterUiModel(it) }
         notifyListChanged(appSettings.lastFilterId)
     }

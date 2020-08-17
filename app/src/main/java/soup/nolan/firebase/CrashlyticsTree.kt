@@ -1,4 +1,4 @@
-package soup.nolan.ui.utils
+package soup.nolan.firebase
 
 import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics

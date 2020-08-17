@@ -7,12 +7,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import soup.nolan.data.*
+import soup.nolan.factory.*
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.settings.AppSettings
 import soup.nolan.settings.AppSettingsImpl
-import soup.nolan.ui.share.ShareUriFactory
-import soup.nolan.ui.share.ShareUriFactoryImpl
-import soup.nolan.ui.utils.ImageFactory
+import soup.nolan.data.CameraFilterRepository
+import soup.nolan.data.CameraFilterRepositoryImpl
 import javax.inject.Singleton
 
 @Module
@@ -29,7 +29,7 @@ class ApplicationModule {
     @Provides
     fun provideImageFactory(
         @ApplicationContext context: Context
-    ): ImageFactory = ImageFactory(context)
+    ): ImageFactory = ImageFactoryImpl(context)
 
     @Singleton
     @Provides
@@ -40,9 +40,9 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideLegacyStyleTransfer(
+    fun provideUriFactory(
         @ApplicationContext context: Context
-    ): LegacyStyleTransfer = LegacyStyleTransfer(context)
+    ): ImageUriFactory = ImageUriFactoryImpl(context)
 
     @Singleton
     @Provides
@@ -64,7 +64,13 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideUriFactory(
+    fun provideCameraFilterRepository(
         @ApplicationContext context: Context
-    ): UriFactory = UriFactoryImpl(context)
+    ): CameraFilterRepository = CameraFilterRepositoryImpl(context)
+
+    @Singleton
+    @Provides
+    fun provideLegacyStyleTransfer(
+        @ApplicationContext context: Context
+    ): LegacyStyleTransfer = LegacyStyleTransfer(context)
 }

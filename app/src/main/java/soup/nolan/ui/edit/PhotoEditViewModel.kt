@@ -22,8 +22,8 @@ import soup.nolan.stylize.common.centerCropped
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.share.ShareItemUiModel
-import soup.nolan.ui.share.ShareUriFactory
-import soup.nolan.ui.utils.ImageFactory
+import soup.nolan.factory.ShareUriFactory
+import soup.nolan.factory.ImageFactory
 import soup.nolan.ui.utils.setValueIfNew
 import timber.log.Timber
 import kotlin.system.measureTimeMillis

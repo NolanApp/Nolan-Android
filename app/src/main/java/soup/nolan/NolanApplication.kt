@@ -15,7 +15,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import soup.nolan.model.Appearance
 import soup.nolan.settings.AppSettings
-import soup.nolan.ui.utils.CrashlyticsTree
+import soup.nolan.firebase.CrashlyticsTree
 import timber.log.Timber
 import javax.inject.Inject
 

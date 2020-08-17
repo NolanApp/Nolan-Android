@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -21,11 +22,13 @@ import soup.nolan.ui.utils.setOnDebounceClickListener
 @AndroidEntryPoint
 class FilterEditorFragment : Fragment(R.layout.filter_editor) {
 
+    private var lastCameraImageUri: Uri? = null
+
     private val viewModel: FilterEditorViewModel by activityViewModels()
 
     private val cameraPicker = registerForActivityResult(ActivityResultContracts.TakePicture()) {
         if (it) {
-            lastImageUri?.let { uri ->
+            lastCameraImageUri?.let { uri ->
                 viewModel.onOriginImageChanged(uri)
             }
         }
@@ -58,23 +61,22 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
             }
             listView.itemAnimator = null
             listView.adapter = adapter
-            viewModel.uiModel.observe(viewLifecycleOwner, Observer {
-                adapter.submitList(it)
-            })
 
             startButton.setOnDebounceClickListener {
                 viewModel.onStartClick()
             }
+
+            viewModel.uiModel.observe(viewLifecycleOwner, Observer {
+                adapter.submitList(it)
+            })
             viewModel.canStart.observe(viewLifecycleOwner, Observer {
                 startButton.isEnabled = it
             })
-
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
                     is FilterEditorUiEvent.TakePicture -> {
-                        lastImageUri = it.uri.also { uri ->
-                            cameraPicker.launch(uri)
-                        }
+                        lastCameraImageUri = it.uri
+                        cameraPicker.launch(it.uri)
                     }
                     is FilterEditorUiEvent.PickFromAlbum -> {
                         albumPicker.launch("image/*")
@@ -87,5 +89,21 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
         }
     }
 
-    private var lastImageUri: Uri? = null
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let {
+            lastCameraImageUri = it.getString(KEY_CAMERA_IMAGE_URI)?.toUri()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        lastCameraImageUri?.let {
+            outState.putString(KEY_CAMERA_IMAGE_URI, it.toString())
+        }
+    }
+
+    companion object {
+        private const val KEY_CAMERA_IMAGE_URI = "camera_image_uri"
+    }
 }

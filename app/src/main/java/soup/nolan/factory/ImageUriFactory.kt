@@ -1,4 +1,4 @@
-package soup.nolan.data
+package soup.nolan.factory
 
 import android.content.ContentResolver
 import android.content.Context
@@ -10,7 +10,7 @@ import soup.nolan.R
 import soup.nolan.model.CameraFilter
 import java.io.File
 
-interface UriFactory {
+interface ImageUriFactory {
 
     /**
      * 필터 생성에 사용할 기본 이미지 [Uri]를 반환한다.
@@ -28,14 +28,12 @@ interface UriFactory {
     fun getFilterImageUri(filter: CameraFilter): Uri
 }
 
-class UriFactoryImpl(
+class ImageUriFactoryImpl(
     private val context: Context
-) : UriFactory {
-
-    private val defaultImageUri: Uri = getImageUri(R.drawable.default_image)
+) : ImageUriFactory {
 
     override fun getDefaultImageUri(): Uri {
-        return defaultImageUri
+        return getImageUri(R.drawable.default_image)
     }
 
     override fun createCameraImageUri(): Uri {

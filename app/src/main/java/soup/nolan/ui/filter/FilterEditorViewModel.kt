@@ -7,7 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import soup.nolan.data.UriFactory
+import soup.nolan.data.CameraFilterRepository
+import soup.nolan.factory.ImageUriFactory
 import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
@@ -15,7 +16,8 @@ import soup.nolan.ui.MutableEventLiveData
 
 class FilterEditorViewModel @ViewModelInject constructor(
     private val appSettings: AppSettings,
-    private val uriFactory: UriFactory,
+    private val repository: CameraFilterRepository,
+    private val imageUriFactory: ImageUriFactory,
     @Assisted private val savedState: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,22 +38,24 @@ class FilterEditorViewModel @ViewModelInject constructor(
         get() = savedState.get(KEY_SELECTED_ID)
 
     init {
-        updateUiModel(uri = uriFactory.getDefaultImageUri())
+        updateUiModel(uri = imageUriFactory.getDefaultImageUri())
         updateCanStart()
     }
 
     fun onOriginImageChanged(uri: Uri) {
+        //TODO:
         updateUiModel(uri = uri)
+        repository.fetchOriginalUri(uri)
     }
 
     fun onItemClick(uiModel: FilterEditorUiModel.Item) {
         savedSelectedId = uiModel.filter.id
-        updateUiModel(uri = uriFactory.getDefaultImageUri(), selectedId = uiModel.filter.id)
+        updateUiModel(uri = imageUriFactory.getDefaultImageUri(), selectedId = uiModel.filter.id)
         updateCanStart(true)
     }
 
     fun onCameraClick() {
-        _uiEvent.event = FilterEditorUiEvent.TakePicture(uriFactory.createCameraImageUri())
+        _uiEvent.event = FilterEditorUiEvent.TakePicture(imageUriFactory.createCameraImageUri())
     }
 
     fun onAlbumClick() {
@@ -71,7 +75,7 @@ class FilterEditorViewModel @ViewModelInject constructor(
             addAll(CameraFilter.all().map { filter ->
                 FilterEditorUiModel.Item(
                     filter = filter,
-                    imageUri = uriFactory.getFilterImageUri(filter),
+                    imageUri = imageUriFactory.getFilterImageUri(filter),
                     isSelected = filter.id == selectedId
                 )
             })

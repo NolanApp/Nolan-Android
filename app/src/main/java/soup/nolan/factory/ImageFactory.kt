@@ -1,4 +1,4 @@
-package soup.nolan.ui.utils
+package soup.nolan.factory
 
 import android.content.ContentResolver
 import android.content.Context
@@ -19,9 +19,18 @@ import soup.nolan.R
 import kotlin.math.floor
 import kotlin.math.max
 
-class ImageFactory(private val context: Context) {
+interface ImageFactory {
+    suspend fun getBitmap(fileUri: Uri): Bitmap
+    suspend fun getBitmap(drawable: Drawable): Bitmap
+    suspend fun withWatermark(src: Bitmap): Bitmap
+    suspend fun withWatermark(src: Drawable): Bitmap
+}
 
-    suspend fun getBitmap(fileUri: Uri): Bitmap {
+class ImageFactoryImpl(
+    private val context: Context
+) : ImageFactory {
+
+    override suspend fun getBitmap(fileUri: Uri): Bitmap {
         return withContext(Dispatchers.IO) {
             val sampleMaxSize = 1024.toDouble()
             context.contentResolver.toSamplingImage(fileUri, sampleMaxSize)
@@ -29,16 +38,19 @@ class ImageFactory(private val context: Context) {
         }
     }
 
-    suspend fun getBitmap(drawable: Drawable): Bitmap {
+    override suspend fun getBitmap(drawable: Drawable): Bitmap {
         return withContext(Dispatchers.Default) {
-            Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888).apply {
-                val canvas = Canvas(this)
-                drawable.draw(canvas)
+            Bitmap.createBitmap(
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            ).apply {
+                drawable.draw(Canvas(this))
             }
         }
     }
 
-    suspend fun withWatermark(src: Bitmap): Bitmap {
+    override suspend fun withWatermark(src: Bitmap): Bitmap {
         return withContext(Dispatchers.Default) {
             Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888).apply {
                 val canvas = Canvas(this)
@@ -48,9 +60,13 @@ class ImageFactory(private val context: Context) {
         }
     }
 
-    suspend fun withWatermark(src: Drawable): Bitmap {
+    override suspend fun withWatermark(src: Drawable): Bitmap {
         return withContext(Dispatchers.Default) {
-            Bitmap.createBitmap(src.intrinsicWidth, src.intrinsicHeight, Bitmap.Config.ARGB_8888).apply {
+            Bitmap.createBitmap(
+                src.intrinsicWidth,
+                src.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            ).apply {
                 val canvas = Canvas(this)
                 src.draw(canvas)
                 canvas.drawWatermark()
