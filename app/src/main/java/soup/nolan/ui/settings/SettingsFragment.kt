@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.SettingsBinding
@@ -22,6 +23,7 @@ import soup.nolan.ui.settings.SettingsFragmentDirections.Companion.actionToAppea
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.*
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.settings) {
 
     private var binding: SettingsBinding by autoCleared { adView.destroy() }

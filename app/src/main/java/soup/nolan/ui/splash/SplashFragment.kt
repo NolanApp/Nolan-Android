@@ -1,31 +1,58 @@
 package soup.nolan.ui.splash
 
 import android.animation.Animator
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import soup.nolan.Dependency
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
+import soup.nolan.ui.EventObserver
 import soup.nolan.ui.permission.PermissionFragment
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
+import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToFilterEditor
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToOnBoarding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToPermission
-import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToFilterEditor
 import soup.nolan.ui.utils.autoCleared
 
+@AndroidEntryPoint
 class SplashFragment : Fragment(R.layout.splash) {
+
+    private val viewModel: SplashViewModel by viewModels()
 
     private var binding: SplashBinding by autoCleared()
     private var isAnimating = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(SplashBinding.bind(view)) {
+        SplashBinding.bind(view).apply {
             logoInner.animateBounce()
+
+            viewModel.navigationEvent.observe(viewLifecycleOwner, EventObserver {
+                when (it) {
+                    SplashUiEvent.GoToOnBoarding -> {
+                        findNavController().navigate(actionToOnBoarding())
+                    }
+                    SplashUiEvent.GoToPermission -> {
+                        findNavController().navigate(actionToPermission())
+                    }
+                    SplashUiEvent.GoToFilterEditor -> {
+                        findNavController().navigate(actionToFilterEditor())
+                    }
+                    SplashUiEvent.GoToCamera -> {
+                        findNavController().navigate(
+                            actionToCamera(),
+                            FragmentNavigatorExtras(logoOuter.let { v -> v to v.transitionName })
+                        )
+                    }
+                }
+            })
+
             binding = this
         }
     }
@@ -34,7 +61,7 @@ class SplashFragment : Fragment(R.layout.splash) {
         super.onResume()
         if (isAnimating) {
             isAnimating = false
-            navigateToCamera()
+            context?.done()
         }
     }
 
@@ -58,30 +85,12 @@ class SplashFragment : Fragment(R.layout.splash) {
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
-                    when {
-                        Dependency.appSettings.showOnBoarding -> navigateToOnBoarding()
-                        PermissionFragment.showPermission(context) -> navigateToPermission()
-                        Dependency.appSettings.showFilterEditor -> navigateToFilterEditor()
-                        else -> navigateToCamera()
-                    }
+                    context.done()
                 }
             })
     }
 
-    private fun navigateToOnBoarding() {
-        findNavController().navigate(actionToOnBoarding())
-    }
-
-    private fun navigateToPermission() {
-        findNavController().navigate(actionToPermission())
-    }
-
-    private fun navigateToFilterEditor() {
-        findNavController().navigate(actionToFilterEditor())
-    }
-
-    private fun navigateToCamera() {
-        val extras = FragmentNavigatorExtras(binding.logoOuter.let { it to it.transitionName })
-        findNavController().navigate(actionToCamera(), extras)
+    private fun Context.done() {
+        viewModel.onAnimationEnd(PermissionFragment.hasRequiredPermissions(this))
     }
 }

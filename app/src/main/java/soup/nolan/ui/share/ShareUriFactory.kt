@@ -8,19 +8,22 @@ import androidx.core.content.FileProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import soup.nolan.BuildConfig
-import soup.nolan.Dependency
 import soup.nolan.ui.utils.ImageFactory
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
-class ShareUriFactory(
-    private val context: Context,
-    private val imageFactory: ImageFactory = Dependency.imageFactory
-) {
+interface ShareUriFactory {
+    suspend fun createShareImageUri(image: Drawable, withWatermark: Boolean): Uri?
+}
 
-    suspend fun createShareImageUri(image: Drawable, withWatermark: Boolean): Uri? {
+class ShareUriFactoryImpl(
+    private val context: Context,
+    private val imageFactory: ImageFactory
+) : ShareUriFactory {
+
+    override suspend fun createShareImageUri(image: Drawable, withWatermark: Boolean): Uri? {
         return withContext(Dispatchers.IO) {
             try {
                 File(context.getShareDirectory(), FILE_NAME)

@@ -1,15 +1,15 @@
 package soup.nolan.ui.camera
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import soup.nolan.Dependency
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 
-class CameraViewModel(
-    private val appSettings: AppSettings = Dependency.appSettings
+class CameraViewModel @ViewModelInject constructor(
+    private val appSettings: AppSettings
 ) : ViewModel() {
 
     private val _lensFacingFront = MutableLiveData(appSettings.lensFacingFront)

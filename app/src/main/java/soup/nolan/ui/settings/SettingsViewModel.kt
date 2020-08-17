@@ -1,18 +1,18 @@
 package soup.nolan.ui.settings
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import soup.nolan.Dependency
 import soup.nolan.data.PlayRepository
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.purchase.PurchaseItem
 
-class SettingsViewModel(
-    private val repository: PlayRepository = Dependency.playRepository,
-    private val appSettings: AppSettings = Dependency.appSettings
+class SettingsViewModel @ViewModelInject constructor(
+    private val repository: PlayRepository,
+    private val appSettings: AppSettings
 ) : ViewModel() {
 
     private val _showWatermark = MutableLiveData<Boolean>()

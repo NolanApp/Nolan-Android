@@ -1,6 +1,8 @@
 package soup.nolan.ui.filter
 
 import android.net.Uri
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -9,8 +11,8 @@ import soup.nolan.model.CameraFilter
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 
-class FilterEditorViewModel(
-    private val savedState: SavedStateHandle
+class FilterEditorViewModel @ViewModelInject constructor(
+    @Assisted private val savedState: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiModel = MutableLiveData<List<FilterEditorUiModel>>()

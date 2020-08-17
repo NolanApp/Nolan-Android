@@ -5,13 +5,13 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.collection.LruCache
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import soup.nolan.BuildConfig
-import soup.nolan.Dependency
 import soup.nolan.R
 import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.filter.stylize.LegacyStyleTransfer
@@ -28,11 +28,11 @@ import soup.nolan.ui.utils.setValueIfNew
 import timber.log.Timber
 import kotlin.system.measureTimeMillis
 
-class PhotoEditViewModel(
-    private val imageFactory: ImageFactory = Dependency.imageFactory,
-    private val shareUriFactory: ShareUriFactory = Dependency.shareUriFactory,
-    private val styleTransfer: LegacyStyleTransfer = Dependency.styleTransfer,
-    private val appSettings: AppSettings = Dependency.appSettings
+class PhotoEditViewModel @ViewModelInject constructor(
+    private val imageFactory: ImageFactory,
+    private val shareUriFactory: ShareUriFactory,
+    private val styleTransfer: LegacyStyleTransfer,
+    private val appSettings: AppSettings
 ) : ViewModel() {
 
     private var isEnterAnimationDone: Boolean = false
@@ -163,7 +163,7 @@ class PhotoEditViewModel(
         viewModelScope.launch {
             val shareImageUri = shareUriFactory.createShareImageUri(
                 drawable,
-                Dependency.appSettings.showWatermark
+                appSettings.showWatermark
             )
             if (shareImageUri == null) {
                 _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)

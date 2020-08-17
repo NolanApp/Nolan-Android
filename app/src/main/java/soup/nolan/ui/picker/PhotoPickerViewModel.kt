@@ -1,16 +1,16 @@
 package soup.nolan.ui.picker
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import soup.nolan.Dependency
 import soup.nolan.data.GalleryRepository
 
-class PhotoPickerViewModel(
-    private val galleryRepository: GalleryRepository = Dependency.galleryRepository
+class PhotoPickerViewModel @ViewModelInject constructor(
+    private val galleryRepository: GalleryRepository
 ) : ViewModel() {
 
     private val _uiModel = MutableLiveData<List<PhotoPickerItemUiModel>>()

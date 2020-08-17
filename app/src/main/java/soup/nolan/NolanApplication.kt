@@ -6,14 +6,21 @@ import android.os.StrictMode.VmPolicy
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import soup.nolan.model.Appearance
+import soup.nolan.settings.AppSettings
 import soup.nolan.ui.utils.CrashlyticsTree
 import timber.log.Timber
+import javax.inject.Inject
 
+@HiltAndroidApp
 class NolanApplication : Application(), CameraXConfig.Provider {
+
+    @Inject
+    lateinit var appSettings: AppSettings
 
     override fun onCreate() {
         if (BuildConfig.USE_STRICT_MODE) {
@@ -42,20 +49,13 @@ class NolanApplication : Application(), CameraXConfig.Provider {
         }
         NotificationChannels.createAll(this)
 
-        dependency = Dependency(this)
-
         GlobalScope.launch(Dispatchers.IO) {
-            val nightMode = Appearance.of(Dependency.appSettings.currentAppearance).nightMode
+            val nightMode = Appearance.of(appSettings.currentAppearance).nightMode
             AppCompatDelegate.setDefaultNightMode(nightMode)
         }
     }
 
     override fun getCameraXConfig(): CameraXConfig {
         return Camera2Config.defaultConfig()
-    }
-
-    companion object {
-
-        internal lateinit var dependency: Dependency
     }
 }

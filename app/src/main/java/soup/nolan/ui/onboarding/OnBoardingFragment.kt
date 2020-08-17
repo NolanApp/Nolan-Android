@@ -8,14 +8,19 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.OnBoardingBinding
+import soup.nolan.ui.EventObserver
+import soup.nolan.ui.onboarding.OnBoardingFragmentDirections.Companion.actionToFilterEditor
 import soup.nolan.ui.utils.Interpolators
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
+@AndroidEntryPoint
 class OnBoardingFragment : Fragment(R.layout.on_boarding) {
 
     private var binding: OnBoardingBinding by autoCleared()
@@ -52,9 +57,13 @@ class OnBoardingFragment : Fragment(R.layout.on_boarding) {
                 viewPager.nextPage()
             }
             allowButton.setOnDebounceClickListener {
-                viewModel.onClickAllow()
+                viewModel.onAllowClick()
             }
             onPageSelected(viewPager.currentItem)
+
+            viewModel.navigationEvent.observe(viewLifecycleOwner, EventObserver {
+                findNavController().navigate(actionToFilterEditor())
+            })
 
             binding = this
         }

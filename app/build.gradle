@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
@@ -80,7 +81,7 @@ dependencies {
     implementation deps.kotlin.coroutines_core
     implementation deps.kotlin.coroutines_android
 
-    implementation "androidx.window:window:1.0.0-alpha01"
+    implementation 'androidx.window:window:1.0.0-alpha01'
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation deps.androidx.appcompat
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-rc1'
@@ -96,6 +97,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    implementation deps.dagger.hilt
+    kapt deps.dagger.hilt_compiler
+    implementation deps.hilt.viewmodel
+    kapt deps.hilt.compiler
 
     implementation deps.navigation.fragment_ktx
 

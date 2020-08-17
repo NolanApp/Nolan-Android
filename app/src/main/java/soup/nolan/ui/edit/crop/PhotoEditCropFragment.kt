@@ -9,6 +9,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.theartofdev.edmodo.cropper.CropImageView
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.PhotoEditCropBinding
 import soup.nolan.firebase.AppEvent
@@ -17,6 +18,7 @@ import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
 import timber.log.Timber
 
+@AndroidEntryPoint
 class PhotoEditCropFragment : Fragment(R.layout.photo_edit_crop) {
 
     private val args: PhotoEditCropFragmentArgs by navArgs()

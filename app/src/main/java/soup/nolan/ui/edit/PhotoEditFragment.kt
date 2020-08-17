@@ -22,6 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import soup.nolan.R
 import soup.nolan.databinding.PhotoEditBinding
@@ -37,6 +38,7 @@ import soup.nolan.ui.share.ShareViewModel
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.*
 
+@AndroidEntryPoint
 class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation {
 
     private val args: PhotoEditFragmentArgs by navArgs()

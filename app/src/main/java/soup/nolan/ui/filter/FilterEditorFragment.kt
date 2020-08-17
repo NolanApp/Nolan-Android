@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.FilterEditorBinding
@@ -21,6 +22,7 @@ import soup.nolan.ui.filter.FilterEditorListAdapter.Companion.VIEW_TYPE_HEADER
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import java.io.File
 
+@AndroidEntryPoint
 class FilterEditorFragment : Fragment(R.layout.filter_editor) {
 
     private val viewModel: FilterEditorViewModel by activityViewModels()

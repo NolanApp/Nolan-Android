@@ -1,15 +1,15 @@
 package soup.nolan.ui.camera.filter
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import soup.nolan.Dependency
 import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import timber.log.Timber
 
-class CameraFilterViewModel(
-    private val appSettings: AppSettings = Dependency.appSettings
+class CameraFilterViewModel @ViewModelInject constructor(
+    private val appSettings: AppSettings
 ) : ViewModel() {
 
     private val _filterList = MutableLiveData<CameraFilterUiModel>()
