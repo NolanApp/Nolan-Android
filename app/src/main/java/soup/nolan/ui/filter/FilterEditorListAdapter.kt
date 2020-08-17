@@ -6,10 +6,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import soup.nolan.R
 import soup.nolan.databinding.FilterEditorHeaderBinding
 import soup.nolan.databinding.FilterEditorItemBinding
-import soup.nolan.model.thumbnailResId
 import soup.nolan.ui.utils.IdBasedDiffCallback
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
@@ -63,11 +61,7 @@ class FilterEditorListAdapter(
 
         override fun bind(uiModel: FilterEditorUiModel) {
             if (uiModel !is FilterEditorUiModel.Header) return
-            if (uiModel.imageUri == null) {
-                binding.thumbnail.setImageResource(R.drawable.default_filter_origin)
-            } else {
-                binding.thumbnail.setImageURI(uiModel.imageUri)
-            }
+            binding.thumbnail.setImageURI(uiModel.imageUri)
         }
     }
 
@@ -85,7 +79,7 @@ class FilterEditorListAdapter(
         override fun bind(uiModel: FilterEditorUiModel) {
             if (uiModel !is FilterEditorUiModel.Item) return
             binding.filterSelected.isVisible = uiModel.isSelected
-            binding.thumbnail.setImageResource(uiModel.filter.thumbnailResId)
+            binding.thumbnail.setImageURI(uiModel.imageUri)
             binding.label.text = uiModel.filter.id
         }
     }

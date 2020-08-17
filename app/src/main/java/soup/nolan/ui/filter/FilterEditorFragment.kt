@@ -1,18 +1,15 @@
 package soup.nolan.ui.filter
 
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import soup.nolan.BuildConfig
 import soup.nolan.R
 import soup.nolan.databinding.FilterEditorBinding
 import soup.nolan.ui.EventObserver
@@ -20,7 +17,6 @@ import soup.nolan.ui.filter.FilterEditorFragmentDirections.Companion.actionToCam
 import soup.nolan.ui.filter.FilterEditorFragmentDirections.Companion.actionToOption
 import soup.nolan.ui.filter.FilterEditorListAdapter.Companion.VIEW_TYPE_HEADER
 import soup.nolan.ui.utils.setOnDebounceClickListener
-import java.io.File
 
 @AndroidEntryPoint
 class FilterEditorFragment : Fragment(R.layout.filter_editor) {
@@ -75,15 +71,15 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
 
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
-                    FilterEditorUiEvent.TakePicture -> {
-                        lastImageUri = view.context.createImageUri()?.also { uri ->
+                    is FilterEditorUiEvent.TakePicture -> {
+                        lastImageUri = it.uri.also { uri ->
                             cameraPicker.launch(uri)
                         }
                     }
-                    FilterEditorUiEvent.PickFromAlbum -> {
+                    is FilterEditorUiEvent.PickFromAlbum -> {
                         albumPicker.launch("image/*")
                     }
-                    FilterEditorUiEvent.GoToCamera -> {
+                    is FilterEditorUiEvent.GoToCamera -> {
                         findNavController().navigate(actionToCamera())
                     }
                 }
@@ -92,21 +88,4 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
     }
 
     private var lastImageUri: Uri? = null
-
-    private fun Context.createImageUri(): Uri? {
-        val saveDir = File(filesDir, IMAGE_FILE_PATH)
-        if (!saveDir.exists()) {
-            saveDir.mkdirs()
-        }
-        return FileProvider.getUriForFile(
-            this,
-            BuildConfig.FILES_AUTHORITY,
-            File(saveDir, IMAGE_FILE_NAME)
-        )
-    }
-
-    companion object {
-        private const val IMAGE_FILE_PATH = "image_manager/photo/"
-        private const val IMAGE_FILE_NAME = "camera_image.jpg"
-    }
 }

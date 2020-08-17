@@ -32,7 +32,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:src="@drawable/a01" />
+        tools:src="@drawable/default_image" />
 
     <View
         android:layout_width="100dp"

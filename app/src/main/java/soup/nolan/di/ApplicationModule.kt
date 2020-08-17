@@ -61,4 +61,10 @@ class ApplicationModule {
     fun provideGalleryRepository(
         @ApplicationContext context: Context
     ): GalleryRepository = GalleryRepositoryImpl(context)
+
+    @Singleton
+    @Provides
+    fun provideUriFactory(
+        @ApplicationContext context: Context
+    ): UriFactory = UriFactoryImpl(context)
 }
