@@ -8,10 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import soup.nolan.model.CameraFilter
+import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 
 class FilterEditorViewModel @ViewModelInject constructor(
+    private val appSettings: AppSettings,
     @Assisted private val savedState: SavedStateHandle
 ) : ViewModel() {
 
@@ -47,11 +49,18 @@ class FilterEditorViewModel @ViewModelInject constructor(
     }
 
     fun onCameraClick() {
-        _uiEvent.event = FilterEditorUiEvent.CameraPicker
+        _uiEvent.event = FilterEditorUiEvent.TakePicture
     }
 
     fun onAlbumClick() {
-        _uiEvent.event = FilterEditorUiEvent.AlbumPicker
+        _uiEvent.event = FilterEditorUiEvent.PickFromAlbum
+    }
+
+    fun onStartClick() {
+        savedSelectedId?.let {
+            appSettings.lastFilterId = it
+            _uiEvent.event = FilterEditorUiEvent.GoToCamera
+        }
     }
 
     private fun updateUiModel(uri: Uri?, selectedId: String? = savedSelectedId) {

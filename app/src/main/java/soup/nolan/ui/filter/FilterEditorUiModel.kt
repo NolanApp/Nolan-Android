@@ -15,7 +15,8 @@ sealed class FilterEditorUiModel(val key: String) {
     ) : FilterEditorUiModel("item_${filter.id}")
 }
 
-sealed class FilterEditorUiEvent {
-    object CameraPicker : FilterEditorUiEvent()
-    object AlbumPicker : FilterEditorUiEvent()
+enum class FilterEditorUiEvent {
+    TakePicture,
+    PickFromAlbum,
+    GoToCamera
 }

@@ -67,7 +67,7 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
             })
 
             startButton.setOnDebounceClickListener {
-                findNavController().navigate(actionToCamera())
+                viewModel.onStartClick()
             }
             viewModel.canStart.observe(viewLifecycleOwner, Observer {
                 startButton.isEnabled = it
@@ -75,13 +75,17 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
 
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
-                   is FilterEditorUiEvent.CameraPicker -> {
-                       lastImageUri = view.context.createImageViewUri()
-                       cameraPicker.launch(lastImageUri)
-                   }
-                   is FilterEditorUiEvent.AlbumPicker -> {
-                       albumPicker.launch("image/*")
-                   }
+                    FilterEditorUiEvent.TakePicture -> {
+                        lastImageUri = view.context.createImageUri()?.also { uri ->
+                            cameraPicker.launch(uri)
+                        }
+                    }
+                    FilterEditorUiEvent.PickFromAlbum -> {
+                        albumPicker.launch("image/*")
+                    }
+                    FilterEditorUiEvent.GoToCamera -> {
+                        findNavController().navigate(actionToCamera())
+                    }
                 }
             })
         }
@@ -89,20 +93,20 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
 
     private var lastImageUri: Uri? = null
 
-    private fun Context.createImageViewUri(): Uri? {
-        val saveDir = File(filesDir, ORIGIN_FILE_PATH)
+    private fun Context.createImageUri(): Uri? {
+        val saveDir = File(filesDir, IMAGE_FILE_PATH)
         if (!saveDir.exists()) {
             saveDir.mkdirs()
         }
         return FileProvider.getUriForFile(
             this,
             BuildConfig.FILES_AUTHORITY,
-            File(saveDir, ORIGIN_FILE_NAME)
+            File(saveDir, IMAGE_FILE_NAME)
         )
     }
 
     companion object {
-        private const val ORIGIN_FILE_PATH = "image_manager/photo/"
-        private const val ORIGIN_FILE_NAME = "filter_origin.jpg"
+        private const val IMAGE_FILE_PATH = "image_manager/photo/"
+        private const val IMAGE_FILE_NAME = "camera_image.jpg"
     }
 }
