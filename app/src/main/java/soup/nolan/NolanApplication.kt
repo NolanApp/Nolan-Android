@@ -6,6 +6,9 @@ import android.os.StrictMode.VmPolicy
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,8 +22,8 @@ import javax.inject.Inject
 @HiltAndroidApp
 class NolanApplication : Application(), CameraXConfig.Provider {
 
-    @Inject
-    lateinit var appSettings: AppSettings
+    @Inject lateinit var appSettings: AppSettings
+    @Inject lateinit var workerFactory: HiltWorkerFactory
 
     override fun onCreate() {
         if (BuildConfig.USE_STRICT_MODE) {
@@ -48,6 +51,13 @@ class NolanApplication : Application(), CameraXConfig.Provider {
             Timber.plant(CrashlyticsTree())
         }
         NotificationChannels.createAll(this)
+
+        WorkManager.initialize(
+            this,
+            Configuration.Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
+        )
 
         GlobalScope.launch(Dispatchers.IO) {
             val nightMode = Appearance.of(appSettings.currentAppearance).nightMode

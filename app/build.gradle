@@ -101,9 +101,13 @@ dependencies {
     implementation deps.dagger.hilt
     kapt deps.dagger.hilt_compiler
     implementation deps.hilt.viewmodel
+    implementation deps.hilt.work
     kapt deps.hilt.compiler
 
     implementation deps.navigation.fragment_ktx
+
+    implementation deps.work.runtime
+    androidTestImplementation deps.work.testing
 
     implementation deps.util.timber
 

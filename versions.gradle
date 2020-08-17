@@ -26,14 +26,20 @@ deps.navigation = [
         safe_args_plugin: "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation"
 ]
 
-def hilt = "1.0.0-alpha01"
+def work = '2.4.0'
+deps.work = [
+        runtime: "androidx.work:work-runtime-ktx:$work",
+        testing: "androidx.work:work-testing:$work"
+]
+
+def hilt = '1.0.0-alpha02'
 deps.hilt = [
         work     : "androidx.hilt:hilt-work:$hilt",
         viewmodel: "androidx.hilt:hilt-lifecycle-viewmodel:$hilt",
         compiler : "androidx.hilt:hilt-compiler:$hilt"
 ]
 
-def dagger_hilt = "2.28.3-alpha"
+def dagger_hilt = '2.28.3-alpha'
 deps.dagger = [
         hilt         : "com.google.dagger:hilt-android:$dagger_hilt",
         hilt_compiler: "com.google.dagger:hilt-android-compiler:$dagger_hilt",
