@@ -12,10 +12,12 @@
     <string name="onboarding_page2_desc">모든 처리는 오프라인에서 이뤄져요.\n개인정보는 사용하지 않아요.</string>
     <string name="onboarding_page3_desc">사진을 촬영하고 저장할 수 있게\n권한을 허용해주세요.</string>
 
-    <string name="filter_edit">필터 편집</string>
-    <string name="filter_edit_desc">필터 효과를 미리보는 이미지입니다.\n원하는 사진으로 적용해볼 수도 있어요.</string>
-    <string name="filter_edit_notice">마음에 드는 필터 하나를 선택하세요.</string>
-    <string name="filter_edit_button_start">시작하기</string>
+    <string name="filter_editor">필터 편집</string>
+    <string name="filter_editor_desc">필터 효과를 미리보는 이미지입니다.\n원하는 사진으로 적용해볼 수도 있어요.</string>
+    <string name="filter_editor_notice">마음에 드는 필터 하나를 선택하세요.</string>
+    <string name="filter_editor_button_start">시작하기</string>
+    <string name="filter_editor_option_camera">사진 촬영하기</string>
+    <string name="filter_editor_option_gallery">갤러리에서 가져오기</string>
 
     <string name="permission">권한</string>
     <string name="permission_desc">사진을 불러오거나 저장할 때, \'저장소\' 권한이 필요합니다. 사진을 촬영하려면 \'카메라\' 권한도 허용해주세요.</string>

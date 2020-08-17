@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:background="?colorSurface"
-    tools:context=".ui.filter.FilterEditFragment">
+    tools:context=".ui.filter.FilterEditorFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/filter_edit" />
+        app:title="@string/filter_editor" />
 
     <View
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:itemCount="30"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:listitem="@layout/filter_edit_item"
+        tools:listitem="@layout/filter_editor_item"
         tools:spanCount="4" />
 
     <TextView
@@ -49,7 +49,7 @@
         android:background="@drawable/primary_button_bg"
         android:enabled="false"
         android:gravity="center"
-        android:text="@string/filter_edit_button_start"
+        android:text="@string/filter_editor_button_start"
         android:textAllCaps="true"
         android:textColor="@color/primary_button_text"
         android:textSize="16sp"

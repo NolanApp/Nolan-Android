@@ -79,7 +79,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="soup.nolan.fileprovider"
+            android:authorities="${files_authority}"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

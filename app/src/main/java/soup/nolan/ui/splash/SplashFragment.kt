@@ -14,6 +14,7 @@ import soup.nolan.ui.permission.PermissionFragment
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToOnBoarding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToPermission
+import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToFilterEditor
 import soup.nolan.ui.utils.autoCleared
 
 class SplashFragment : Fragment(R.layout.splash) {
@@ -60,6 +61,7 @@ class SplashFragment : Fragment(R.layout.splash) {
                     when {
                         Dependency.appSettings.showOnBoarding -> navigateToOnBoarding()
                         PermissionFragment.showPermission(context) -> navigateToPermission()
+                        Dependency.appSettings.showFilterEditor -> navigateToFilterEditor()
                         else -> navigateToCamera()
                     }
                 }
@@ -72,6 +74,10 @@ class SplashFragment : Fragment(R.layout.splash) {
 
     private fun navigateToPermission() {
         findNavController().navigate(actionToPermission())
+    }
+
+    private fun navigateToFilterEditor() {
+        findNavController().navigate(actionToFilterEditor())
     }
 
     private fun navigateToCamera() {

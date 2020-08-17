@@ -9,8 +9,10 @@ import androidx.activity.result.contract.ActivityResultContracts.RequestMultiple
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import soup.nolan.Dependency
 import soup.nolan.R
 import soup.nolan.databinding.PermissionBinding
+import soup.nolan.ui.permission.PermissionFragmentDirections.Companion.actionToFilterEditor
 import soup.nolan.ui.permission.PermissionFragmentDirections.Companion.actionToCamera
 import soup.nolan.ui.utils.setOnDebounceClickListener
 import soup.nolan.ui.utils.toast
@@ -20,7 +22,11 @@ class PermissionFragment : Fragment(R.layout.permission) {
     private val requestPermissions =
         registerForActivityResult(RequestMultiplePermissions()) { result ->
             if (result.all { it.value }) {
-                findNavController().navigate(actionToCamera())
+                if (Dependency.appSettings.showFilterEditor) {
+                    findNavController().navigate(actionToFilterEditor())
+                } else {
+                    findNavController().navigate(actionToCamera())
+                }
             } else {
                 toast(R.string.camera_error_permission)
             }

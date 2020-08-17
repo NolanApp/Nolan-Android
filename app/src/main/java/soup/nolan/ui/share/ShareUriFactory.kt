@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import soup.nolan.BuildConfig
 import soup.nolan.Dependency
 import soup.nolan.ui.utils.ImageFactory
 import timber.log.Timber
@@ -57,7 +58,7 @@ class ShareUriFactory(
 
     companion object {
 
-        private const val AUTHORITY = "soup.nolan.fileprovider"
+        private const val AUTHORITY = BuildConfig.FILES_AUTHORITY
         private const val SHARE_DIR = "share"
         private const val FILE_NAME = "share_image.jpg"
     }

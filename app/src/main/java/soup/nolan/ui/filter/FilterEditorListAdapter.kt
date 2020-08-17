@@ -7,29 +7,27 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import soup.nolan.R
-import soup.nolan.databinding.FilterEditHeaderBinding
-import soup.nolan.databinding.FilterEditItemBinding
+import soup.nolan.databinding.FilterEditorHeaderBinding
+import soup.nolan.databinding.FilterEditorItemBinding
 import soup.nolan.model.thumbnailResId
 import soup.nolan.ui.utils.IdBasedDiffCallback
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
-class FilterEditListAdapter(
-    private val onItemClick: (FilterEditUiModel) -> Unit
-) : ListAdapter<FilterEditUiModel, FilterEditListAdapter.ViewHolder>(IdBasedDiffCallback { it.key }) {
+class FilterEditorListAdapter(
+    private val onItemClick: (FilterEditorUiModel) -> Unit
+) : ListAdapter<FilterEditorUiModel, FilterEditorListAdapter.ViewHolder>(IdBasedDiffCallback { it.key }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_HEADER) {
             HeaderViewHolder(
-                FilterEditHeaderBinding
-                    .inflate(layoutInflater, parent, false)
+                FilterEditorHeaderBinding.inflate(layoutInflater, parent, false)
             ) {
                 getItem(it)?.run(onItemClick)
             }
         } else {
             ItemViewHolder(
-                FilterEditItemBinding
-                    .inflate(layoutInflater, parent, false)
+                FilterEditorItemBinding.inflate(layoutInflater, parent, false)
             ) {
                 getItem(it)?.run(onItemClick)
             }
@@ -42,18 +40,18 @@ class FilterEditListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is FilterEditUiModel.Header -> VIEW_TYPE_HEADER
-            is FilterEditUiModel.Item -> VIEW_TYPE_ITEM
+            is FilterEditorUiModel.Header -> VIEW_TYPE_HEADER
+            is FilterEditorUiModel.Item -> VIEW_TYPE_ITEM
         }
     }
 
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
 
-        abstract fun bind(uiModel: FilterEditUiModel)
+        abstract fun bind(uiModel: FilterEditorUiModel)
     }
 
     private class HeaderViewHolder(
-        private val binding: FilterEditHeaderBinding,
+        private val binding: FilterEditorHeaderBinding,
         private val onHeaderClick: (Int) -> Unit
     ) : ViewHolder(binding.root) {
 
@@ -63,14 +61,18 @@ class FilterEditListAdapter(
             }
         }
 
-        override fun bind(uiModel: FilterEditUiModel) {
-            if (uiModel !is FilterEditUiModel.Header) return
-            binding.thumbnail.setImageResource(R.drawable.default_filter_origin)
+        override fun bind(uiModel: FilterEditorUiModel) {
+            if (uiModel !is FilterEditorUiModel.Header) return
+            if (uiModel.imageUri == null) {
+                binding.thumbnail.setImageResource(R.drawable.default_filter_origin)
+            } else {
+                binding.thumbnail.setImageURI(uiModel.imageUri)
+            }
         }
     }
 
     private class ItemViewHolder(
-        private val binding: FilterEditItemBinding,
+        private val binding: FilterEditorItemBinding,
         private val onItemClick: (Int) -> Unit
     ) : ViewHolder(binding.root) {
 
@@ -80,14 +82,13 @@ class FilterEditListAdapter(
             }
         }
 
-        override fun bind(uiModel: FilterEditUiModel) {
-            if (uiModel !is FilterEditUiModel.Item) return
+        override fun bind(uiModel: FilterEditorUiModel) {
+            if (uiModel !is FilterEditorUiModel.Item) return
             binding.filterSelected.isVisible = uiModel.isSelected
             binding.thumbnail.setImageResource(uiModel.filter.thumbnailResId)
-            binding.label.text = uiModel.id
+            binding.label.text = uiModel.filter.id
         }
     }
-
 
     companion object {
         const val VIEW_TYPE_HEADER = 1
