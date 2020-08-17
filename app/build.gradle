@@ -15,6 +15,8 @@ android {
         versionCode build_versions.versionCode
         versionName build_versions.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField 'boolean', 'USE_STRICT_MODE', "false"
     }
     buildFeatures {
         viewBinding = true

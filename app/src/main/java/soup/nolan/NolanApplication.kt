@@ -16,7 +16,7 @@ import timber.log.Timber
 class NolanApplication : Application(), CameraXConfig.Provider {
 
     override fun onCreate() {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_STRICT_MODE) {
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
