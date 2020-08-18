@@ -10,6 +10,7 @@
         android:id="@+id/filter_thumbnail"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:background="@color/thumbnail"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@id/filter_label"
         app:layout_constraintEnd_toEndOf="parent"

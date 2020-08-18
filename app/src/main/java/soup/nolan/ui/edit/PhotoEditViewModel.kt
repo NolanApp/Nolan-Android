@@ -70,11 +70,12 @@ class PhotoEditViewModel @ViewModelInject constructor(
     private var lastCropRect: Rect? = null
 
     init {
-        val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
+        val imageSize = styleTransfer.getMaxImageSize()
+        val maxMemory = (Runtime.getRuntime().maxMemory() / imageSize).toInt()
         val cacheSize = maxMemory / 8
         memoryCache = object : LruCache<String, Bitmap>(cacheSize) {
             override fun sizeOf(key: String, bitmap: Bitmap): Int {
-                return bitmap.byteCount / 1024
+                return bitmap.byteCount / imageSize
             }
         }
     }
@@ -93,7 +94,8 @@ class PhotoEditViewModel @ViewModelInject constructor(
     fun changeFilter(filter: CameraFilter) {
         val imageUri = lastImageUri ?: return
         viewModelScope.launch {
-            updateInternal(imageFactory.getBitmap(imageUri), filter)
+            val bitmap = imageFactory.getBitmap(imageUri, styleTransfer.getMaxImageSize())
+            updateInternal(bitmap, filter)
         }
     }
 
@@ -103,10 +105,9 @@ class PhotoEditViewModel @ViewModelInject constructor(
         lastCropRect = cropRect
 
         viewModelScope.launch {
-            imageFactory.getBitmap(imageUri).let {
-                _bitmap.value = it
-                updateInternal(it, getSelectedCameraFilter())
-            }
+            val bitmap = imageFactory.getBitmap(imageUri, styleTransfer.getMaxImageSize())
+            _bitmap.value = bitmap
+            updateInternal(bitmap, getSelectedCameraFilter())
         }
     }
 
@@ -184,7 +185,7 @@ class PhotoEditViewModel @ViewModelInject constructor(
     private suspend fun Bitmap.stylized(filter: CameraFilter): Bitmap {
         return when (filter.input) {
             is NoStyleInput -> {
-                centerCropped(LegacyStyleTransfer.IMAGE_SIZE)
+                centerCropped(styleTransfer.getMaxImageSize())
             }
             is LegacyStyleInput -> {
                 styleTransfer.transform(this, filter.input).also {

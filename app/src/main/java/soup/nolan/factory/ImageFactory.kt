@@ -20,7 +20,7 @@ import kotlin.math.floor
 import kotlin.math.max
 
 interface ImageFactory {
-    suspend fun getBitmap(fileUri: Uri): Bitmap
+    suspend fun getBitmap(fileUri: Uri, maxSize: Int): Bitmap
     suspend fun getBitmap(drawable: Drawable): Bitmap
     suspend fun withWatermark(src: Bitmap): Bitmap
     suspend fun withWatermark(src: Drawable): Bitmap
@@ -30,10 +30,9 @@ class ImageFactoryImpl(
     private val context: Context
 ) : ImageFactory {
 
-    override suspend fun getBitmap(fileUri: Uri): Bitmap {
+    override suspend fun getBitmap(fileUri: Uri, maxSize: Int): Bitmap {
         return withContext(Dispatchers.IO) {
-            val sampleMaxSize = 1024.toDouble()
-            context.contentResolver.toSamplingImage(fileUri, sampleMaxSize)
+            context.contentResolver.toSamplingImage(fileUri, maxSize.toDouble())
                 ?: throw IllegalStateException("Can't decode bitmap from Uri($fileUri)")
         }
     }

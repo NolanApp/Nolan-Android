@@ -9,16 +9,24 @@ import soup.nolan.stylize.common.centerCropped
 
 class LegacyStyleTransfer(context: Context) {
 
-    private val stylize: Stylize =
-        Stylize(context.applicationContext)
+    private val stylize: Stylize = Stylize(context.applicationContext)
 
-    suspend fun transform(bitmap: Bitmap, style: LegacyStyleInput): Bitmap {
+    suspend fun transform(bitmap: Bitmap, style: LegacyStyleInput, size: Int = IMAGE_SIZE): Bitmap {
         return withContext(Dispatchers.Default) {
-            stylize.stylize(bitmap.centerCropped(IMAGE_SIZE), style)
+            stylize.stylize(bitmap.centerCropped(size), style)
         }
     }
 
+    fun getMaxImageSize(): Int {
+        return IMAGE_SIZE
+    }
+
+    fun getThumbnailSize(): Int {
+        return THUMBNAIL_SIZE
+    }
+
     companion object {
-        const val IMAGE_SIZE = 1024
+        private const val IMAGE_SIZE = 1024
+        private const val THUMBNAIL_SIZE = 384
     }
 }

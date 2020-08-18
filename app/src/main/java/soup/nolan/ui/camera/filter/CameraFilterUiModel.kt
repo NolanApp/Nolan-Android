@@ -9,7 +9,7 @@ class CameraFilterUiModel(
 
 data class CameraFilterItemUiModel(
     val filter: CameraFilter,
-    val imageUri: Uri
+    val imageUri: Uri?
 ) {
     val id: String
         get() = filter.id

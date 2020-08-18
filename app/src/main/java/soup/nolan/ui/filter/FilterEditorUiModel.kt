@@ -11,7 +11,7 @@ sealed class FilterEditorUiModel(val key: String) {
 
     class Item(
         val filter: CameraFilter,
-        val imageUri: Uri,
+        val imageUri: Uri?,
         val isSelected: Boolean = false
     ) : FilterEditorUiModel("item_${filter.id}")
 }
