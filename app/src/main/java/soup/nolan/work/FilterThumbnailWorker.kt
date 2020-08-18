@@ -7,13 +7,14 @@ import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.*
 import dagger.hilt.android.qualifiers.ApplicationContext
+import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageUriFactory
-import soup.nolan.model.CameraFilter
 import timber.log.Timber
 
 class FilterThumbnailWorker @WorkerInject constructor(
     @Assisted @ApplicationContext context: Context,
     @Assisted params: WorkerParameters,
+    private val repository: CameraFilterRepository,
     private val imageUriFactory: ImageUriFactory
 ) : CoroutineWorker(context, params) {
 
@@ -21,7 +22,7 @@ class FilterThumbnailWorker @WorkerInject constructor(
         val originalUri = parseOriginalUri()
         Timber.d("doWork: originalUri=$originalUri")
 
-        val list = CameraFilter.all()
+        val list = repository.getAllCameraFilterList()
         list.forEachIndexed { index, filter ->
             Timber.d("doWork: progress=$index/${list.size}, filter=${filter.id}")
             //TODO: convert and save filter image

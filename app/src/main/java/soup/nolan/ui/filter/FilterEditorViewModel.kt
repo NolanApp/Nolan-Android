@@ -9,16 +9,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageUriFactory
-import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 
 class FilterEditorViewModel @ViewModelInject constructor(
-    private val appSettings: AppSettings,
+    @Assisted private val savedState: SavedStateHandle,
     private val repository: CameraFilterRepository,
-    private val imageUriFactory: ImageUriFactory,
-    @Assisted private val savedState: SavedStateHandle
+    private val appSettings: AppSettings,
+    private val imageUriFactory: ImageUriFactory
 ) : ViewModel() {
 
     private val _uiModel = MutableLiveData<List<FilterEditorUiModel>>()
@@ -72,7 +71,7 @@ class FilterEditorViewModel @ViewModelInject constructor(
     private fun updateUiModel(uri: Uri, selectedId: String? = savedSelectedId) {
         _uiModel.value = mutableListOf<FilterEditorUiModel>().apply {
             add(FilterEditorUiModel.Header(uri))
-            addAll(CameraFilter.all().map { filter ->
+            addAll(repository.getAllCameraFilterList().map { filter ->
                 FilterEditorUiModel.Item(
                     filter = filter,
                     imageUri = imageUriFactory.getFilterImageUri(filter),

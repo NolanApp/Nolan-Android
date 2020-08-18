@@ -4,12 +4,13 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageUriFactory
-import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import timber.log.Timber
 
 class CameraFilterViewModel @ViewModelInject constructor(
+    private val repository: CameraFilterRepository,
     private val appSettings: AppSettings,
     private val imageUriFactory: ImageUriFactory
 ) : ViewModel() {
@@ -23,7 +24,7 @@ class CameraFilterViewModel @ViewModelInject constructor(
         get() = _selectedPosition
 
     init {
-        _filterList.value = CameraFilter.all()
+        _filterList.value = repository.getAllCameraFilterList()
             .map { CameraFilterItemUiModel(it, imageUriFactory.getFilterImageUri(it)) }
             .let { CameraFilterUiModel(it) }
         notifyListChanged(appSettings.lastFilterId)
@@ -39,6 +40,7 @@ class CameraFilterViewModel @ViewModelInject constructor(
     }
 
     private fun notifyListChanged(selectedFilterId: String) {
-        _selectedPosition.value = CameraFilter.all().indexOfFirst { it.id == selectedFilterId }
+        _selectedPosition.value = repository.getAllCameraFilterList()
+            .indexOfFirst { it.id == selectedFilterId }
     }
 }
