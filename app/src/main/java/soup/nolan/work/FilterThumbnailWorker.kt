@@ -56,6 +56,7 @@ class FilterThumbnailWorker @WorkerInject constructor(
 
     private fun parseOriginalUri(): Uri {
         return inputData.getString(KEY_ORIGINAL_URI)?.toUri()
+            ?: imageStore.getOriginalImageUri()
             ?: imageStore.getDefaultImageUri()
     }
 
