@@ -24,9 +24,11 @@
     <string name="permission_item_storage">저장소</string>
     <string name="permission_item_camera">카메라</string>
     <string name="permission_required">필수</string>
+    <string name="permission_error_message">권한이 허용되지 않았습니다.</string>
 
-    <string name="camera_error_permission">권한이 허용되지 않았습니다.</string>
+    <string name="camera_error_permission">카메라 권한이 허용되지 않았습니다.</string>
     <string name="camera_filter_description">필터를 선택하고 뒤로 돌아가세요</string>
+    <string name="camera_allow_usage">카메라 사용하기</string>
 
     <string name="photo_picker">이미지 선택</string>
     <string name="photo_picker_menu_select_outside">외부에서 이미지 선택</string>

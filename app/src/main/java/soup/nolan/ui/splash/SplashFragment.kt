@@ -13,12 +13,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.SplashBinding
 import soup.nolan.ui.EventObserver
-import soup.nolan.ui.permission.PermissionFragment
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToCamera
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToFilterEditor
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToOnBoarding
 import soup.nolan.ui.splash.SplashFragmentDirections.Companion.actionToPermission
 import soup.nolan.ui.utils.autoCleared
+import soup.nolan.utils.hasRequiredPermissions
 
 @AndroidEntryPoint
 class SplashFragment : Fragment(R.layout.splash) {
@@ -91,6 +91,6 @@ class SplashFragment : Fragment(R.layout.splash) {
     }
 
     private fun Context.done() {
-        viewModel.onAnimationEnd(PermissionFragment.hasRequiredPermissions(this))
+        viewModel.onAnimationEnd(hasRequiredPermissions())
     }
 }

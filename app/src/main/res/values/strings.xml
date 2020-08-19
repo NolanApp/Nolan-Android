@@ -24,9 +24,11 @@
     <string name="permission_item_storage">Storage</string>
     <string name="permission_item_camera">Camera</string>
     <string name="permission_required">Required</string>
+    <string name="permission_error_message">Permissions are not granted.</string>
 
-    <string name="camera_error_permission">Permissions are not granted.</string>
+    <string name="camera_error_permission">Camera permission is not granted.</string>
     <string name="camera_filter_description">Select a filter and go back</string>
+    <string name="camera_allow_usage">Use camera</string>
 
     <string name="photo_picker">Select an image</string>
     <string name="photo_picker_menu_select_outside">Select from outside</string>

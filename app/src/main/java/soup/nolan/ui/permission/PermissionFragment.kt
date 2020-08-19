@@ -1,12 +1,9 @@
 package soup.nolan.ui.permission
 
 import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -27,7 +24,7 @@ class PermissionFragment : Fragment(R.layout.permission) {
             if (result.all { it.value }) {
                 viewModel.onPermissionGranted()
             } else {
-                toast(R.string.camera_error_permission)
+                toast(R.string.permission_error_message)
             }
         }
 
@@ -53,17 +50,5 @@ class PermissionFragment : Fragment(R.layout.permission) {
                     findNavController().navigate(PermissionFragmentDirections.actionToCamera())
             }
         })
-    }
-
-    companion object {
-
-        fun hasRequiredPermissions(context: Context): Boolean {
-            return listOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ).any {
-                ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
-            }
-        }
     }
 }

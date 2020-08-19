@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:background="?colorSurface"
     tools:context=".ui.camera.CameraFragment">
 
     <androidx.camera.view.CameraView
@@ -122,5 +123,17 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_close" />
     </FrameLayout>
+
+    <Button
+        android:id="@+id/camera_permission_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/camera_allow_usage"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

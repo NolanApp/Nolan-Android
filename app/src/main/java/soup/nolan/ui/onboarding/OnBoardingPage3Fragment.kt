@@ -22,7 +22,7 @@ class OnBoardingPage3Fragment : Fragment(R.layout.on_boarding_page3) {
             if (result.all { it.value }) {
                 viewModel.onPermissionGranted()
             } else {
-                toast(R.string.camera_error_permission)
+                toast(R.string.permission_error_message)
             }
         }
 

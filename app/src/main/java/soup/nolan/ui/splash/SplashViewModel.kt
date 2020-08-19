@@ -17,7 +17,7 @@ class SplashViewModel @ViewModelInject constructor(
     fun onAnimationEnd(hasRequiredPermissions: Boolean) {
         _navigationEvent.event = when {
             appSettings.showOnBoarding -> SplashUiEvent.GoToOnBoarding
-            hasRequiredPermissions -> SplashUiEvent.GoToPermission
+            hasRequiredPermissions.not() -> SplashUiEvent.GoToPermission
             appSettings.showFilterEditor -> SplashUiEvent.GoToFilterEditor
             else -> SplashUiEvent.GoToCamera
         }

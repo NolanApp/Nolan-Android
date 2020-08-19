@@ -78,6 +78,7 @@ class FilterEditorViewModel @ViewModelInject constructor(
     fun onStartClick() {
         savedSelectedId?.let {
             appSettings.lastFilterId = it
+            appSettings.showFilterEditor = false
             _uiEvent.event = FilterEditorUiEvent.GoToCamera
         }
     }

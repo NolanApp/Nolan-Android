@@ -3,7 +3,6 @@ package soup.nolan.ui.camera
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.transition.TransitionManager
@@ -18,6 +17,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -31,12 +32,15 @@ import soup.nolan.databinding.CameraBinding
 import soup.nolan.firebase.AppEvent
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToEdit
+import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPermission
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPicker
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
 import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.*
+import soup.nolan.utils.hasCameraPermission
+import soup.nolan.utils.hasRequiredPermissions
 import timber.log.Timber
 import java.io.File
 
@@ -61,13 +65,11 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     }
 
     private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            val context: Context = binding.root.context
-            if (allPermissionsGranted(context)) {
-                startCameraWith(binding)
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                context?.updateCameraUiAsPermission(binding)
             } else {
                 toast(R.string.camera_error_permission)
-                findNavController().popBackStack()
             }
         }
 
@@ -91,19 +93,17 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(CameraBinding.bind(view)) {
-            initViewState(this, view.context)
+        CameraBinding.bind(view).apply {
+            view.context.initViewState(this)
             binding = this
         }
     }
 
-    private fun initViewState(binding: CameraBinding, context: Context) {
-        if (allPermissionsGranted(context)) {
-            binding.cameraPreview.post {
-                startCameraWith(binding)
-            }
-        } else {
-            permissionLauncher.launch(REQUIRED_PERMISSIONS)
+    private fun Context.initViewState(binding: CameraBinding) {
+        updateCameraUiAsPermission(binding)
+
+        binding.cameraPermissionButton.setOnDebounceClickListener {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
         }
 
         binding.header.run {
@@ -129,13 +129,6 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                 viewModel.onGalleryButtonClick()
                 appEvent?.sendButtonClick("gallery")
             }
-            viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
-                when (it) {
-                    is CameraUiEvent.GoToGallery -> {
-                        findNavController().navigate(actionToPicker())
-                    }
-                }
-            })
             captureButton.setOnDebounceClickListener {
                 val saveFile = File(it.context.cacheDir, "capture")
                 binding.cameraPreview.takePicture(
@@ -189,6 +182,13 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                 filterListView.scrollToPositionInCenter(it)
             })
         }
+        viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
+            when (it) {
+                is CameraUiEvent.GoToGallery -> {
+                    findNavController().navigate(actionToPicker())
+                }
+            }
+        })
         systemViewModel.isHalfOpened.observe(viewLifecycleOwner, Observer { isHalfOpened ->
             (binding.root as? ConstraintLayout)?.let {
                 val constraintSet = ConstraintSet().apply {
@@ -205,28 +205,32 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
         })
     }
 
+    private fun Context.updateCameraUiAsPermission(binding: CameraBinding) {
+        val hasPermission = hasCameraPermission()
+        binding.cameraPreview.isInvisible = hasPermission.not()
+        binding.cameraPermissionButton.isGone = hasPermission
+        binding.footer.captureButton.isInvisible = hasPermission.not()
+        binding.header.facingButton.isInvisible = hasPermission.not()
+
+        if (hasPermission) {
+            binding.cameraPreview.post {
+                startCameraWith(binding)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         appEvent?.sendScreenEvent(this)
+        if (context?.hasRequiredPermissions()?.not() == true) {
+            findNavController().navigate(actionToPermission())
+        } else {
+            context?.updateCameraUiAsPermission(binding)
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraBinding) {
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
-    }
-
-    private fun allPermissionsGranted(context: Context): Boolean {
-        return REQUIRED_PERMISSIONS.all {
-            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-    companion object {
-
-        private val REQUIRED_PERMISSIONS = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
     }
 }

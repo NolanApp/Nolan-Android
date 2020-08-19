@@ -90,7 +90,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(PhotoEditBinding.bind(view)) {
+        PhotoEditBinding.bind(view).apply {
             binding = this
             initViewState(this, view.context)
 

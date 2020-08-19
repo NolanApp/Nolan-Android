@@ -17,7 +17,7 @@ class OnBoardingPage1Fragment : Fragment(R.layout.on_boarding_page1) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(OnBoardingPage1Binding.bind(view)) {
+        OnBoardingPage1Binding.bind(view).apply {
             animator.addUpdateListener {
                 val value = 10000 * it.animatedValue as Float
                 image.setImageLevel(value.toInt().coerceIn(0, 10000))

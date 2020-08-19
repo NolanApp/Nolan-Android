@@ -33,7 +33,7 @@ class SettingsFragment : Fragment(R.layout.settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(SettingsBinding.bind(view)) {
+        SettingsBinding.bind(view).apply {
             toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }

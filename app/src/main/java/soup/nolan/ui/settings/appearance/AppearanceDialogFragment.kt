@@ -19,7 +19,7 @@ class AppearanceDialogFragment : BaseDialogFragment(R.layout.appearance_dialog) 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(AppearanceDialogBinding.bind(view)) {
+        AppearanceDialogBinding.bind(view).apply {
             optionSystem.setOnDebounceClickListener {
                 viewModel.onAppearanceChanged(Appearance.System)
                 dismiss()

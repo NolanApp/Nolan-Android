@@ -32,7 +32,7 @@ class PhotoEditCropFragment : Fragment(R.layout.photo_edit_crop) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(PhotoEditCropBinding.bind(view)) {
+        PhotoEditCropBinding.bind(view).apply {
             initViewState(this)
         }
     }
