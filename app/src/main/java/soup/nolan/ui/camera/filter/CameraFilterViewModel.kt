@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageStore
+import soup.nolan.model.VisualCameraFilter
 import soup.nolan.settings.AppSettings
 import timber.log.Timber
 
@@ -25,18 +26,18 @@ class CameraFilterViewModel @ViewModelInject constructor(
 
     init {
         _filterList.value = repository.getAllCameraFilterList()
-            .map { CameraFilterItemUiModel(it, imageStore.getFilterImageUri(it)) }
+            .map { VisualCameraFilter(it, imageStore.getFilterImageUri(it)) }
             .let { CameraFilterUiModel(it) }
         notifyListChanged(appSettings.lastFilterId)
     }
 
-    fun onFilterSelect(item: CameraFilterItemUiModel) {
-        if (appSettings.lastFilterId == item.id) {
-            Timber.w("onFilterSelect: ${item.id} is already selected!")
+    fun onFilterSelect(item: VisualCameraFilter) {
+        if (appSettings.lastFilterId == item.name) {
+            Timber.w("onFilterSelect: ${item.name} is already selected!")
             return
         }
-        appSettings.lastFilterId = item.id
-        notifyListChanged(item.id)
+        appSettings.lastFilterId = item.name
+        notifyListChanged(item.name)
     }
 
     private fun notifyListChanged(selectedFilterId: String) {

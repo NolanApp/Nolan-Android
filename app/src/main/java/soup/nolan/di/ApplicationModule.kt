@@ -39,7 +39,7 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideUriFactory(
+    fun provideImageStore(
         @ApplicationContext context: Context
     ): ImageStore = ImageStoreImpl(context)
 
@@ -77,6 +77,7 @@ class ApplicationModule {
     @Singleton
     @Provides
     fun provideFilterThumbnailWorkerDataSource(
-        @ApplicationContext context: Context
-    ): FilterThumbnailWorker.DataSource = FilterThumbnailWorker.DataSource(context)
+        @ApplicationContext context: Context,
+        imageStore: ImageStore
+    ): FilterThumbnailWorker.DataSource = FilterThumbnailWorker.DataSource(context, imageStore)
 }

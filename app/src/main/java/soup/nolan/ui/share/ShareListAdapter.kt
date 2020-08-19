@@ -18,7 +18,7 @@ class ShareListAdapter(
             ShareItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         ).apply {
             itemView.setOnDebounceClickListener {
-                getItem(adapterPosition)?.run(clickListener)
+                getItem(bindingAdapterPosition)?.run(clickListener)
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageStore
+import soup.nolan.model.VisualCameraFilter
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
@@ -56,7 +57,7 @@ class FilterEditorViewModel @ViewModelInject constructor(
     }
 
     fun onItemClick(uiModel: FilterEditorItemUiModel) {
-        savedSelectedId = uiModel.filter.id
+        savedSelectedId = uiModel.filter.name
     }
 
     fun onCameraClick() {
@@ -80,8 +81,7 @@ class FilterEditorViewModel @ViewModelInject constructor(
         _list.value = repository.getAllCameraFilterList()
             .map { filter ->
                 FilterEditorItemUiModel(
-                    filter = filter,
-                    imageUri = imageStore.getFilterImageUri(filter),
+                    VisualCameraFilter(filter, imageStore.getFilterImageUri(filter)),
                     isSelected = filter.id == selectedId
                 )
             }

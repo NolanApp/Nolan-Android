@@ -174,7 +174,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
             val listAdapter = CameraFilterListAdapter {
                 filterViewModel.onFilterSelect(it)
                 cameraFilterDescription.run {
-                    text = it.id
+                    text = it.name
                     animateCameraFilterDescription()
                 }
                 cameraFilterDim.animateCameraFilterDim(target = cameraFilterDescription)

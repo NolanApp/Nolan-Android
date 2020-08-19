@@ -18,7 +18,7 @@ class PhotoPickerListAdapter(
         val binding = PhotoPickerItemBinding.inflate(inflater, parent, false)
         return PhotoViewHolder(binding).apply {
             itemView.setOnDebounceClickListener {
-                onItemClick(getItem(adapterPosition))
+                onItemClick(getItem(bindingAdapterPosition))
             }
         }
     }
