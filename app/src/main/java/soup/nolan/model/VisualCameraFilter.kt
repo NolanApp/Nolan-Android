@@ -6,6 +6,6 @@ class VisualCameraFilter(
     val filter: CameraFilter,
     val imageUri: Uri?
 ) {
-    val name: String
+    val id: String
         get() = filter.id
 }

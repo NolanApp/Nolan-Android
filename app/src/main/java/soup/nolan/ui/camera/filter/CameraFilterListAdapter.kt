@@ -14,7 +14,7 @@ import soup.nolan.ui.utils.setOnDebounceClickListener
 
 class CameraFilterListAdapter(
     private val onItemSelect: (VisualCameraFilter) -> Unit
-) : ListAdapter<VisualCameraFilter, CameraFilterListAdapter.ViewHolder>(IdBasedDiffCallback { it.name }) {
+) : ListAdapter<VisualCameraFilter, CameraFilterListAdapter.ViewHolder>(IdBasedDiffCallback { it.id }) {
 
     private var selectedPosition: Int = -1
 
@@ -55,7 +55,7 @@ class CameraFilterListAdapter(
             itemView.isEnabled = isSelected.not()
             binding.filterThumbnail.setImageURI(item.imageUri)
             binding.filterPick.isVisible = isSelected
-            binding.filterLabel.text = item.name
+            binding.filterLabel.text = item.id
         }
     }
 }

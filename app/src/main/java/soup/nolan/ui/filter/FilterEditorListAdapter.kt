@@ -39,7 +39,7 @@ class FilterEditorListAdapter(
         fun bind(uiModel: FilterEditorItemUiModel) {
             binding.filterSelected.isVisible = uiModel.isSelected
             binding.thumbnail.setImageURI(uiModel.filter.imageUri)
-            binding.label.text = uiModel.filter.name
+            binding.label.text = uiModel.filter.id
         }
     }
 }

@@ -36,7 +36,7 @@ class FilterThumbnailWorker @WorkerInject constructor(
         imageStore.saveOriginalImageUri(originalBitmap)
         imageStore.clearAllFilterImages()
 
-        val list = repository.getAllCameraFilterList()
+        val list = repository.getAllFilters()
         list.forEachIndexed { index, filter ->
             Timber.d("doWork: progress=$index/${list.size}, filter=${filter.id}")
             val filterBitmap =
@@ -61,13 +61,12 @@ class FilterThumbnailWorker @WorkerInject constructor(
 
     class DataSource(private val context: Context) {
 
-        fun getLiveData(): LiveData<List<WorkInfo>> {
-            //TODO:
+        fun getLiveData(): LiveData<Unit> {
             return WorkManager.getInstance(context)
                 .getWorkInfosForUniqueWorkLiveData(TAG)
                 .map { list ->
                     Timber.d("getLiveData: ${list.joinToString { "${it.id} ${it.progress} ${it.outputData}" }}")
-                    list
+                    Unit
                 }
         }
     }

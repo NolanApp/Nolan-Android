@@ -177,7 +177,7 @@ class PhotoEditViewModel @ViewModelInject constructor(
     }
 
     private fun getSelectedCameraFilter(): CameraFilter {
-        return repository.getAllCameraFilterList()
+        return repository.getAllFilters()
             .firstOrNull { it.id == appSettings.lastFilterId }
             ?: CameraFilter.default
     }

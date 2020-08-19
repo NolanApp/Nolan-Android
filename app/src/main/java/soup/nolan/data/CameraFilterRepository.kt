@@ -4,22 +4,25 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import soup.nolan.factory.ImageStore
 import soup.nolan.model.CameraFilter
 import soup.nolan.model.CameraFilter.*
+import soup.nolan.model.VisualCameraFilter
 import soup.nolan.work.FilterThumbnailWorker
 
 interface CameraFilterRepository {
 
-    fun getAllCameraFilterList(): List<CameraFilter>
+    fun getAllFilters(): List<CameraFilter>
+
+    fun getAllVisualFiltersLiveData(): LiveData<List<VisualCameraFilter>>
 
     fun updateFilterImages(originalUri: Uri)
-
-    fun getAllFilterLiveData(): LiveData<List<CameraFilter>>
 }
 
 class CameraFilterRepositoryImpl(
     private val context: Context,
-    private val dataSource: FilterThumbnailWorker.DataSource
+    private val dataSource: FilterThumbnailWorker.DataSource,
+    private val imageStore: ImageStore
 ) : CameraFilterRepository {
 
     private val list = listOf(
@@ -29,7 +32,7 @@ class CameraFilterRepositoryImpl(
         A21, A22, A23, A24, A25, A26
     )
 
-    override fun getAllCameraFilterList(): List<CameraFilter> {
+    override fun getAllFilters(): List<CameraFilter> {
         return list
     }
 
@@ -37,7 +40,11 @@ class CameraFilterRepositoryImpl(
         FilterThumbnailWorker.execute(context, originalUri, force = true)
     }
 
-    override fun getAllFilterLiveData(): LiveData<List<CameraFilter>> {
-        return dataSource.getLiveData().map { list }
+    override fun getAllVisualFiltersLiveData(): LiveData<List<VisualCameraFilter>> {
+        return dataSource.getLiveData().map {
+            list.map {
+                VisualCameraFilter(it, imageStore.getFilterImageUri(it))
+            }
+        }
     }
 }

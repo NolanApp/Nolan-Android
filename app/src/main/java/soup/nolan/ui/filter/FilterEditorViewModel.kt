@@ -6,7 +6,6 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageStore
-import soup.nolan.model.VisualCameraFilter
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
@@ -23,7 +22,9 @@ class FilterEditorViewModel @ViewModelInject constructor(
         get() = savedState.get(KEY_SELECTED_ID)
         set(value) {
             savedState.set(KEY_SELECTED_ID, value)
-            updateList(savedSelectedId)
+            if (value != null) {
+                _selectedId.postValue(value)
+            }
             _canStart.postValueIfNew(value != null)
         }
 
@@ -35,9 +36,17 @@ class FilterEditorViewModel @ViewModelInject constructor(
         FilterEditorHeaderUiModel(it)
     }
 
-    private val _list = MutableLiveData<List<FilterEditorItemUiModel>>()
-    val list: LiveData<List<FilterEditorItemUiModel>>
-        get() = _list
+    private val _selectedId = MutableLiveData<String>(savedSelectedId)
+    val list: LiveData<List<FilterEditorItemUiModel>> = _selectedId.switchMap { selectedId ->
+        repository.getAllVisualFiltersLiveData().map {
+            it.map { filter ->
+                FilterEditorItemUiModel(
+                    filter,
+                    isSelected = filter.id == selectedId
+                )
+            }
+        }
+    }
 
     private val _canStart = MutableLiveData<Boolean>(savedSelectedId != null)
     val canStart: LiveData<Boolean>
@@ -47,17 +56,13 @@ class FilterEditorViewModel @ViewModelInject constructor(
     val uiEvent: EventLiveData<FilterEditorUiEvent>
         get() = _uiEvent
 
-    init {
-        updateList(savedSelectedId)
-    }
-
     fun onOriginImageChanged(uri: Uri) {
         _originalUri.value = uri
         repository.updateFilterImages(uri)
     }
 
     fun onItemClick(uiModel: FilterEditorItemUiModel) {
-        savedSelectedId = uiModel.filter.name
+        savedSelectedId = uiModel.filter.id
     }
 
     fun onCameraClick() {
@@ -75,16 +80,6 @@ class FilterEditorViewModel @ViewModelInject constructor(
             appSettings.lastFilterId = it
             _uiEvent.event = FilterEditorUiEvent.GoToCamera
         }
-    }
-
-    private fun updateList(selectedId: String?) {
-        _list.value = repository.getAllCameraFilterList()
-            .map { filter ->
-                FilterEditorItemUiModel(
-                    VisualCameraFilter(filter, imageStore.getFilterImageUri(filter)),
-                    isSelected = filter.id == selectedId
-                )
-            }
     }
 
     companion object {

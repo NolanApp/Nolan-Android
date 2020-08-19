@@ -9,7 +9,7 @@ data class FilterEditorItemUiModel(
     val filter: VisualCameraFilter,
     val isSelected: Boolean = false
 ) {
-    val key: String = "item_${filter.name}"
+    val key: String = "item_${filter.id}"
 }
 
 sealed class FilterEditorUiEvent {
