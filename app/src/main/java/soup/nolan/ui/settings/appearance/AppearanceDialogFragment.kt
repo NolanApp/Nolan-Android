@@ -3,7 +3,7 @@ package soup.nolan.ui.settings.appearance
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.AppearanceDialogBinding
 import soup.nolan.model.Appearance
@@ -12,6 +12,7 @@ import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.NonNullObserver
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
+@AndroidEntryPoint
 class AppearanceDialogFragment : BaseDialogFragment(R.layout.appearance_dialog) {
 
     private val viewModel: SystemViewModel by activityViewModels()

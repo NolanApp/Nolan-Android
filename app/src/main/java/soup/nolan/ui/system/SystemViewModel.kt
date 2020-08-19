@@ -1,6 +1,7 @@
 package soup.nolan.ui.system
 
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,14 +9,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.window.DeviceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import soup.nolan.Dependency
 import soup.nolan.model.Appearance
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.utils.postValueIfNew
 import timber.log.Timber
 
-class SystemViewModel(
-    private val appSettings: AppSettings = Dependency.appSettings
+class SystemViewModel @ViewModelInject constructor(
+    private val appSettings: AppSettings
 ) : ViewModel() {
 
     private val _currentAppearance = MutableLiveData<Appearance>()

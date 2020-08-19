@@ -7,6 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import timber.log.Timber
 
+class AlwaysDiffCallback<T : Any> : DiffUtil.ItemCallback<T>() {
+    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean = false
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean = false
+}
+
 class IdBasedDiffCallback<T : Any>(
     private val id: (T) -> String
 ) : DiffUtil.ItemCallback<T>() {

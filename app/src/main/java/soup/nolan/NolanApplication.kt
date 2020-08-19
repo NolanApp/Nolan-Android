@@ -6,17 +6,27 @@ import android.os.StrictMode.VmPolicy
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import soup.nolan.model.Appearance
-import soup.nolan.ui.utils.CrashlyticsTree
+import soup.nolan.settings.AppSettings
+import soup.nolan.firebase.CrashlyticsTree
 import timber.log.Timber
+import javax.inject.Inject
 
+@HiltAndroidApp
 class NolanApplication : Application(), CameraXConfig.Provider {
 
+    @Inject lateinit var appSettings: AppSettings
+    @Inject lateinit var workerFactory: HiltWorkerFactory
+
     override fun onCreate() {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_STRICT_MODE) {
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
@@ -42,20 +52,20 @@ class NolanApplication : Application(), CameraXConfig.Provider {
         }
         NotificationChannels.createAll(this)
 
-        dependency = Dependency(this)
+        WorkManager.initialize(
+            this,
+            Configuration.Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
+        )
 
         GlobalScope.launch(Dispatchers.IO) {
-            val nightMode = Appearance.of(Dependency.appSettings.currentAppearance).nightMode
+            val nightMode = Appearance.of(appSettings.currentAppearance).nightMode
             AppCompatDelegate.setDefaultNightMode(nightMode)
         }
     }
 
     override fun getCameraXConfig(): CameraXConfig {
         return Camera2Config.defaultConfig()
-    }
-
-    companion object {
-
-        internal lateinit var dependency: Dependency
     }
 }

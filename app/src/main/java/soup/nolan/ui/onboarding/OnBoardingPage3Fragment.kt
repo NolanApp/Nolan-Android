@@ -6,14 +6,13 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import soup.nolan.Dependency
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.OnBoardingPage3Binding
 import soup.nolan.ui.EventObserver
-import soup.nolan.ui.permission.PermissionFragmentDirections.Companion.actionToCamera
 import soup.nolan.ui.utils.toast
 
+@AndroidEntryPoint
 class OnBoardingPage3Fragment : Fragment(R.layout.on_boarding_page3) {
 
     private val viewModel: OnBoardingViewModel by activityViewModels()
@@ -21,8 +20,7 @@ class OnBoardingPage3Fragment : Fragment(R.layout.on_boarding_page3) {
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
             if (result.all { it.value }) {
-                Dependency.appSettings.showOnBoarding = false
-                findNavController().navigate(actionToCamera())
+                viewModel.onPermissionGranted()
             } else {
                 toast(R.string.camera_error_permission)
             }

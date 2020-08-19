@@ -13,12 +13,30 @@
         <action
             android:id="@+id/action_to_on_boarding"
             app:destination="@id/on_boarding"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@id/splash"
             app:popUpToInclusive="true" />
 
         <action
             android:id="@+id/action_to_permission"
             app:destination="@id/permission"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/splash"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_to_filter_editor"
+            app:destination="@id/filter_editor"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@id/splash"
             app:popUpToInclusive="true" />
 
@@ -35,20 +53,55 @@
         tools:layout="@layout/on_boarding">
 
         <action
+            android:id="@+id/action_to_filter_editor"
+            app:destination="@id/filter_editor"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/on_boarding"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/filter_editor"
+        android:name="soup.nolan.ui.filter.FilterEditorFragment"
+        tools:layout="@layout/filter_editor">
+
+        <action
             android:id="@+id/action_to_camera"
             app:destination="@id/camera"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit"
-            app:popUpTo="@id/permission"
+            app:popUpTo="@id/filter_editor"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_to_option"
+            app:destination="@id/filter_editor_option" />
     </fragment>
+
+    <dialog
+        android:id="@+id/filter_editor_option"
+        android:name="soup.nolan.ui.filter.FilterEditorOptionDialogFragment"
+        tools:layout="@layout/filter_editor_option_dialog" />
 
     <fragment
         android:id="@+id/permission"
         android:name="soup.nolan.ui.permission.PermissionFragment"
         tools:layout="@layout/permission">
+
+        <action
+            android:id="@+id/action_to_filter_editor"
+            app:destination="@id/filter_editor"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/permission"
+            app:popUpToInclusive="true" />
 
         <action
             android:id="@+id/action_to_camera"

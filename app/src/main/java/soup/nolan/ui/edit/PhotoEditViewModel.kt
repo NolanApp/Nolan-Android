@@ -5,14 +5,17 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.collection.LruCache
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import soup.nolan.BuildConfig
-import soup.nolan.Dependency
 import soup.nolan.R
+import soup.nolan.data.CameraFilterRepository
+import soup.nolan.factory.ImageFactory
+import soup.nolan.factory.ShareUriFactory
 import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.model.CameraFilter
@@ -22,17 +25,16 @@ import soup.nolan.stylize.common.centerCropped
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.share.ShareItemUiModel
-import soup.nolan.ui.share.ShareUriFactory
-import soup.nolan.ui.utils.ImageFactory
 import soup.nolan.ui.utils.setValueIfNew
 import timber.log.Timber
 import kotlin.system.measureTimeMillis
 
-class PhotoEditViewModel(
-    private val imageFactory: ImageFactory = Dependency.imageFactory,
-    private val shareUriFactory: ShareUriFactory = Dependency.shareUriFactory,
-    private val styleTransfer: LegacyStyleTransfer = Dependency.styleTransfer,
-    private val appSettings: AppSettings = Dependency.appSettings
+class PhotoEditViewModel @ViewModelInject constructor(
+    private val repository: CameraFilterRepository,
+    private val imageFactory: ImageFactory,
+    private val shareUriFactory: ShareUriFactory,
+    private val styleTransfer: LegacyStyleTransfer,
+    private val appSettings: AppSettings
 ) : ViewModel() {
 
     private var isEnterAnimationDone: Boolean = false
@@ -68,11 +70,12 @@ class PhotoEditViewModel(
     private var lastCropRect: Rect? = null
 
     init {
-        val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
+        val imageSize = styleTransfer.getMaxImageSize()
+        val maxMemory = (Runtime.getRuntime().maxMemory() / imageSize).toInt()
         val cacheSize = maxMemory / 8
         memoryCache = object : LruCache<String, Bitmap>(cacheSize) {
             override fun sizeOf(key: String, bitmap: Bitmap): Int {
-                return bitmap.byteCount / 1024
+                return bitmap.byteCount / imageSize
             }
         }
     }
@@ -91,7 +94,8 @@ class PhotoEditViewModel(
     fun changeFilter(filter: CameraFilter) {
         val imageUri = lastImageUri ?: return
         viewModelScope.launch {
-            updateInternal(imageFactory.getBitmap(imageUri), filter)
+            val bitmap = imageFactory.getBitmap(imageUri, styleTransfer.getMaxImageSize())
+            updateInternal(bitmap, filter)
         }
     }
 
@@ -101,10 +105,9 @@ class PhotoEditViewModel(
         lastCropRect = cropRect
 
         viewModelScope.launch {
-            imageFactory.getBitmap(imageUri).let {
-                _bitmap.value = it
-                updateInternal(it, getSelectedCameraFilter())
-            }
+            val bitmap = imageFactory.getBitmap(imageUri, styleTransfer.getMaxImageSize())
+            _bitmap.value = bitmap
+            updateInternal(bitmap, getSelectedCameraFilter())
         }
     }
 
@@ -163,7 +166,7 @@ class PhotoEditViewModel(
         viewModelScope.launch {
             val shareImageUri = shareUriFactory.createShareImageUri(
                 drawable,
-                Dependency.appSettings.showWatermark
+                appSettings.showWatermark
             )
             if (shareImageUri == null) {
                 _uiEvent.event = PhotoEditUiEvent.ShowErrorToast(R.string.photo_edit_error_unknown)
@@ -174,15 +177,15 @@ class PhotoEditViewModel(
     }
 
     private fun getSelectedCameraFilter(): CameraFilter {
-        return CameraFilter.all()
+        return repository.getAllFilters()
             .firstOrNull { it.id == appSettings.lastFilterId }
-            ?: CameraFilter.A25
+            ?: CameraFilter.default
     }
 
     private suspend fun Bitmap.stylized(filter: CameraFilter): Bitmap {
         return when (filter.input) {
             is NoStyleInput -> {
-                centerCropped(LegacyStyleTransfer.IMAGE_SIZE)
+                centerCropped(styleTransfer.getMaxImageSize())
             }
             is LegacyStyleInput -> {
                 styleTransfer.transform(this, filter.input).also {

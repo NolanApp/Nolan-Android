@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import soup.nolan.R
 import soup.nolan.databinding.CameraFilterItemBinding
+import soup.nolan.model.VisualCameraFilter
 import soup.nolan.ui.utils.IdBasedDiffCallback
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
 class CameraFilterListAdapter(
-    private val onItemSelect: (CameraFilterItemUiModel) -> Unit
-) : ListAdapter<CameraFilterItemUiModel, CameraFilterListAdapter.ViewHolder>(IdBasedDiffCallback { it.id }) {
+    private val onItemSelect: (VisualCameraFilter) -> Unit
+) : ListAdapter<VisualCameraFilter, CameraFilterListAdapter.ViewHolder>(IdBasedDiffCallback { it.id }) {
 
     private var selectedPosition: Int = -1
 
@@ -23,8 +24,8 @@ class CameraFilterListAdapter(
                 .inflate(R.layout.camera_filter_item, parent, false)
         ).apply {
             itemView.setOnDebounceClickListener {
-                getItem(adapterPosition)?.let {
-                    setSelectedPosition(adapterPosition)
+                getItem(bindingAdapterPosition)?.let {
+                    setSelectedPosition(bindingAdapterPosition)
                     onItemSelect(it)
                 }
             }
@@ -50,9 +51,9 @@ class CameraFilterListAdapter(
 
         private val binding = CameraFilterItemBinding.bind(view)
 
-        fun bind(item: CameraFilterItemUiModel, isSelected: Boolean) {
+        fun bind(item: VisualCameraFilter, isSelected: Boolean) {
             itemView.isEnabled = isSelected.not()
-            binding.filterThumbnail.setImageResource(item.thumbnailResId)
+            binding.filterThumbnail.setImageURI(item.imageUri)
             binding.filterPick.isVisible = isSelected
             binding.filterLabel.text = item.id
         }

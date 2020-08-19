@@ -14,10 +14,11 @@ import androidx.window.DeviceState
 import androidx.window.WindowManager
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import soup.nolan.NolanDirections.Companion.actionToEdit
 import soup.nolan.R
-import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToEdit
 import soup.nolan.ui.purchase.PurchaseItem
 import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.system.SystemViewModel
@@ -25,6 +26,7 @@ import soup.nolan.ui.utils.findNavHostFragment
 import timber.log.Timber
 import java.util.concurrent.Executor
 
+@AndroidEntryPoint
 class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
 
     private var windowManager: WindowManager? = null

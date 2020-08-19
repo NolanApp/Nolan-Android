@@ -39,8 +39,9 @@ internal class Stylize(context: Context) {
                     or (floatValues[i * 3 + 2] * 255).toInt())
         }
 
-        bitmap.setPixels(intValues, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-        return Bitmap.createBitmap(bitmap)
+        return Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888).apply {
+            setPixels(intValues, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+        }
     }
 
     companion object {

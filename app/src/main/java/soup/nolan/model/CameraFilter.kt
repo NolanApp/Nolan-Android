@@ -4,9 +4,9 @@ import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.stylize.common.NoStyleInput
 import soup.nolan.stylize.common.StyleInput
 
-open class CameraFilter(val id: String, val input: StyleInput) {
+sealed class CameraFilter(val id: String, val input: StyleInput) {
 
-    object OR  : CameraFilter(id = "OR", input =  NoStyleInput)
+    object OR : CameraFilter(id = "OR", input = NoStyleInput)
     object A01 : CameraFilter(id = "A01", input = LegacyStyleInput(style01 = 1f))
     object A02 : CameraFilter(id = "A02", input = LegacyStyleInput(style02 = 1f))
     object A03 : CameraFilter(id = "A03", input = LegacyStyleInput(style03 = 1f))
@@ -35,14 +35,6 @@ open class CameraFilter(val id: String, val input: StyleInput) {
     object A26 : CameraFilter(id = "A26", input = LegacyStyleInput(style26 = 1f))
 
     companion object {
-
-        fun all(): List<CameraFilter> {
-            return listOf(
-                OR,
-                A01, A02, A03, A04, A05, A06, A07, A08, A09, A10,
-                A11, A12, A13, A14, A15, A16, A17, A18, A19, A20,
-                A21, A22, A23, A24, A25, A26
-            )
-        }
+        val default: CameraFilter = A25
     }
 }

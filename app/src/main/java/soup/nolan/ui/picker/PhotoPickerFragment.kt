@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.gms.ads.AdRequest
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.PhotoPickerBinding
 import soup.nolan.ui.picker.PhotoPickerFragmentDirections.Companion.actionToEdit
@@ -19,6 +20,7 @@ import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.utils.GridSpaceItemDecoration
 import soup.nolan.ui.utils.autoCleared
 
+@AndroidEntryPoint
 class PhotoPickerFragment : Fragment(R.layout.photo_picker) {
 
     private var binding: PhotoPickerBinding by autoCleared { adView.destroy() }

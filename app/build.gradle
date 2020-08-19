@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
@@ -15,6 +16,8 @@ android {
         versionCode build_versions.versionCode
         versionName build_versions.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField 'boolean', 'USE_STRICT_MODE', "false"
     }
     buildFeatures {
         viewBinding = true
@@ -32,7 +35,13 @@ android {
             applicationIdSuffix ".debug"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-rules-navigation.pro'
-            manifestPlaceholders = [crashlytics_enabled: false]
+
+            def filesAuthorityValue = 'soup.nolan.debug.fileprovider'
+            buildConfigField 'String', 'FILES_AUTHORITY', "\"${filesAuthorityValue}\""
+            manifestPlaceholders = [
+                    files_authority    : filesAuthorityValue,
+                    crashlytics_enabled: false
+            ]
             firebaseCrashlytics {
                 mappingFileUploadEnabled false
             }
@@ -41,9 +50,16 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-rules-navigation.pro'
-            manifestPlaceholders = [crashlytics_enabled: true]
+
+            def filesAuthorityValue = 'soup.nolan.fileprovider'
+            buildConfigField 'String', 'FILES_AUTHORITY', "\"${filesAuthorityValue}\""
+            manifestPlaceholders = [
+                    files_authority    : filesAuthorityValue,
+                    crashlytics_enabled: true
+            ]
         }
     }
+
     aaptOptions {
         noCompress "tflite"
     }
@@ -65,13 +81,13 @@ dependencies {
     implementation deps.kotlin.coroutines_core
     implementation deps.kotlin.coroutines_android
 
-    implementation "androidx.window:window:1.0.0-alpha01"
+    implementation 'androidx.window:window:1.0.0-alpha01'
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation deps.androidx.appcompat
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-rc1'
     implementation deps.androidx.core_ktx
-    implementation 'androidx.fragment:fragment-ktx:1.3.0-alpha06'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.fragment:fragment-ktx:1.3.0-alpha07'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha05'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
     implementation 'androidx.camera:camera-view:1.0.0-alpha14'
@@ -82,7 +98,16 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
+    implementation deps.dagger.hilt
+    kapt deps.dagger.hilt_compiler
+    implementation deps.hilt.viewmodel
+    implementation deps.hilt.work
+    kapt deps.hilt.compiler
+
     implementation deps.navigation.fragment_ktx
+
+    implementation deps.work.runtime
+    androidTestImplementation deps.work.testing
 
     implementation deps.util.timber
 

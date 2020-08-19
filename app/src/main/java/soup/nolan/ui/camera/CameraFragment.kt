@@ -25,6 +25,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.firebase.AppEvent
@@ -39,6 +40,7 @@ import soup.nolan.ui.utils.*
 import timber.log.Timber
 import java.io.File
 
+@AndroidEntryPoint
 class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
     private val viewModel: CameraViewModel by viewModels()
