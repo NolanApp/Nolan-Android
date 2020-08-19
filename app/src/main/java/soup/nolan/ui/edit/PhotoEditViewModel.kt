@@ -106,7 +106,7 @@ class PhotoEditViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             val bitmap = imageFactory.getBitmap(imageUri, styleTransfer.getMaxImageSize())
-            _bitmap.value = bitmap
+            _bitmap.value = bitmap.centerCropped(styleTransfer.getMaxImageSize())
             updateInternal(bitmap, getSelectedCameraFilter())
         }
     }
