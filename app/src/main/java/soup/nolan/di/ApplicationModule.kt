@@ -11,8 +11,7 @@ import soup.nolan.factory.*
 import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.settings.AppSettings
 import soup.nolan.settings.AppSettingsImpl
-import soup.nolan.data.CameraFilterRepository
-import soup.nolan.data.CameraFilterRepositoryImpl
+import soup.nolan.work.FilterThumbnailWorker
 import javax.inject.Singleton
 
 @Module
@@ -42,7 +41,7 @@ class ApplicationModule {
     @Provides
     fun provideUriFactory(
         @ApplicationContext context: Context
-    ): ImageUriFactory = ImageUriFactoryImpl(context)
+    ): ImageStore = ImageStoreImpl(context)
 
     @Singleton
     @Provides
@@ -65,12 +64,19 @@ class ApplicationModule {
     @Singleton
     @Provides
     fun provideCameraFilterRepository(
-        @ApplicationContext context: Context
-    ): CameraFilterRepository = CameraFilterRepositoryImpl(context)
+        @ApplicationContext context: Context,
+        dataSource: FilterThumbnailWorker.DataSource
+    ): CameraFilterRepository = CameraFilterRepositoryImpl(context, dataSource)
 
     @Singleton
     @Provides
     fun provideLegacyStyleTransfer(
         @ApplicationContext context: Context
     ): LegacyStyleTransfer = LegacyStyleTransfer(context)
+
+    @Singleton
+    @Provides
+    fun provideFilterThumbnailWorkerDataSource(
+        @ApplicationContext context: Context
+    ): FilterThumbnailWorker.DataSource = FilterThumbnailWorker.DataSource(context)
 }

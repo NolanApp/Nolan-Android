@@ -2,6 +2,8 @@ package soup.nolan.data
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import soup.nolan.model.CameraFilter
 import soup.nolan.model.CameraFilter.*
 import soup.nolan.work.FilterThumbnailWorker
@@ -10,11 +12,14 @@ interface CameraFilterRepository {
 
     fun getAllCameraFilterList(): List<CameraFilter>
 
-    fun fetchOriginalUri(uri: Uri)
+    fun updateFilterImages(originalUri: Uri)
+
+    fun getAllFilterLiveData(): LiveData<List<CameraFilter>>
 }
 
 class CameraFilterRepositoryImpl(
-    private val context: Context
+    private val context: Context,
+    private val dataSource: FilterThumbnailWorker.DataSource
 ) : CameraFilterRepository {
 
     private val list = listOf(
@@ -28,8 +33,11 @@ class CameraFilterRepositoryImpl(
         return list
     }
 
-    override fun fetchOriginalUri(uri: Uri) {
-        //TODO: reset thumbnail list
-        FilterThumbnailWorker.enqueueWork(context, uri, force = true)
+    override fun updateFilterImages(originalUri: Uri) {
+        FilterThumbnailWorker.execute(context, originalUri, force = true)
+    }
+
+    override fun getAllFilterLiveData(): LiveData<List<CameraFilter>> {
+        return dataSource.getLiveData().map { list }
     }
 }

@@ -5,16 +5,19 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.net.toUri
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import soup.nolan.R
 import soup.nolan.model.CameraFilter
 import soup.nolan.utils.toContentUri
 import soup.nolan.utils.write
 import java.io.File
 
-interface ImageUriFactory {
+interface ImageStore {
 
     /**
-     * 카메라로 촬영할 이미지 [Uri]를 반환한다.
+     * 카메라 촬영에 넘겨줄 이미지 [Uri]를 반환한다.
      */
     fun createCameraImageUri(): Uri
 
@@ -24,6 +27,11 @@ interface ImageUriFactory {
     fun getDefaultImageUri(): Uri
 
     /**
+     * 필터 생성에 사용한 원본 이미지 [Uri]를 반환한다.
+     */
+    fun getOriginalImageUri(): Uri?
+
+    /**
      * 필터에 맞는 썸네일 이미지 [Uri]를 반환한다.
      */
     fun getFilterImageUri(filter: CameraFilter): Uri?
@@ -31,17 +39,23 @@ interface ImageUriFactory {
     /**
      * 필터 생성에 사용할 원본 이미지 [Uri]를 생성한다.
      */
-    fun createOriginalImageUri(bitmap: Bitmap): Uri
+    suspend fun saveOriginalImageUri(bitmap: Bitmap): Uri
 
     /**
      * 필터 이미지를 저장한 후, 이미지 [Uri]를 생성한다.
      */
-    fun createFilterImageUri(filter: CameraFilter, bitmap: Bitmap): Uri
+    suspend fun saveFilterImageUri(filter: CameraFilter, bitmap: Bitmap): Uri
+
+    /**
+     * 필터 썸네일 이미지를 모두 삭제한다.
+     */
+    suspend fun clearAllFilterImages()
 }
 
-class ImageUriFactoryImpl(
-    private val context: Context
-) : ImageUriFactory {
+class ImageStoreImpl(
+    private val context: Context,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : ImageStore {
 
     override fun createCameraImageUri(): Uri {
         return File(context.getDirectory(IMAGE_DIR), FILE_NAME_CAMERA)
@@ -60,22 +74,38 @@ class ImageUriFactoryImpl(
         }
     }
 
-    override fun getFilterImageUri(filter: CameraFilter): Uri? {
-        val saveDir = context.getDirectory(FILTER_DIR)
-        return File(saveDir, filter.fileName())
-            .takeIf { it.exists() }?.toUri()
-    }
-
-    override fun createOriginalImageUri(bitmap: Bitmap): Uri {
+    override fun getOriginalImageUri(): Uri? {
         return File(context.getDirectory(IMAGE_DIR), FILE_NAME_ORIGIN)
-            .write(bitmap)
-            .toUri()
+            .takeIf { it.exists() }
+            ?.toUri()
     }
 
-    override fun createFilterImageUri(filter: CameraFilter, bitmap: Bitmap): Uri {
-        return File(context.getDirectory(FILTER_DIR), filter.fileName())
+    override fun getFilterImageUri(filter: CameraFilter): Uri? {
+        return File(context.getDirectory(IMAGE_FILTER_DIR), filter.fileName())
+            .takeIf { it.exists() }
+            ?.toUri()
+    }
+
+    override suspend fun saveOriginalImageUri(bitmap: Bitmap): Uri {
+        return withContext(ioDispatcher) {
+            File(context.getDirectory(IMAGE_DIR), FILE_NAME_ORIGIN)
                 .write(bitmap)
                 .toUri()
+        }
+    }
+
+    override suspend fun saveFilterImageUri(filter: CameraFilter, bitmap: Bitmap): Uri {
+        return withContext(ioDispatcher) {
+            File(context.getDirectory(IMAGE_FILTER_DIR), filter.fileName())
+                .write(bitmap)
+                .toUri()
+        }
+    }
+
+    override suspend fun clearAllFilterImages() {
+        withContext(ioDispatcher) {
+            context.getDirectory(IMAGE_DIR).deleteRecursively()
+        }
     }
 
     private fun Context.getDirectory(path: String): File {
@@ -84,7 +114,7 @@ class ImageUriFactoryImpl(
 
     companion object {
         private const val IMAGE_DIR = "image_manager/"
-        private const val FILTER_DIR = "image_manager/filter/"
+        private const val IMAGE_FILTER_DIR = "image_manager/filter/"
         private const val FILE_NAME_CAMERA = "camera_image.jpg"
         private const val FILE_NAME_ORIGIN = "origin_image.jpg"
 

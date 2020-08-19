@@ -3,17 +3,14 @@ package soup.nolan.ui.filter
 import android.net.Uri
 import soup.nolan.model.CameraFilter
 
-sealed class FilterEditorUiModel(val key: String) {
+data class FilterEditorHeaderUiModel(val imageUri: Uri)
 
-    class Header(
-        val imageUri: Uri
-    ) : FilterEditorUiModel("header")
-
-    class Item(
-        val filter: CameraFilter,
-        val imageUri: Uri?,
-        val isSelected: Boolean = false
-    ) : FilterEditorUiModel("item_${filter.id}")
+data class FilterEditorItemUiModel(
+    val filter: CameraFilter,
+    val imageUri: Uri?,
+    val isSelected: Boolean = false
+) {
+    val key: String = "item_${filter.id}"
 }
 
 sealed class FilterEditorUiEvent {

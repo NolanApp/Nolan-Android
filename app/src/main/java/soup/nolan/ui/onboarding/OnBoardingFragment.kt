@@ -45,7 +45,7 @@ class OnBoardingFragment : Fragment(R.layout.on_boarding) {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
-        FilterThumbnailWorker.enqueueWork(context)
+        FilterThumbnailWorker.execute(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -11,7 +11,7 @@ class LegacyStyleTransfer(context: Context) {
 
     private val stylize: Stylize = Stylize(context.applicationContext)
 
-    suspend fun transform(bitmap: Bitmap, style: LegacyStyleInput, size: Int = IMAGE_SIZE): Bitmap {
+    suspend fun transform(bitmap: Bitmap, style: LegacyStyleInput, size: Int = getMaxImageSize()): Bitmap {
         return withContext(Dispatchers.Default) {
             stylize.stylize(bitmap.centerCropped(size), style)
         }

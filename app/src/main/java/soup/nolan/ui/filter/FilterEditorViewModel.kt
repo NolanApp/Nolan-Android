@@ -3,28 +3,42 @@ package soup.nolan.ui.filter
 import android.net.Uri
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import soup.nolan.data.CameraFilterRepository
-import soup.nolan.factory.ImageUriFactory
+import soup.nolan.factory.ImageStore
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
+import soup.nolan.ui.utils.postValueIfNew
 
 class FilterEditorViewModel @ViewModelInject constructor(
     @Assisted private val savedState: SavedStateHandle,
     private val repository: CameraFilterRepository,
     private val appSettings: AppSettings,
-    private val imageUriFactory: ImageUriFactory
+    private val imageStore: ImageStore
 ) : ViewModel() {
 
-    private val _uiModel = MutableLiveData<List<FilterEditorUiModel>>()
-    val uiModel: LiveData<List<FilterEditorUiModel>>
-        get() = _uiModel
+    private var savedSelectedId: String?
+        get() = savedState.get(KEY_SELECTED_ID)
+        set(value) {
+            savedState.set(KEY_SELECTED_ID, value)
+            updateList(savedSelectedId)
+            _canStart.postValueIfNew(value != null)
+        }
 
-    private val _canStart = MutableLiveData<Boolean>()
+    private val _originalUri = MutableLiveData<Uri>(
+        imageStore.getOriginalImageUri()
+            ?: imageStore.getDefaultImageUri()
+    )
+    val header: LiveData<FilterEditorHeaderUiModel> = _originalUri.map {
+        FilterEditorHeaderUiModel(it)
+    }
+
+    private val _list = MutableLiveData<List<FilterEditorItemUiModel>>()
+    val list: LiveData<List<FilterEditorItemUiModel>>
+        get() = _list
+
+    private val _canStart = MutableLiveData<Boolean>(savedSelectedId != null)
     val canStart: LiveData<Boolean>
         get() = _canStart
 
@@ -32,29 +46,23 @@ class FilterEditorViewModel @ViewModelInject constructor(
     val uiEvent: EventLiveData<FilterEditorUiEvent>
         get() = _uiEvent
 
-    private var savedSelectedId: String?
-        set(value) = savedState.set(KEY_SELECTED_ID, value)
-        get() = savedState.get(KEY_SELECTED_ID)
-
     init {
-        updateUiModel(uri = imageUriFactory.getDefaultImageUri())
-        updateCanStart()
+        updateList(savedSelectedId)
     }
 
     fun onOriginImageChanged(uri: Uri) {
-        //TODO:
-        updateUiModel(uri = uri)
-        repository.fetchOriginalUri(uri)
+        _originalUri.value = uri
+        repository.updateFilterImages(uri)
     }
 
-    fun onItemClick(uiModel: FilterEditorUiModel.Item) {
+    fun onItemClick(uiModel: FilterEditorItemUiModel) {
         savedSelectedId = uiModel.filter.id
-        updateUiModel(uri = imageUriFactory.getDefaultImageUri(), selectedId = uiModel.filter.id)
-        updateCanStart(true)
     }
 
     fun onCameraClick() {
-        _uiEvent.event = FilterEditorUiEvent.TakePicture(imageUriFactory.createCameraImageUri())
+        _uiEvent.event = FilterEditorUiEvent.TakePicture(
+            imageStore.createCameraImageUri()
+        )
     }
 
     fun onAlbumClick() {
@@ -68,21 +76,15 @@ class FilterEditorViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun updateUiModel(uri: Uri, selectedId: String? = savedSelectedId) {
-        _uiModel.value = mutableListOf<FilterEditorUiModel>().apply {
-            add(FilterEditorUiModel.Header(uri))
-            addAll(repository.getAllCameraFilterList().map { filter ->
-                FilterEditorUiModel.Item(
+    private fun updateList(selectedId: String?) {
+        _list.value = repository.getAllCameraFilterList()
+            .map { filter ->
+                FilterEditorItemUiModel(
                     filter = filter,
-                    imageUri = imageUriFactory.getFilterImageUri(filter),
+                    imageUri = imageStore.getFilterImageUri(filter),
                     isSelected = filter.id == selectedId
                 )
-            })
-        }
-    }
-
-    private fun updateCanStart(canStart: Boolean = savedSelectedId != null) {
-        _canStart.value = canStart
+            }
     }
 
     companion object {
