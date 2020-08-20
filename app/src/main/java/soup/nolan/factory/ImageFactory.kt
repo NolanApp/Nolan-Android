@@ -16,6 +16,7 @@ import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import soup.nolan.R
+import soup.nolan.stylize.common.centerCropped
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -33,6 +34,7 @@ class ImageFactoryImpl(
     override suspend fun getBitmap(fileUri: Uri, maxSize: Int): Bitmap {
         return withContext(Dispatchers.IO) {
             context.contentResolver.toSamplingImage(fileUri, maxSize.toDouble())
+                ?.centerCropped(maxSize)
                 ?: throw IllegalStateException("Can't decode bitmap from Uri($fileUri)")
         }
     }

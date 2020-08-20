@@ -27,6 +27,6 @@ class LegacyStyleTransfer(context: Context) {
 
     companion object {
         private const val IMAGE_SIZE = 1024
-        private const val THUMBNAIL_SIZE = 384
+        private const val THUMBNAIL_SIZE = 256
     }
 }

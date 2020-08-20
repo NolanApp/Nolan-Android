@@ -21,7 +21,6 @@ import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.model.CameraFilter
 import soup.nolan.settings.AppSettings
 import soup.nolan.stylize.common.NoStyleInput
-import soup.nolan.stylize.common.centerCropped
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.share.ShareItemUiModel
@@ -106,7 +105,7 @@ class PhotoEditViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             val bitmap = imageFactory.getBitmap(imageUri, styleTransfer.getMaxImageSize())
-            _bitmap.value = bitmap.centerCropped(styleTransfer.getMaxImageSize())
+            _bitmap.value = bitmap
             updateInternal(bitmap, getSelectedCameraFilter())
         }
     }
@@ -185,7 +184,7 @@ class PhotoEditViewModel @ViewModelInject constructor(
     private suspend fun Bitmap.stylized(filter: CameraFilter): Bitmap {
         return when (filter.input) {
             is NoStyleInput -> {
-                centerCropped(styleTransfer.getMaxImageSize())
+                this
             }
             is LegacyStyleInput -> {
                 styleTransfer.transform(this, filter.input).also {
