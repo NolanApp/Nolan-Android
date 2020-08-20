@@ -26,17 +26,21 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
 
     private val viewModel: FilterEditorViewModel by activityViewModels()
 
-    private val cameraPicker = registerForActivityResult(ActivityResultContracts.TakePicture()) {
-        if (it) {
-            lastCameraImageUri?.let { uri ->
+    private val cameraPicker =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { granted ->
+            if (granted) {
+                lastCameraImageUri?.let { uri ->
+                    viewModel.onOriginImageChanged(uri)
+                }
+            }
+        }
+
+    private val albumPicker =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
                 viewModel.onOriginImageChanged(uri)
             }
         }
-    }
-
-    private val albumPicker = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        viewModel.onOriginImageChanged(it)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

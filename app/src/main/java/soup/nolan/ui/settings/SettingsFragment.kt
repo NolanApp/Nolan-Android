@@ -20,6 +20,7 @@ import soup.nolan.model.Appearance
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.purchase.PurchaseViewModel
 import soup.nolan.ui.settings.SettingsFragmentDirections.Companion.actionToAppearance
+import soup.nolan.ui.settings.SettingsFragmentDirections.Companion.actionToFilterEditor
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.*
 
@@ -42,6 +43,9 @@ class SettingsFragment : Fragment(R.layout.settings) {
             }
             watermarkSwitch.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.onShowWatermarkChecked(isChecked)
+            }
+            filterEditorButton.setOnDebounceClickListener {
+                findNavController().navigate(actionToFilterEditor())
             }
             reviewButton.setOnDebounceClickListener {
                 it.context.executePlayStoreForApp(BuildConfig.APPLICATION_ID)
@@ -66,6 +70,9 @@ class SettingsFragment : Fragment(R.layout.settings) {
 
             viewModel.showWatermark.observe(viewLifecycleOwner, Observer {
                 watermarkSwitch.isChecked = it
+            })
+            viewModel.filterImageUri.observe(viewLifecycleOwner, Observer {
+                currentFilterImage.setImageURI(it)
             })
             viewModel.latestVersionCode.observe(viewLifecycleOwner, Observer {
                 currentVersion.text = if (BuildConfig.VERSION_CODE >= it) {

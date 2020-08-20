@@ -19,7 +19,7 @@ class FilterEditorViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     private var savedSelectedId: String?
-        get() = savedState.get(KEY_SELECTED_ID)
+        get() = savedState.get(KEY_SELECTED_ID) ?: appSettings.lastFilterId
         set(value) {
             savedState.set(KEY_SELECTED_ID, value)
             if (value != null) {

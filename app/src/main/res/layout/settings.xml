@@ -119,6 +119,40 @@
             android:text="@string/settings_item_watermark"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/filter_editor_button"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="?selectableItemBackground">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:drawableStart="@drawable/ic_photo_filter"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="@string/settings_item_filter_editor"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <soup.nolan.ui.widget.CircularImageView
+                android:id="@+id/current_filter_image"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="24dp"
+                android:background="@color/thumbnail"
+                android:gravity="center_vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"

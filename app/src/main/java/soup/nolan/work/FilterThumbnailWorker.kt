@@ -33,12 +33,14 @@ class FilterThumbnailWorker @WorkerInject constructor(
         val imageSize = styleTransfer.getThumbnailSize()
         val originalBitmap = imageFactory.getBitmap(originalUri, imageSize)
 
-        imageStore.saveOriginalImageUri(originalBitmap)
+        imageStore.saveOriginalImageUri(originalBitmap).let {
+            Timber.d("doWork: saved originalUri=$originalUri")
+        }
         imageStore.clearAllFilterImages()
+        setProgress(workDataOf(KEY_PROGRESS_LEVEL to 0))
 
-        val list = repository.getAllFilters()
-        list.forEachIndexed { index, filter ->
-            Timber.d("doWork: progress=$index/${list.size}, filter=${filter.id}")
+        repository.getAllFilters().forEachIndexed { index, filter ->
+            Timber.d("doWork: progress=$index, filter=${filter.id}")
             val filterBitmap =
                 if (filter.input is LegacyStyleInput) {
                     styleTransfer.transform(originalBitmap, filter.input, imageSize)
@@ -48,15 +50,14 @@ class FilterThumbnailWorker @WorkerInject constructor(
             imageStore.saveFilterImageUri(filter, filterBitmap).let {
                 Timber.d("doWork: createFilterImageUri(${filter.id})=$it")
             }
-            setProgress(workDataOf(KEY_PROGRESS_LEVEL to index))
+            setProgress(workDataOf(KEY_PROGRESS_LEVEL to index + 1))
         }
         Timber.d("doWork: done")
-        Result.success(workDataOf(KEY_PROGRESS_LEVEL to list.size))
+        Result.success()
     }
 
     private fun parseOriginalUri(): Uri {
         return inputData.getString(KEY_ORIGINAL_URI)?.toUri()
-            ?: imageStore.getOriginalImageUri()
             ?: imageStore.getDefaultImageUri()
     }
 

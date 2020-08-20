@@ -2,7 +2,7 @@ package soup.nolan.model
 
 import android.net.Uri
 
-class VisualCameraFilter(
+data class VisualCameraFilter(
     val filter: CameraFilter,
     val imageUri: Uri?
 ) {

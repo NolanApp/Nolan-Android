@@ -58,6 +58,7 @@
     <string name="settings_item_appearance_dark">Dark theme</string>
     <string name="settings_category_camera">Camera</string>
     <string name="settings_item_watermark">Watermark</string>
+    <string name="settings_item_filter_editor">Change camera filter</string>
     <string name="settings_category_etc">Etc</string>
     <string name="settings_item_review">Write a review</string>
     <string name="settings_item_bug_report">Report or Contact</string>

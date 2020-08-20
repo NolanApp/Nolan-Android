@@ -104,7 +104,7 @@ class ImageStoreImpl(
 
     override suspend fun clearAllFilterImages() {
         withContext(ioDispatcher) {
-            context.getDirectory(IMAGE_DIR).deleteRecursively()
+            context.getDirectory(IMAGE_FILTER_DIR).deleteRecursively()
         }
     }
 
