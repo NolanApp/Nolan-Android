@@ -16,6 +16,10 @@ class FilterEditorOptionDialogFragment : BaseDialogFragment(R.layout.filter_edit
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         FilterEditorOptionDialogBinding.bind(view).apply {
+            defaultButton.setOnClickListener {
+                viewModel.onDefaultClick()
+                dismiss()
+            }
             cameraButton.setOnClickListener {
                 viewModel.onCameraClick()
                 dismiss()

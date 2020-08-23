@@ -38,6 +38,10 @@ class FilterEditorViewModel @ViewModelInject constructor(
         onFilterSelected(uiModel.filter)
     }
 
+    fun onDefaultClick() {
+        onOriginImageChanged(imageStore.getDefaultImageUri())
+    }
+
     fun onCameraClick() {
         _uiEvent.event = FilterEditorUiEvent.TakePicture(
             imageStore.createCameraImageUri()

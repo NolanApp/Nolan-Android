@@ -86,8 +86,10 @@ class CameraFilterViewModelDelegateImpl(
     }
 
     override fun onOriginImageChanged(imageUri: Uri) {
-        _originalImageUri.value = imageUri
-        FilterThumbnailWorker.execute(context, imageUri, force = true)
+        if (_originalImageUri.value != imageUri) {
+            _originalImageUri.value = imageUri
+            FilterThumbnailWorker.execute(context, imageUri, force = true)
+        }
     }
 
     override fun onFilterSelected(visualFilter: VisualCameraFilter) {
