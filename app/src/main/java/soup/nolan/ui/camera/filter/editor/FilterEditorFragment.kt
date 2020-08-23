@@ -46,14 +46,20 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         FilterEditorBinding.bind(view).apply {
-            val headerAdapter =
-                FilterEditorHeaderAdapter {
-                    findNavController().navigate(actionToOption())
+            val isFromOnBoarding = parentFragmentManager.backStackEntryCount == 0
+            if (isFromOnBoarding.not()) {
+                toolbar.setNavigationIcon(R.drawable.ic_up)
+                toolbar.setNavigationOnClickListener {
+                    findNavController().navigateUp()
                 }
-            val listAdapter =
-                FilterEditorListAdapter {
-                    viewModel.onItemClick(it)
-                }
+            }
+
+            val headerAdapter = FilterEditorHeaderAdapter {
+                findNavController().navigate(actionToOption())
+            }
+            val listAdapter = FilterEditorListAdapter {
+                viewModel.onItemClick(it)
+            }
             listView.layoutManager = GridLayoutManager(view.context, 4).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
@@ -64,7 +70,7 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
             listView.itemAnimator = null
             listView.adapter = ConcatAdapter(headerAdapter, listAdapter)
 
-            doneButton.isVisible = isFromOnBoarding()
+            doneButton.isVisible = isFromOnBoarding
             doneButton.setOnDebounceClickListener {
                 viewModel.onStartClick()
             }
@@ -85,7 +91,7 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
                         albumPicker.launch("image/*")
                     }
                     is FilterEditorUiEvent.GoToCamera -> {
-                        if (isFromOnBoarding()) {
+                        if (isFromOnBoarding) {
                             findNavController().navigate(actionToCamera())
                         } else {
                             findNavController().navigateUp()
@@ -108,10 +114,6 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
         lastCameraImageUri?.let {
             outState.putString(KEY_CAMERA_IMAGE_URI, it.toString())
         }
-    }
-
-    private fun isFromOnBoarding(): Boolean {
-        return parentFragmentManager.backStackEntryCount == 0
     }
 
     companion object {
