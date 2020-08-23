@@ -13,7 +13,6 @@ import soup.nolan.settings.AppSettings
 import soup.nolan.settings.AppSettingsImpl
 import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
 import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegateImpl
-import soup.nolan.work.FilterThumbnailWorker
 import javax.inject.Singleton
 
 @Module
@@ -71,12 +70,6 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideFilterThumbnailWorkerDataSource(
-        @ApplicationContext context: Context
-    ): FilterThumbnailWorker.DataSource = FilterThumbnailWorker.DataSource(context)
-
-    @Singleton
-    @Provides
     fun provideCameraFilterRepository(
         @ApplicationContext context: Context
     ): CameraFilterRepository = CameraFilterRepositoryImpl()
@@ -86,14 +79,12 @@ class ApplicationModule {
     fun provideCameraFilterViewModelDelegate(
         @ApplicationContext context: Context,
         repository: CameraFilterRepository,
-        dataSource: FilterThumbnailWorker.DataSource,
         imageStore: ImageStore,
         appSettings: AppSettings
     ): CameraFilterViewModelDelegate {
         return CameraFilterViewModelDelegateImpl(
             context,
             repository,
-            dataSource,
             imageStore,
             appSettings
         )

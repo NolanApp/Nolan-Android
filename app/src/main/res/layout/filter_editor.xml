@@ -47,15 +47,16 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/primary_button_bg"
-        android:enabled="false"
         android:gravity="center"
         android:text="@string/filter_editor_button_done"
         android:textAllCaps="true"
         android:textColor="@color/primary_button_text"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

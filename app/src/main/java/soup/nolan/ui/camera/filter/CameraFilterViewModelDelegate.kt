@@ -10,37 +10,31 @@ import soup.nolan.factory.ImageStore
 import soup.nolan.model.CameraFilter
 import soup.nolan.model.VisualCameraFilter
 import soup.nolan.settings.AppSettings
+import soup.nolan.ui.utils.setValueIfNew
 import soup.nolan.work.FilterThumbnailWorker
-import timber.log.Timber
 
 interface CameraFilterViewModelDelegate {
 
     val originalImageUri: LiveData<Uri>
-
     val selectedFilter: LiveData<CameraFilter>
-
     val selectedVisualFilter: LiveData<VisualCameraFilter>
-
+    val selectedPosition: LiveData<Int>
     val allVisualFiltersLiveData: LiveData<List<VisualCameraFilter>>
 
-    val selectedPosition: LiveData<Int>
-
     fun generateFilterThumbnailsIfNeeded()
-
     fun onOriginImageChanged(imageUri: Uri)
-
-    fun onFilterSelect(item: VisualCameraFilter)
-
-    fun getSelectedCameraFilter(): CameraFilter
+    fun onFilterSelected(visualFilter: VisualCameraFilter)
+    fun getSelectedFilter(): CameraFilter?
 }
 
 class CameraFilterViewModelDelegateImpl(
     private val context: Context,
     private val repository: CameraFilterRepository,
-    private val dataSource: FilterThumbnailWorker.DataSource,
     private val imageStore: ImageStore,
     private val appSettings: AppSettings
 ) : CameraFilterViewModelDelegate {
+
+    private val dataSource = FilterThumbnailWorker.DataSource(context)
 
     private val _originalImageUri = MutableLiveData<Uri>(
         imageStore.getOriginalImageUri()
@@ -49,12 +43,11 @@ class CameraFilterViewModelDelegateImpl(
     override val originalImageUri: LiveData<Uri>
         get() = _originalImageUri
 
-    private val _selectedFilterId = MutableLiveData<String>(appSettings.lastFilterId ?: CameraFilter.default.id)
-
-    override val selectedFilter: LiveData<CameraFilter> =
-        _selectedFilterId.map { selectedFilterId ->
-            repository.getCameraFilter(filterId = selectedFilterId)
-        }
+    private val _selectedFilter = MutableLiveData<CameraFilter>(
+        repository.getCameraFilter(filterId = appSettings.lastFilterId ?: CameraFilter.default.id)
+    )
+    override val selectedFilter
+        get() = _selectedFilter
 
     override val selectedVisualFilter: LiveData<VisualCameraFilter> =
         selectedFilter.map { selectedFilter ->
@@ -66,8 +59,8 @@ class CameraFilterViewModelDelegateImpl(
         }
 
     override val selectedPosition =
-        _selectedFilterId.map { selectedFilterId ->
-            repository.getAllFilters().indexOfFirst { it.id == selectedFilterId }
+        selectedFilter.map { selectedFilter ->
+            repository.getAllFilters().indexOfFirst { it.id == selectedFilter.id }
         }
 
     override val allVisualFiltersLiveData: LiveData<List<VisualCameraFilter>>
@@ -86,12 +79,6 @@ class CameraFilterViewModelDelegateImpl(
             }
         }
 
-    override fun getSelectedCameraFilter(): CameraFilter {
-        return repository.getAllFilters()
-            .firstOrNull { it.id == appSettings.lastFilterId }
-            ?: CameraFilter.default
-    }
-
     override fun generateFilterThumbnailsIfNeeded() {
         if (appSettings.filterThumbnailsGenerated.not()) {
             FilterThumbnailWorker.execute(context)
@@ -103,12 +90,12 @@ class CameraFilterViewModelDelegateImpl(
         FilterThumbnailWorker.execute(context, imageUri, force = true)
     }
 
-    override fun onFilterSelect(item: VisualCameraFilter) {
-        if (appSettings.lastFilterId == item.id) {
-            Timber.w("onFilterSelect: ${item.id} is already selected!")
-            return
-        }
-        appSettings.lastFilterId = item.id
-        _selectedFilterId.value = item.id
+    override fun onFilterSelected(visualFilter: VisualCameraFilter) {
+        _selectedFilter.setValueIfNew(visualFilter.filter)
+        appSettings.lastFilterId = visualFilter.id
+    }
+
+    override fun getSelectedFilter(): CameraFilter? {
+        return _selectedFilter.value
     }
 }

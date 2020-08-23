@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -15,8 +16,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import soup.nolan.R
 import soup.nolan.databinding.FilterEditorBinding
 import soup.nolan.ui.EventObserver
-import soup.nolan.ui.filter.FilterEditorFragmentDirections.Companion.actionToCamera
-import soup.nolan.ui.filter.FilterEditorFragmentDirections.Companion.actionToOption
+import soup.nolan.ui.camera.filter.editor.FilterEditorFragmentDirections.Companion.actionToCamera
+import soup.nolan.ui.camera.filter.editor.FilterEditorFragmentDirections.Companion.actionToOption
 import soup.nolan.ui.utils.setOnDebounceClickListener
 
 @AndroidEntryPoint
@@ -63,6 +64,7 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
             listView.itemAnimator = null
             listView.adapter = ConcatAdapter(headerAdapter, listAdapter)
 
+            doneButton.isVisible = isFromOnBoarding()
             doneButton.setOnDebounceClickListener {
                 viewModel.onStartClick()
             }
@@ -72,9 +74,6 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
             })
             viewModel.list.observe(viewLifecycleOwner, Observer {
                 listAdapter.submitList(it)
-            })
-            viewModel.canDone.observe(viewLifecycleOwner, Observer {
-                doneButton.isEnabled = it
             })
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
@@ -86,7 +85,7 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
                         albumPicker.launch("image/*")
                     }
                     is FilterEditorUiEvent.GoToCamera -> {
-                        if (parentFragmentManager.backStackEntryCount == 0) {
+                        if (isFromOnBoarding()) {
                             findNavController().navigate(actionToCamera())
                         } else {
                             findNavController().navigateUp()
@@ -109,6 +108,10 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
         lastCameraImageUri?.let {
             outState.putString(KEY_CAMERA_IMAGE_URI, it.toString())
         }
+    }
+
+    private fun isFromOnBoarding(): Boolean {
+        return parentFragmentManager.backStackEntryCount == 0
     }
 
     companion object {

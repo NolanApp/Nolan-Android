@@ -185,7 +185,7 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
             })
 
             val filterListAdapter = CameraFilterListAdapter {
-                viewModel.onFilterSelect(it)
+                viewModel.onFilterSelected(it)
                 viewModel.changeFilter(it.filter)
 
                 renderUi(buttonIsVisible = true)
