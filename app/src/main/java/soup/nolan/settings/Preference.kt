@@ -6,7 +6,7 @@ import androidx.core.content.edit
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Preference<T : Any> : ReadWriteProperty<Any, T>
+abstract class Preference<T> : ReadWriteProperty<Any, T>
 
 class LongPreference(
     private val preferences: SharedPreferences,
@@ -69,6 +69,28 @@ class BooleanPreference(
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: Boolean) {
         preferences.edit { putBoolean(name, value) }
+    }
+}
+
+class NullableStringPreference(
+    private val preferences: SharedPreferences,
+    private val name: String,
+    private val defaultValue: String?
+) : Preference<String?>() {
+
+    @WorkerThread
+    override fun getValue(thisRef: Any, property: KProperty<*>): String? {
+        return preferences.getString(name, defaultValue) ?: defaultValue
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: String?) {
+        preferences.edit {
+            if (value == null) {
+                remove(name)
+            } else {
+                putString(name, value)
+            }
+        }
     }
 }
 

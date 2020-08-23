@@ -2,7 +2,6 @@ package soup.nolan.settings
 
 import android.content.Context
 import soup.nolan.model.Appearance
-import soup.nolan.model.CameraFilter
 
 interface AppSettings {
     var filterThumbnailsGenerated: Boolean
@@ -10,7 +9,7 @@ interface AppSettings {
     var showFilterEditor: Boolean
 
     var lensFacingFront: Boolean
-    var lastFilterId: String
+    var lastFilterId: String?
     var showWatermark: Boolean
     var currentAppearance: Int
     var noAds: Boolean
@@ -29,8 +28,8 @@ class AppSettingsImpl(context: Context) : AppSettings {
 
     override var lensFacingFront: Boolean
             by BooleanPreference(prefs, "lens_facing_front", true)
-    override var lastFilterId: String
-            by StringPreference(prefs, "last_filter_id", CameraFilter.default.id)
+    override var lastFilterId: String?
+            by NullableStringPreference(prefs, "last_filter_id", null)
     override var showWatermark: Boolean
             by BooleanPreference(prefs, "show_watermark", true)
     override var currentAppearance: Int

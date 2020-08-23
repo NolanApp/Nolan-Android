@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import soup.nolan.data.CameraFilterRepository
+import soup.nolan.model.CameraFilter
 import soup.nolan.model.VisualCameraFilter
 import soup.nolan.settings.AppSettings
 import timber.log.Timber
@@ -25,7 +26,7 @@ class CameraFilterViewModel @ViewModelInject constructor(
         get() = _selectedPosition
 
     init {
-        notifyListChanged(appSettings.lastFilterId)
+        notifyListChanged(appSettings.lastFilterId ?: CameraFilter.default.id)
     }
 
     fun onFilterSelect(item: VisualCameraFilter) {
