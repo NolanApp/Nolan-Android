@@ -31,6 +31,18 @@
         app:layout_constraintStart_toStartOf="@id/thumbnail"
         app:layout_constraintTop_toTopOf="@id/thumbnail" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+        app:layout_constraintEnd_toEndOf="@id/thumbnail"
+        app:layout_constraintStart_toStartOf="@id/thumbnail"
+        app:layout_constraintTop_toTopOf="@id/thumbnail"
+        tools:visibility="visible" />
+
     <TextView
         android:id="@+id/label"
         android:layout_width="match_parent"

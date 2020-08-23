@@ -39,6 +39,7 @@ class FilterEditorListAdapter(
         fun bind(uiModel: FilterEditorItemUiModel) {
             binding.filterSelected.isVisible = uiModel.isSelected
             binding.thumbnail.setImageURI(uiModel.filter.imageUri)
+            binding.progressBar.isVisible = uiModel.filter.inProgress
             binding.label.text = uiModel.filter.id
         }
     }

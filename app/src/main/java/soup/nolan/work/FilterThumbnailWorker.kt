@@ -29,13 +29,10 @@ class FilterThumbnailWorker @WorkerInject constructor(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val originalUri = parseOriginalUri()
-        Timber.d("doWork: start originalUri=$originalUri")
         val imageSize = styleTransfer.getThumbnailSize()
         val originalBitmap = imageFactory.getBitmap(originalUri, imageSize)
 
-        imageStore.saveOriginalImageUri(originalBitmap).let {
-            Timber.d("doWork: saved originalUri=$originalUri")
-        }
+        imageStore.saveOriginalImageUri(originalBitmap)
         imageStore.clearAllFilterImages()
         setProgress(workDataOf(KEY_PROGRESS_LEVEL to 0))
 
@@ -47,9 +44,7 @@ class FilterThumbnailWorker @WorkerInject constructor(
                 } else {
                     originalBitmap
                 }
-            imageStore.saveFilterImageUri(filter, filterBitmap).let {
-                Timber.d("doWork: createFilterImageUri(${filter.id})=$it")
-            }
+            imageStore.saveFilterImageUri(filter, filterBitmap)
             setProgress(workDataOf(KEY_PROGRESS_LEVEL to index + 1))
         }
         Timber.d("doWork: done")
@@ -63,13 +58,30 @@ class FilterThumbnailWorker @WorkerInject constructor(
 
     class DataSource(private val context: Context) {
 
-        fun getLiveData(): LiveData<Unit> {
+        fun getStatusLiveData(): LiveData<Status> {
             return WorkManager.getInstance(context)
                 .getWorkInfosForUniqueWorkLiveData(TAG)
-                .map { list ->
-                    Timber.d("getLiveData: ${list.joinToString { "${it.id} ${it.progress} ${it.outputData}" }}")
-                    Unit
+                .map { it.firstOrNull()?.toStatus() ?: Status() }
+        }
+
+        private fun WorkInfo.toStatus(): Status {
+            return Status(
+                complete = state == WorkInfo.State.SUCCEEDED,
+                progress = if (state == WorkInfo.State.RUNNING) {
+                    progress.getInt(KEY_PROGRESS_LEVEL, Status.UNKNOWN_PROGRESS)
+                } else {
+                    Status.UNKNOWN_PROGRESS
                 }
+            )
+        }
+    }
+
+    data class Status(
+        val complete: Boolean = false,
+        val progress: Int = UNKNOWN_PROGRESS
+    ) {
+        companion object {
+            const val UNKNOWN_PROGRESS = -1
         }
     }
 

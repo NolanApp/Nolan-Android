@@ -36,15 +36,24 @@ class CameraFilterRepositoryImpl(
         return list
     }
 
-    override fun updateFilterImages(originalUri: Uri) {
-        FilterThumbnailWorker.execute(context, originalUri, force = true)
-    }
-
     override fun getAllVisualFiltersLiveData(): LiveData<List<VisualCameraFilter>> {
-        return dataSource.getLiveData().map {
-            list.map {
-                VisualCameraFilter(it, imageStore.getFilterImageUri(it))
+        return dataSource.getStatusLiveData().map { status ->
+            list.mapIndexed { index, cameraFilter ->
+                val imageUri = if (status.complete || index < status.progress) {
+                    imageStore.getFilterImageUri(cameraFilter)
+                } else {
+                    null
+                }
+                VisualCameraFilter(
+                    cameraFilter,
+                    imageUri,
+                    inProgress = index == status.progress
+                )
             }
         }
+    }
+
+    override fun updateFilterImages(originalUri: Uri) {
+        FilterThumbnailWorker.execute(context, originalUri, force = true)
     }
 }
