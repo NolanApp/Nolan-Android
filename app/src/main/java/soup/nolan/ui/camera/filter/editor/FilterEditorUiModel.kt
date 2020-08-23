@@ -1,4 +1,4 @@
-package soup.nolan.ui.filter
+package soup.nolan.ui.camera.filter.editor
 
 import android.net.Uri
 import soup.nolan.model.VisualCameraFilter

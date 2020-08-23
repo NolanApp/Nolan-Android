@@ -9,7 +9,7 @@
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
     tools:background="?colorSurface"
-    tools:context=".ui.filter.FilterEditorOptionDialogFragment">
+    tools:context=".ui.camera.filter.editor.FilterEditorOptionDialogFragment">
 
     <TextView
         android:id="@+id/camera_button"

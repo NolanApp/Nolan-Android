@@ -1,22 +1,21 @@
-package soup.nolan.ui.filter
+package soup.nolan.ui.camera.filter.editor
 
-import android.net.Uri
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageStore
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
+import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
 import soup.nolan.ui.utils.postValueIfNew
 
 class FilterEditorViewModel @ViewModelInject constructor(
     @Assisted private val savedState: SavedStateHandle,
-    private val repository: CameraFilterRepository,
     private val appSettings: AppSettings,
-    private val imageStore: ImageStore
-) : ViewModel() {
+    private val imageStore: ImageStore,
+    viewModelDelegate: CameraFilterViewModelDelegate
+) : ViewModel(), CameraFilterViewModelDelegate by viewModelDelegate {
 
     private var savedSelectedId: String?
         get() = savedState.get(KEY_SELECTED_ID) ?: appSettings.lastFilterId
@@ -28,22 +27,16 @@ class FilterEditorViewModel @ViewModelInject constructor(
             _canDone.postValueIfNew(value != null)
         }
 
-    private val _originalUri = MutableLiveData<Uri>(
-        imageStore.getOriginalImageUri()
-            ?: imageStore.getDefaultImageUri()
-    )
-    val header: LiveData<FilterEditorHeaderUiModel> = _originalUri.map {
-        FilterEditorHeaderUiModel(it)
-    }
+    val header: LiveData<FilterEditorHeaderUiModel> =
+        originalImageUri.map {
+            FilterEditorHeaderUiModel(it)
+        }
 
     private val _selectedId = MutableLiveData<String>(savedSelectedId)
     val list: LiveData<List<FilterEditorItemUiModel>> = _selectedId.switchMap { selectedId ->
-        repository.getAllVisualFiltersLiveData().map {
+        allVisualFiltersLiveData.map {
             it.map { filter ->
-                FilterEditorItemUiModel(
-                    filter,
-                    isSelected = filter.id == selectedId
-                )
+                FilterEditorItemUiModel(filter, isSelected = filter.id == selectedId)
             }
         }
     }
@@ -55,11 +48,6 @@ class FilterEditorViewModel @ViewModelInject constructor(
     private val _uiEvent = MutableEventLiveData<FilterEditorUiEvent>()
     val uiEvent: EventLiveData<FilterEditorUiEvent>
         get() = _uiEvent
-
-    fun onOriginImageChanged(uri: Uri) {
-        _originalUri.value = uri
-        repository.updateFilterImages(uri)
-    }
 
     fun onItemClick(uiModel: FilterEditorItemUiModel) {
         savedSelectedId = uiModel.filter.id

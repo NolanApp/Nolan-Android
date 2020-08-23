@@ -29,7 +29,6 @@ import soup.nolan.databinding.PhotoEditBinding
 import soup.nolan.firebase.AppEvent
 import soup.nolan.ui.EventObserver
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
-import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.edit.PhotoEditFragmentDirections.Companion.actionToCrop
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment
 import soup.nolan.ui.edit.crop.PhotoEditCropFragment.Companion.KEY_REQUEST
@@ -43,7 +42,6 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
 
     private val args: PhotoEditFragmentArgs by navArgs()
     private val viewModel: PhotoEditViewModel by viewModels()
-    private val filterViewModel: CameraFilterViewModel by activityViewModels()
     private val shareViewModel: ShareViewModel by viewModels()
     private val systemViewModel: SystemViewModel by activityViewModels()
 
@@ -187,17 +185,17 @@ class PhotoEditFragment : Fragment(R.layout.photo_edit), PhotoEditViewAnimation 
             })
 
             val filterListAdapter = CameraFilterListAdapter {
-                filterViewModel.onFilterSelect(it)
+                viewModel.onFilterSelect(it)
                 viewModel.changeFilter(it.filter)
 
                 renderUi(buttonIsVisible = true)
                 appEvent?.sendFilterSelect(it.filter)
             }
             filterListView.adapter = filterListAdapter
-            filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
-                filterListAdapter.submitList(it.list)
+            viewModel.allVisualFiltersLiveData.observe(viewLifecycleOwner, Observer {
+                filterListAdapter.submitList(it)
             })
-            filterViewModel.selectedPosition.observe(viewLifecycleOwner, Observer {
+            viewModel.selectedPosition.observe(viewLifecycleOwner, Observer {
                 filterListAdapter.setSelectedPosition(it)
                 filterListView.scrollToPositionInCenter(it)
             })

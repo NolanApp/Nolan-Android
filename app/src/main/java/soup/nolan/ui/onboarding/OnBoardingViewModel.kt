@@ -2,13 +2,13 @@ package soup.nolan.ui.onboarding
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import soup.nolan.data.CameraFilterRepository
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
+import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
 
 class OnBoardingViewModel @ViewModelInject constructor(
-    repository: CameraFilterRepository,
+    viewModelDelegate: CameraFilterViewModelDelegate,
     private val appSettings: AppSettings
 ) : ViewModel() {
 
@@ -21,7 +21,7 @@ class OnBoardingViewModel @ViewModelInject constructor(
         get() = _navigationEvent
 
     init {
-        repository.generateFilterThumbnailsIfNeeded()
+        viewModelDelegate.generateFilterThumbnailsIfNeeded()
     }
 
     fun onAllowClick() {

@@ -65,7 +65,7 @@
 
     <fragment
         android:id="@+id/filter_editor"
-        android:name="soup.nolan.ui.filter.FilterEditorFragment"
+        android:name="soup.nolan.ui.camera.filter.editor.FilterEditorFragment"
         tools:layout="@layout/filter_editor">
 
         <action
@@ -85,7 +85,7 @@
 
     <dialog
         android:id="@+id/filter_editor_option"
-        android:name="soup.nolan.ui.filter.FilterEditorOptionDialogFragment"
+        android:name="soup.nolan.ui.camera.filter.editor.FilterEditorOptionDialogFragment"
         tools:layout="@layout/filter_editor_option_dialog" />
 
     <fragment

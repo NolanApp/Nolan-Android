@@ -1,33 +1,16 @@
 package soup.nolan.data
 
-import android.content.Context
-import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
-import soup.nolan.factory.ImageStore
 import soup.nolan.model.CameraFilter
 import soup.nolan.model.CameraFilter.*
-import soup.nolan.model.VisualCameraFilter
-import soup.nolan.settings.AppSettings
-import soup.nolan.work.FilterThumbnailWorker
 
 interface CameraFilterRepository {
 
-    fun generateFilterThumbnailsIfNeeded()
-
     fun getAllFilters(): List<CameraFilter>
 
-    fun getAllVisualFiltersLiveData(): LiveData<List<VisualCameraFilter>>
-
-    fun updateFilterImages(originalUri: Uri)
+    fun getCameraFilter(filterId: String): CameraFilter
 }
 
-class CameraFilterRepositoryImpl(
-    private val context: Context,
-    private val dataSource: FilterThumbnailWorker.DataSource,
-    private val imageStore: ImageStore,
-    private val appSettings: AppSettings
-) : CameraFilterRepository {
+class CameraFilterRepositoryImpl : CameraFilterRepository {
 
     private val list = listOf(
         OR,
@@ -36,34 +19,11 @@ class CameraFilterRepositoryImpl(
         A21, A22, A23, A24, A25, A26
     )
 
-    override fun generateFilterThumbnailsIfNeeded() {
-        if (appSettings.filterThumbnailsGenerated.not()) {
-            FilterThumbnailWorker.execute(context)
-        }
-    }
-
     override fun getAllFilters(): List<CameraFilter> {
         return list
     }
 
-    override fun getAllVisualFiltersLiveData(): LiveData<List<VisualCameraFilter>> {
-        return dataSource.getStatusLiveData().map { status ->
-            list.mapIndexed { index, cameraFilter ->
-                val imageUri = if (status.complete || index < status.progress) {
-                    imageStore.getFilterImageUri(cameraFilter)
-                } else {
-                    null
-                }
-                VisualCameraFilter(
-                    cameraFilter,
-                    imageUri,
-                    inProgress = index == status.progress
-                )
-            }
-        }
-    }
-
-    override fun updateFilterImages(originalUri: Uri) {
-        FilterThumbnailWorker.execute(context, originalUri, force = true)
+    override fun getCameraFilter(filterId: String): CameraFilter {
+        return list.firstOrNull { it.id == filterId } ?: Companion.default
     }
 }

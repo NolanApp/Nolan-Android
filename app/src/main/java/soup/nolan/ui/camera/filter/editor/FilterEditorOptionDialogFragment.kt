@@ -1,4 +1,4 @@
-package soup.nolan.ui.filter
+package soup.nolan.ui.camera.filter.editor
 
 import android.os.Bundle
 import android.view.View

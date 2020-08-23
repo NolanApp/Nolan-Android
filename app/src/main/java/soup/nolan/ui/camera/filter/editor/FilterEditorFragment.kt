@@ -1,4 +1,4 @@
-package soup.nolan.ui.filter
+package soup.nolan.ui.camera.filter.editor
 
 import android.net.Uri
 import android.os.Bundle
@@ -45,12 +45,14 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         FilterEditorBinding.bind(view).apply {
-            val headerAdapter = FilterEditorHeaderAdapter {
-                findNavController().navigate(actionToOption())
-            }
-            val listAdapter = FilterEditorListAdapter {
-                viewModel.onItemClick(it)
-            }
+            val headerAdapter =
+                FilterEditorHeaderAdapter {
+                    findNavController().navigate(actionToOption())
+                }
+            val listAdapter =
+                FilterEditorListAdapter {
+                    viewModel.onItemClick(it)
+                }
             listView.layoutManager = GridLayoutManager(view.context, 4).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {

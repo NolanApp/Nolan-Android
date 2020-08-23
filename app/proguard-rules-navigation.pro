@@ -4,8 +4,8 @@
 -keepnames class soup.nolan.ui.camera.CameraFragment
 -keepnames class soup.nolan.ui.edit.PhotoEditFragment
 -keepnames class soup.nolan.ui.edit.crop.PhotoEditCropFragment
--keepnames class soup.nolan.ui.filter.FilterEditorFragment
--keepnames class soup.nolan.ui.filter.FilterEditorOptionDialogFragment
+-keepnames class soup.nolan.ui.camera.filter.editor.FilterEditorFragment
+-keepnames class soup.nolan.ui.camera.filter.editor.FilterEditorOptionDialogFragment
 -keepnames class soup.nolan.ui.onboarding.OnBoardingFragment
 -keepnames class soup.nolan.ui.permission.PermissionFragment
 -keepnames class soup.nolan.ui.picker.PhotoPickerFragment

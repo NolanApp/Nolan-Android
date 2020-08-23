@@ -13,7 +13,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import soup.nolan.BuildConfig
 import soup.nolan.R
-import soup.nolan.data.CameraFilterRepository
 import soup.nolan.factory.ImageFactory
 import soup.nolan.factory.ShareUriFactory
 import soup.nolan.filter.stylize.LegacyStyleInput
@@ -23,18 +22,19 @@ import soup.nolan.settings.AppSettings
 import soup.nolan.stylize.common.NoStyleInput
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
+import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
 import soup.nolan.ui.share.ShareItemUiModel
 import soup.nolan.ui.utils.setValueIfNew
 import timber.log.Timber
 import kotlin.system.measureTimeMillis
 
 class PhotoEditViewModel @ViewModelInject constructor(
-    private val repository: CameraFilterRepository,
+    viewModelDelegate: CameraFilterViewModelDelegate,
     private val imageFactory: ImageFactory,
     private val shareUriFactory: ShareUriFactory,
     private val styleTransfer: LegacyStyleTransfer,
     private val appSettings: AppSettings
-) : ViewModel() {
+) : ViewModel(), CameraFilterViewModelDelegate by viewModelDelegate {
 
     private var isEnterAnimationDone: Boolean = false
     private var wasLoading: Boolean = false
@@ -173,12 +173,6 @@ class PhotoEditViewModel @ViewModelInject constructor(
                 _uiEvent.event = PhotoEditUiEvent.Share(uiModel, shareImageUri)
             }
         }
-    }
-
-    private fun getSelectedCameraFilter(): CameraFilter {
-        return repository.getAllFilters()
-            .firstOrNull { it.id == appSettings.lastFilterId }
-            ?: CameraFilter.default
     }
 
     private suspend fun Bitmap.stylized(filter: CameraFilter): Bitmap {

@@ -36,7 +36,6 @@ import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPermissio
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPicker
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
-import soup.nolan.ui.camera.filter.CameraFilterViewModel
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.*
 import soup.nolan.utils.hasCameraPermission
@@ -48,7 +47,6 @@ import java.io.File
 class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
 
     private val viewModel: CameraViewModel by viewModels()
-    private val filterViewModel: CameraFilterViewModel by activityViewModels()
     private val systemViewModel: SystemViewModel by activityViewModels()
 
     private var appEvent: AppEvent? = null
@@ -165,7 +163,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
             }
 
             val listAdapter = CameraFilterListAdapter {
-                filterViewModel.onFilterSelect(it)
+                viewModel.onFilterSelect(it)
                 cameraFilterDescription.run {
                     text = it.id
                     animateCameraFilterDescription()
@@ -174,10 +172,10 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
                 appEvent?.sendFilterSelect(it.filter)
             }
             filterListView.adapter = listAdapter
-            filterViewModel.filterList.observe(viewLifecycleOwner, Observer {
-                listAdapter.submitList(it.list)
+            viewModel.allVisualFiltersLiveData.observe(viewLifecycleOwner, Observer {
+                listAdapter.submitList(it)
             })
-            filterViewModel.selectedPosition.observe(viewLifecycleOwner, Observer {
+            viewModel.selectedPosition.observe(viewLifecycleOwner, Observer {
                 listAdapter.setSelectedPosition(it)
                 filterListView.scrollToPositionInCenter(it)
             })
