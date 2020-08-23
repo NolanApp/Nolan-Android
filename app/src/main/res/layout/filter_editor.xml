@@ -33,7 +33,7 @@
         android:orientation="vertical"
         android:overScrollMode="never"
         android:padding="24dp"
-        app:layout_constraintBottom_toTopOf="@id/start_button"
+        app:layout_constraintBottom_toTopOf="@id/done_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
@@ -43,13 +43,13 @@
         tools:spanCount="4" />
 
     <TextView
-        android:id="@+id/start_button"
+        android:id="@+id/done_button"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/primary_button_bg"
         android:enabled="false"
         android:gravity="center"
-        android:text="@string/filter_editor_button_start"
+        android:text="@string/filter_editor_button_done"
         android:textAllCaps="true"
         android:textColor="@color/primary_button_text"
         android:textSize="16sp"

@@ -25,7 +25,7 @@ class FilterEditorViewModel @ViewModelInject constructor(
             if (value != null) {
                 _selectedId.postValue(value)
             }
-            _canStart.postValueIfNew(value != null)
+            _canDone.postValueIfNew(value != null)
         }
 
     private val _originalUri = MutableLiveData<Uri>(
@@ -48,9 +48,9 @@ class FilterEditorViewModel @ViewModelInject constructor(
         }
     }
 
-    private val _canStart = MutableLiveData<Boolean>(savedSelectedId != null)
-    val canStart: LiveData<Boolean>
-        get() = _canStart
+    private val _canDone = MutableLiveData<Boolean>(savedSelectedId != null)
+    val canDone: LiveData<Boolean>
+        get() = _canDone
 
     private val _uiEvent = MutableEventLiveData<FilterEditorUiEvent>()
     val uiEvent: EventLiveData<FilterEditorUiEvent>

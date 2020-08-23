@@ -15,7 +15,7 @@
     <string name="filter_editor">Filter Editor</string>
     <string name="filter_editor_desc">An image that previews the filter effect.\nYou can also apply it to the picture you want.</string>
     <string name="filter_editor_notice">Please select one below.</string>
-    <string name="filter_editor_button_start">Start</string>
+    <string name="filter_editor_button_done">Done</string>
     <string name="filter_editor_option_camera">Take a picture</string>
     <string name="filter_editor_option_gallery">Choose from gallery</string>
 

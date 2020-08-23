@@ -61,7 +61,7 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
             listView.itemAnimator = null
             listView.adapter = ConcatAdapter(headerAdapter, listAdapter)
 
-            startButton.setOnDebounceClickListener {
+            doneButton.setOnDebounceClickListener {
                 viewModel.onStartClick()
             }
 
@@ -71,8 +71,8 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
             viewModel.list.observe(viewLifecycleOwner, Observer {
                 listAdapter.submitList(it)
             })
-            viewModel.canStart.observe(viewLifecycleOwner, Observer {
-                startButton.isEnabled = it
+            viewModel.canDone.observe(viewLifecycleOwner, Observer {
+                doneButton.isEnabled = it
             })
             viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
                 when (it) {
@@ -84,7 +84,11 @@ class FilterEditorFragment : Fragment(R.layout.filter_editor) {
                         albumPicker.launch("image/*")
                     }
                     is FilterEditorUiEvent.GoToCamera -> {
-                        findNavController().navigate(actionToCamera())
+                        if (parentFragmentManager.backStackEntryCount == 0) {
+                            findNavController().navigate(actionToCamera())
+                        } else {
+                            findNavController().navigateUp()
+                        }
                     }
                 }
             })
