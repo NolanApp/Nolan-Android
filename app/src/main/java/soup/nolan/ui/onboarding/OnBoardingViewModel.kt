@@ -2,11 +2,13 @@ package soup.nolan.ui.onboarding
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import soup.nolan.data.CameraFilterRepository
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 
 class OnBoardingViewModel @ViewModelInject constructor(
+    repository: CameraFilterRepository,
     private val appSettings: AppSettings
 ) : ViewModel() {
 
@@ -17,6 +19,10 @@ class OnBoardingViewModel @ViewModelInject constructor(
     private val _navigationEvent = MutableEventLiveData<Unit>()
     val navigationEvent: EventLiveData<Unit>
         get() = _navigationEvent
+
+    init {
+        repository.generateFilterThumbnailsIfNeeded()
+    }
 
     fun onAllowClick() {
         _allowEvent.event = Unit

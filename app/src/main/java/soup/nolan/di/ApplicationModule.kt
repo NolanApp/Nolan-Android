@@ -66,8 +66,9 @@ class ApplicationModule {
     fun provideCameraFilterRepository(
         @ApplicationContext context: Context,
         dataSource: FilterThumbnailWorker.DataSource,
-        imageStore: ImageStore
-    ): CameraFilterRepository = CameraFilterRepositoryImpl(context, dataSource, imageStore)
+        imageStore: ImageStore,
+        appSettings: AppSettings
+    ): CameraFilterRepository = CameraFilterRepositoryImpl(context, dataSource, imageStore, appSettings)
 
     @Singleton
     @Provides

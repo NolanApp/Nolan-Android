@@ -16,6 +16,7 @@ import soup.nolan.factory.ImageFactory
 import soup.nolan.factory.ImageStore
 import soup.nolan.filter.stylize.LegacyStyleInput
 import soup.nolan.filter.stylize.LegacyStyleTransfer
+import soup.nolan.settings.AppSettings
 import timber.log.Timber
 
 class FilterThumbnailWorker @WorkerInject constructor(
@@ -24,7 +25,8 @@ class FilterThumbnailWorker @WorkerInject constructor(
     private val repository: CameraFilterRepository,
     private val imageStore: ImageStore,
     private val imageFactory: ImageFactory,
-    private val styleTransfer: LegacyStyleTransfer
+    private val styleTransfer: LegacyStyleTransfer,
+    private val appSettings: AppSettings
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
@@ -48,6 +50,7 @@ class FilterThumbnailWorker @WorkerInject constructor(
             setProgress(workDataOf(KEY_PROGRESS_LEVEL to index + 1))
         }
         Timber.d("doWork: done")
+        appSettings.filterThumbnailsGenerated = true
         Result.success()
     }
 

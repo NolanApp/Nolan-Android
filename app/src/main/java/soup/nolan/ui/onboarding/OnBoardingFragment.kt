@@ -19,7 +19,6 @@ import soup.nolan.ui.onboarding.OnBoardingFragmentDirections.Companion.actionToF
 import soup.nolan.ui.utils.Interpolators
 import soup.nolan.ui.utils.autoCleared
 import soup.nolan.ui.utils.setOnDebounceClickListener
-import soup.nolan.work.FilterThumbnailWorker
 
 @AndroidEntryPoint
 class OnBoardingFragment : Fragment(R.layout.on_boarding) {
@@ -45,7 +44,6 @@ class OnBoardingFragment : Fragment(R.layout.on_boarding) {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
-        FilterThumbnailWorker.execute(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

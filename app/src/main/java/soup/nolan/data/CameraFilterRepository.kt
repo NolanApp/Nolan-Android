@@ -8,9 +8,12 @@ import soup.nolan.factory.ImageStore
 import soup.nolan.model.CameraFilter
 import soup.nolan.model.CameraFilter.*
 import soup.nolan.model.VisualCameraFilter
+import soup.nolan.settings.AppSettings
 import soup.nolan.work.FilterThumbnailWorker
 
 interface CameraFilterRepository {
+
+    fun generateFilterThumbnailsIfNeeded()
 
     fun getAllFilters(): List<CameraFilter>
 
@@ -22,7 +25,8 @@ interface CameraFilterRepository {
 class CameraFilterRepositoryImpl(
     private val context: Context,
     private val dataSource: FilterThumbnailWorker.DataSource,
-    private val imageStore: ImageStore
+    private val imageStore: ImageStore,
+    private val appSettings: AppSettings
 ) : CameraFilterRepository {
 
     private val list = listOf(
@@ -31,6 +35,12 @@ class CameraFilterRepositoryImpl(
         A11, A12, A13, A14, A15, A16, A17, A18, A19, A20,
         A21, A22, A23, A24, A25, A26
     )
+
+    override fun generateFilterThumbnailsIfNeeded() {
+        if (appSettings.filterThumbnailsGenerated.not()) {
+            FilterThumbnailWorker.execute(context)
+        }
+    }
 
     override fun getAllFilters(): List<CameraFilter> {
         return list
