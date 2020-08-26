@@ -13,6 +13,9 @@ interface AppSettings {
     var showWatermark: Boolean
     var currentAppearance: Int
     var noAds: Boolean
+
+    var alreadyAskedForReview: Boolean
+    var lastAskedReviewTimeMs: Long
 }
 
 class AppSettingsImpl(context: Context) : AppSettings {
@@ -36,4 +39,9 @@ class AppSettingsImpl(context: Context) : AppSettings {
             by IntPreference(prefs, "current_appearance", Appearance.System.value)
     override var noAds: Boolean
             by BooleanPreference(prefs, "no_ads", false)
+
+    override var alreadyAskedForReview: Boolean
+            by BooleanPreference(prefs, "already_asked_for_review", true)
+    override var lastAskedReviewTimeMs: Long
+            by LongPreference(prefs, "last_asked_review_time_ms", 0L)
 }
