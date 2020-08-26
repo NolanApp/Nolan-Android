@@ -5,8 +5,8 @@
 
 def deps = [:]
 
-def kotlin = '1.3.72'
-def coroutines = '1.3.5'
+def kotlin = '1.4.0'
+def coroutines = '1.3.9'
 deps.kotlin = [
         stdlib            : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin",
         plugin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin",
