@@ -14,30 +14,26 @@ class ReviewViewModel @ViewModelInject constructor(
     private val appSettings: AppSettings
 ) : ViewModel() {
 
-    private var alreadyAskedForReview: Boolean = false
     private var reviewInfo: ReviewInfo? = null
-    private var inProgress: Boolean = false
 
-    fun prepareReviewInfo() {
-        if (!alreadyAskedForReview && reviewInfo == null && inProgress.not()) {
-            inProgress = true
+    init {
+        if (canRequestReview()) {
             viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    reviewInfo = repository.requestReview()
-                } finally {
-                    inProgress = false
-                }
+                reviewInfo = runCatching { repository.requestReview() }.getOrNull()
             }
         }
     }
 
     fun obtainReviewInfo(): ReviewInfo? {
-        return reviewInfo.also {
-            reviewInfo = null
-        }
+        return reviewInfo.takeIf { canRequestReview() }
     }
 
     fun notifyAskedForReview() {
-        alreadyAskedForReview = true
+        appSettings.alreadyAskedForReview = true
+    }
+
+    private fun canRequestReview(): Boolean {
+        val beginner = appSettings.photoEditCount < 5
+        return !(beginner || appSettings.alreadyAskedForReview)
     }
 }

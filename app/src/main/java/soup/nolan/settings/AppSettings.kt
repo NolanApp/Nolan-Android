@@ -14,6 +14,7 @@ interface AppSettings {
     var currentAppearance: Int
     var noAds: Boolean
 
+    var photoEditCount: Int
     var alreadyAskedForReview: Boolean
     var lastAskedReviewTimeMs: Long
 }
@@ -40,6 +41,8 @@ class AppSettingsImpl(context: Context) : AppSettings {
     override var noAds: Boolean
             by BooleanPreference(prefs, "no_ads", false)
 
+    override var photoEditCount: Int
+            by IntPreference(prefs, "photo_edit_count", 0)
     override var alreadyAskedForReview: Boolean
             by BooleanPreference(prefs, "already_asked_for_review", true)
     override var lastAskedReviewTimeMs: Long

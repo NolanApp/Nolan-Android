@@ -242,11 +242,13 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     }
 
     private fun showInAppReview(): Boolean {
-        return reviewViewModel.obtainReviewInfo()?.also {
+        val reviewInfo = reviewViewModel.obtainReviewInfo()
+        if (reviewInfo != null) {
             viewLifecycleOwner.lifecycleScope.launch {
-                repository.launchReview(requireActivity(), it)
+                repository.launchReview(requireActivity(), reviewInfo)
             }
             reviewViewModel.notifyAskedForReview()
-        } != null
+        }
+        return reviewInfo != null
     }
 }

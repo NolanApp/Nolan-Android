@@ -21,7 +21,6 @@ import soup.nolan.NolanDirections.Companion.actionToEdit
 import soup.nolan.R
 import soup.nolan.ui.purchase.PurchaseItem
 import soup.nolan.ui.purchase.PurchaseViewModel
-import soup.nolan.ui.review.ReviewViewModel
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.findNavHostFragment
 import timber.log.Timber
@@ -38,7 +37,6 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
     }
 
     private val systemViewModel: SystemViewModel by viewModels()
-    private val reviewViewModel: ReviewViewModel by viewModels()
     private val purchaseViewModel: PurchaseViewModel by viewModels()
 
     private val billingProcessor: BillingProcessor by lazy {
@@ -104,11 +102,6 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.handleDeepLink()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        reviewViewModel.prepareReviewInfo()
     }
 
     override fun onDestroy() {

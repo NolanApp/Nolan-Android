@@ -87,6 +87,7 @@ class PhotoEditViewModel @ViewModelInject constructor(
     fun init(imageUri: Uri) {
         if (originImageUri != null) return
         originImageUri = imageUri
+        appSettings.photoEditCount += 1
         update(imageUri, null)
     }
 
