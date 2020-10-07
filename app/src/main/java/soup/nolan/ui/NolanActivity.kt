@@ -37,7 +37,6 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
     }
 
     private val systemViewModel: SystemViewModel by viewModels()
-
     private val purchaseViewModel: PurchaseViewModel by viewModels()
 
     private val billingProcessor: BillingProcessor by lazy {

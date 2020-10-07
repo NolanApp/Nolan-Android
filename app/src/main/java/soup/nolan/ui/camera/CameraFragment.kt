@@ -24,10 +24,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import soup.nolan.R
+import soup.nolan.data.PlayRepository
 import soup.nolan.databinding.CameraBinding
 import soup.nolan.firebase.AppEvent
 import soup.nolan.ui.EventObserver
@@ -36,15 +39,21 @@ import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPermissio
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToPicker
 import soup.nolan.ui.camera.CameraFragmentDirections.Companion.actionToSettings
 import soup.nolan.ui.camera.filter.CameraFilterListAdapter
+import soup.nolan.ui.review.ReviewViewModel
 import soup.nolan.ui.system.SystemViewModel
 import soup.nolan.ui.utils.*
 import soup.nolan.utils.hasCameraPermission
 import soup.nolan.utils.hasRequiredPermissions
 import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
+
+    @Inject
+    lateinit var repository: PlayRepository
+    private val reviewViewModel: ReviewViewModel by activityViewModels()
 
     private val viewModel: CameraViewModel by viewModels()
     private val systemViewModel: SystemViewModel by activityViewModels()
@@ -56,7 +65,7 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
         override fun handleOnBackPressed() {
             if (binding.filterPanel.isVisible) {
                 binding.filterPanel.isVisible = false
-            } else {
+            } else if (showInAppReview().not()) {
                 activity?.finish()
             }
         }
@@ -230,5 +239,16 @@ class CameraFragment : Fragment(R.layout.camera), CameraViewAnimation {
     @SuppressLint("MissingPermission")
     private fun startCameraWith(binding: CameraBinding) {
         binding.cameraPreview.bindToLifecycle(viewLifecycleOwner)
+    }
+
+    private fun showInAppReview(): Boolean {
+        val reviewInfo = reviewViewModel.obtainReviewInfo()
+        if (reviewInfo != null) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                repository.launchReview(requireActivity(), reviewInfo)
+            }
+            reviewViewModel.notifyAskedForReview()
+        }
+        return reviewInfo != null
     }
 }
