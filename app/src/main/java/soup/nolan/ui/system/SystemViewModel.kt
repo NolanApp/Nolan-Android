@@ -1,20 +1,22 @@
 package soup.nolan.ui.system
 
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.window.DeviceState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import soup.nolan.model.Appearance
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.utils.postValueIfNew
 import timber.log.Timber
+import javax.inject.Inject
 
-class SystemViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SystemViewModel @Inject constructor(
     private val appSettings: AppSettings
 ) : ViewModel() {
 

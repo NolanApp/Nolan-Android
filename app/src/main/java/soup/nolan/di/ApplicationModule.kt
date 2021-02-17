@@ -71,7 +71,6 @@ class ApplicationModule {
     @Singleton
     @Provides
     fun provideCameraFilterRepository(
-        @ApplicationContext context: Context
     ): CameraFilterRepository = CameraFilterRepositoryImpl()
 
     @Singleton

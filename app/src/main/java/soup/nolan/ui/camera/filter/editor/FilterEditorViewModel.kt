@@ -1,17 +1,19 @@
 package soup.nolan.ui.camera.filter.editor
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
+import dagger.hilt.android.lifecycle.HiltViewModel
 import soup.nolan.factory.ImageStore
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
+import javax.inject.Inject
 
-class FilterEditorViewModel @ViewModelInject constructor(
+@HiltViewModel
+class FilterEditorViewModel @Inject constructor(
     private val appSettings: AppSettings,
     private val imageStore: ImageStore,
     viewModelDelegate: CameraFilterViewModelDelegate

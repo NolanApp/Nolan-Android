@@ -1,15 +1,17 @@
 package soup.nolan.ui.picker
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import soup.nolan.data.GalleryRepository
+import javax.inject.Inject
 
-class PhotoPickerViewModel @ViewModelInject constructor(
+@HiltViewModel
+class PhotoPickerViewModel @Inject constructor(
     private val galleryRepository: GalleryRepository
 ) : ViewModel() {
 

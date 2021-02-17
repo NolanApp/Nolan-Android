@@ -1,17 +1,19 @@
 package soup.nolan.ui.purchase
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
+import javax.inject.Inject
 
-class PurchaseViewModel @ViewModelInject constructor(
+@HiltViewModel
+class PurchaseViewModel @Inject constructor(
     private val appSettings: AppSettings
 ) : ViewModel() {
 

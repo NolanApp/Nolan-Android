@@ -5,11 +5,11 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.collection.LruCache
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import soup.nolan.BuildConfig
 import soup.nolan.R
@@ -26,9 +26,11 @@ import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
 import soup.nolan.ui.share.ShareItemUiModel
 import soup.nolan.ui.utils.setValueIfNew
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.system.measureTimeMillis
 
-class PhotoEditViewModel @ViewModelInject constructor(
+@HiltViewModel
+class PhotoEditViewModel @Inject constructor(
     viewModelDelegate: CameraFilterViewModelDelegate,
     private val imageFactory: ImageFactory,
     private val shareUriFactory: ShareUriFactory,

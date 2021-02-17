@@ -1,15 +1,17 @@
 package soup.nolan.ui.camera
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
+import javax.inject.Inject
 
-class CameraViewModel @ViewModelInject constructor(
+@HiltViewModel
+class CameraViewModel @Inject constructor(
     viewModelDelegate: CameraFilterViewModelDelegate,
     private val appSettings: AppSettings
 ) : ViewModel(), CameraFilterViewModelDelegate by viewModelDelegate {

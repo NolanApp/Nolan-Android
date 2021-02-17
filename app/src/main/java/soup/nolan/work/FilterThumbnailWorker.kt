@@ -3,11 +3,12 @@ package soup.nolan.work
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.work.*
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,8 +20,9 @@ import soup.nolan.filter.stylize.LegacyStyleTransfer
 import soup.nolan.settings.AppSettings
 import timber.log.Timber
 
-class FilterThumbnailWorker @WorkerInject constructor(
-    @Assisted @ApplicationContext context: Context,
+@HiltWorker
+class FilterThumbnailWorker @AssistedInject constructor(
+    @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: CameraFilterRepository,
     private val imageStore: ImageStore,

@@ -1,12 +1,14 @@
 package soup.nolan.ui.share
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import soup.nolan.data.ShareRepository
 import soup.nolan.model.ThirdPartyApp
+import javax.inject.Inject
 
-class ShareViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ShareViewModel @Inject constructor(
     private val repository: ShareRepository
 ) : ViewModel() {
 

@@ -1,8 +1,8 @@
 package soup.nolan.ui.settings
 
 import android.net.Uri
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import soup.nolan.data.PlayRepository
@@ -11,8 +11,10 @@ import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
 import soup.nolan.ui.purchase.PurchaseItem
+import javax.inject.Inject
 
-class SettingsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
     viewModelDelegate: CameraFilterViewModelDelegate,
     private val repository: PlayRepository,
     private val appSettings: AppSettings

@@ -1,13 +1,15 @@
 package soup.nolan.ui.onboarding
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import soup.nolan.settings.AppSettings
 import soup.nolan.ui.EventLiveData
 import soup.nolan.ui.MutableEventLiveData
 import soup.nolan.ui.camera.filter.CameraFilterViewModelDelegate
+import javax.inject.Inject
 
-class OnBoardingViewModel @ViewModelInject constructor(
+@HiltViewModel
+class OnBoardingViewModel @Inject constructor(
     viewModelDelegate: CameraFilterViewModelDelegate,
     private val appSettings: AppSettings
 ) : ViewModel() {

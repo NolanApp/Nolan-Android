@@ -1,15 +1,17 @@
 package soup.nolan.ui.review
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewInfo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import soup.nolan.data.PlayRepository
 import soup.nolan.settings.AppSettings
+import javax.inject.Inject
 
-class ReviewViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ReviewViewModel @Inject constructor(
     private val repository: PlayRepository,
     private val appSettings: AppSettings
 ) : ViewModel() {
