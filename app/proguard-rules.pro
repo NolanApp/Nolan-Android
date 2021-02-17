@@ -27,10 +27,6 @@
 -keep class androidx.navigation.fragment.NavHostFragment
 -keep class soup.nolan.**.model.** { *; }
 
-# For AndroidX Window
-# Refer to https://issuetracker.google.com/issues/157286362
--keep class androidx.window.** { *; }
-
 # Glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
