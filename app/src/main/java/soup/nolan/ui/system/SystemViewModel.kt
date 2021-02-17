@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.window.DeviceState
+import androidx.window.FoldingFeature
+import androidx.window.WindowLayoutInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,17 +35,19 @@ class SystemViewModel @Inject constructor(
         }
     }
 
-    fun onDeviceStateChanged(deviceState: DeviceState) {
-        Timber.d("onDeviceStateChanged: $deviceState")
-        if (deviceState.posture == DeviceState.POSTURE_UNKNOWN) {
-            return
+    fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {
+        Timber.d("onWindowLayoutInfoChanged: $windowLayoutInfo")
+        val foldingFeature = windowLayoutInfo.getFoldTypeOrNull()
+        if (foldingFeature != null) {
+            val isHalfOpened = foldingFeature.state == FoldingFeature.STATE_HALF_OPENED
+            _isHalfOpened.postValueIfNew(isHalfOpened)
         }
-        val isHalfOpened = when (deviceState.posture) {
-            DeviceState.POSTURE_HALF_OPENED,
-            DeviceState.POSTURE_CLOSED -> true
-            else -> false
-        }
-        _isHalfOpened.postValueIfNew(isHalfOpened)
+    }
+
+    private fun WindowLayoutInfo.getFoldTypeOrNull(): FoldingFeature? {
+        return displayFeatures.firstOrNull {
+            it is FoldingFeature && it.type == FoldingFeature.TYPE_FOLD
+        } as? FoldingFeature
     }
 
     fun onAppearanceChanged(appearance: Appearance) {

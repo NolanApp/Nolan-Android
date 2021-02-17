@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
 import androidx.lifecycle.lifecycleScope
-import androidx.window.DeviceState
+import androidx.window.WindowLayoutInfo
 import androidx.window.WindowManager
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
@@ -32,8 +32,8 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
     private var windowManager: WindowManager? = null
     private val handler = Handler(Looper.getMainLooper())
     private val mainThreadExecutor = Executor { r: Runnable -> handler.post(r) }
-    private val deviceStateChangeCallback = Consumer<DeviceState> { newDeviceState ->
-        systemViewModel.onDeviceStateChanged(newDeviceState)
+    private val layoutChangeCallback = Consumer<WindowLayoutInfo> { newWindowLayoutInfo ->
+        systemViewModel.onWindowLayoutInfoChanged(newWindowLayoutInfo)
     }
 
     private val systemViewModel: SystemViewModel by viewModels()
@@ -89,12 +89,11 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
             billingProcessor.purchase(this, it.skuId)
         })
 
-        windowManager = WindowManager(this, null).apply {
-            registerDeviceStateChangeCallback(
+        windowManager = WindowManager(this).apply {
+            registerLayoutChangeCallback(
                 mainThreadExecutor,
-                deviceStateChangeCallback
+                layoutChangeCallback
             )
-            systemViewModel.onDeviceStateChanged(deviceState)
         }
         intent?.handleDeepLink()
     }
@@ -106,7 +105,7 @@ class NolanActivity : AppCompatActivity(R.layout.nolan_activity) {
 
     override fun onDestroy() {
         billingProcessor.release()
-        windowManager?.unregisterDeviceStateChangeCallback(deviceStateChangeCallback)
+        windowManager?.unregisterLayoutChangeCallback(layoutChangeCallback)
         super.onDestroy()
     }
 
